@@ -99,13 +99,7 @@ The XNU Image Fuzzer demonstrates basic fuzzing techniques on image data to unco
 
 #### Quick Start
 
-1. **Open as Xcode Project or Clone**
-
-   \`\`\`bash
-      git clone https://github.com/xsscx/xnuimagetools.git
-   cd XNUImageFuzzer
-   \`\`\`
-
+1. **Open as Xcode Project**
 2. **Update the Team ID**
 3. **Click Run**
 
