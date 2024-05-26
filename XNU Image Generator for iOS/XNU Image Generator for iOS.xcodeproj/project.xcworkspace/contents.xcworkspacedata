@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:">
+      location = "self:/Users/xss/Documents/dev-may24_2024 2/cx.srd.imagegenerator-xnu-demo/XNU Image Generator for iOS.xcodeproj">
    </FileRef>
 </Workspace>
