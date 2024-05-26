@@ -1,9 +1,9 @@
 /**
  *  @file ContentView.swift
- *  @brief XNU Image Generator
+ *  @brief XNU Image Generator for iOS
  *  @author @h02332 | David Hoyt | @xsscx
  *  @date 21 MAY 2024
- *  @version 1.2.5
+ *  @version 1.7.0
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
