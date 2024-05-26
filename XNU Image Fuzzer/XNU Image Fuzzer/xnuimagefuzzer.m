@@ -3,7 +3,7 @@
  *  @brief XNU Image Fuzzer for iOS Project
  *  @author @h02332 | David Hoyt | @xsscx
  *  @date 24 MAY 2024
- *  @version 1.7.0
+ *  @version 1.6.3
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
