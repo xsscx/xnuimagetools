@@ -18,7 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1DE208FF2B867C4700A3C0D5 /* XNU Image Fuzzer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "XNU Image Fuzzer.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1DE208FF2B867C4700A3C0D5 /* XNU Image Generator for iOs.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "XNU Image Generator for iOs.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF14ACC2C03C0810053E897 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		1DF14ACD2C03C0810053E897 /* cx_srd_imagegenerator_xnu_demo.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = cx_srd_imagegenerator_xnu_demo.entitlements; sourceTree = "<group>"; };
 		1DF14ACE2C03C0810053E897 /* cx_srd_imagegenerator_xnu_demoApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = cx_srd_imagegenerator_xnu_demoApp.swift; sourceTree = "<group>"; };
@@ -52,7 +52,7 @@
 		1DE209002B867C4700A3C0D5 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1DE208FF2B867C4700A3C0D5 /* XNU Image Fuzzer.app */,
+				1DE208FF2B867C4700A3C0D5 /* XNU Image Generator for iOs.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -84,9 +84,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1DE208FE2B867C4700A3C0D5 /* XNU Image Fuzzer */ = {
+		1DE208FE2B867C4700A3C0D5 /* XNU Image Generator for iOs */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1DE2092E2B867C4800A3C0D5 /* Build configuration list for PBXNativeTarget "XNU Image Fuzzer" */;
+			buildConfigurationList = 1DE2092E2B867C4800A3C0D5 /* Build configuration list for PBXNativeTarget "XNU Image Generator for iOs" */;
 			buildPhases = (
 				1DE208FB2B867C4700A3C0D5 /* Sources */,
 				1DE208FC2B867C4700A3C0D5 /* Frameworks */,
@@ -96,9 +96,9 @@
 			);
 			dependencies = (
 			);
-			name = "XNU Image Fuzzer";
+			name = "XNU Image Generator for iOs";
 			productName = "XNU Image Fuzzer";
-			productReference = 1DE208FF2B867C4700A3C0D5 /* XNU Image Fuzzer.app */;
+			productReference = 1DE208FF2B867C4700A3C0D5 /* XNU Image Generator for iOs.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -128,7 +128,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1DE208FE2B867C4700A3C0D5 /* XNU Image Fuzzer */,
+				1DE208FE2B867C4700A3C0D5 /* XNU Image Generator for iOs */,
 			);
 		};
 /* End PBXProject section */
@@ -363,7 +363,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1DE2092E2B867C4800A3C0D5 /* Build configuration list for PBXNativeTarget "XNU Image Fuzzer" */ = {
+		1DE2092E2B867C4800A3C0D5 /* Build configuration list for PBXNativeTarget "XNU Image Generator for iOs" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DE2092F2B867C4800A3C0D5 /* Debug */,
