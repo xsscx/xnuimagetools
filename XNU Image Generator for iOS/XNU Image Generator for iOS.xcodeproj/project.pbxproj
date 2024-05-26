@@ -57,18 +57,10 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		1DF14ACA2C03C0810053E897 /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "Preview Content";
-			sourceTree = "<group>";
-		};
 		1DF14AD22C03C0810053E897 /* cx.srd.imagegenerator-xnu-demo */ = {
 			isa = PBXGroup;
 			children = (
 				1DFF90382C03CD3D00011940 /* cx-srd-imagegenerator-xnu-demo-Info.plist */,
-				1DF14ACA2C03C0810053E897 /* Preview Content */,
 				1DF14ACC2C03C0810053E897 /* ContentView.swift */,
 				1DF14ADA2C03C0AA0053E897 /* 2225.jpg */,
 				1DF14ADC2C03C0EB0053E897 /* Flowers.exr */,
