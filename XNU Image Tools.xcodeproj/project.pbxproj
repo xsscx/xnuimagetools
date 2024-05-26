@@ -14,26 +14,12 @@
 			remoteGlobalIDString = 1DC336D92C03981000689015;
 			remoteInfo = "XNU Image Generator for iOS";
 		};
-		1DC3371E2C03A09600689015 /* PBXContainerItemProxy */ = {
+		1DC635012C03FA2500AC9F74 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 1DC337182C03A09600689015 /* XNU Image Fuzzer.xcodeproj */;
+			containerPortal = 1DC634FD2C03FA2500AC9F74 /* XNU Image Fuzzer.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 1DE208FF2B867C4700A3C0D5;
 			remoteInfo = "XNU Image Fuzzer";
-		};
-		1DC337202C03A09600689015 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 1DC337182C03A09600689015 /* XNU Image Fuzzer.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 1DE2091A2B867C4800A3C0D5;
-			remoteInfo = "XNU Image FuzzerTests";
-		};
-		1DC337222C03A09600689015 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 1DC337182C03A09600689015 /* XNU Image Fuzzer.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 1DE209242B867C4800A3C0D5;
-			remoteInfo = "XNU Image FuzzerUITests";
 		};
 		1DE46EB22C028B3E004A1A39 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -65,7 +51,7 @@
 		1D97109E2C029A0100BDF03F /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		1D97109F2C029A0100BDF03F /* read-magic-numbers.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = "read-magic-numbers.py"; sourceTree = "<group>"; };
 		1D9710A02C029A0100BDF03F /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		1DC337182C03A09600689015 /* XNU Image Fuzzer.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "XNU Image Fuzzer.xcodeproj"; path = "../../../../Developer/XNU Image Fuzzer/XNU Image Fuzzer.xcodeproj"; sourceTree = "<group>"; };
+		1DC634FD2C03FA2500AC9F74 /* XNU Image Fuzzer.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = "XNU Image Fuzzer.xcodeproj"; sourceTree = "<group>"; };
 		1DD7AA142C02C16C00506021 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		1DD7AA152C02C17400506021 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		1DF39C352C02878700F720B3 /* XNU Image Generator.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = "XNU Image Generator.xcodeproj"; sourceTree = "<group>"; };
@@ -95,7 +81,7 @@
 		1D9710A22C029A0100BDF03F /* XNU Image Fuzzer */ = {
 			isa = PBXGroup;
 			children = (
-				1DC337182C03A09600689015 /* XNU Image Fuzzer.xcodeproj */,
+				1DC634FD2C03FA2500AC9F74 /* XNU Image Fuzzer.xcodeproj */,
 				1D97109B2C029A0100BDF03F /* .gitignore */,
 				1D97109C2C029A0100BDF03F /* exr-channel-subsampling-example.py */,
 				1D97109D2C029A0100BDF03F /* fuzzing-memory-pattern-generator.py */,
@@ -106,12 +92,10 @@
 			path = "XNU Image Fuzzer";
 			sourceTree = "<group>";
 		};
-		1DC337192C03A09600689015 /* Products */ = {
+		1DC634FE2C03FA2500AC9F74 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1DC3371F2C03A09600689015 /* XNU Image Fuzzer.app */,
-				1DC337212C03A09600689015 /* XNU Image FuzzerTests.xctest */,
-				1DC337232C03A09600689015 /* XNU Image FuzzerUITests.xctest */,
+				1DC635022C03FA2500AC9F74 /* XNU Image Fuzzer.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -177,8 +161,8 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 1DC337192C03A09600689015 /* Products */;
-					ProjectRef = 1DC337182C03A09600689015 /* XNU Image Fuzzer.xcodeproj */;
+					ProductGroup = 1DC634FE2C03FA2500AC9F74 /* Products */;
+					ProjectRef = 1DC634FD2C03FA2500AC9F74 /* XNU Image Fuzzer.xcodeproj */;
 				},
 				{
 					ProductGroup = 1D5CD3F82C03A68500D3BACE /* Products */;
@@ -203,25 +187,11 @@
 			remoteRef = 1D5CD3FE2C03A68600D3BACE /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		1DC3371F2C03A09600689015 /* XNU Image Fuzzer.app */ = {
+		1DC635022C03FA2500AC9F74 /* XNU Image Fuzzer.app */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.application;
 			path = "XNU Image Fuzzer.app";
-			remoteRef = 1DC3371E2C03A09600689015 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		1DC337212C03A09600689015 /* XNU Image FuzzerTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = "XNU Image FuzzerTests.xctest";
-			remoteRef = 1DC337202C03A09600689015 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		1DC337232C03A09600689015 /* XNU Image FuzzerUITests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = "XNU Image FuzzerUITests.xctest";
-			remoteRef = 1DC337222C03A09600689015 /* PBXContainerItemProxy */;
+			remoteRef = 1DC635012C03FA2500AC9F74 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		1DE46EB32C028B3E004A1A39 /* XNU Image Generator.app */ = {
