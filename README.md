@@ -58,15 +58,8 @@ XNU Image Tools provides custom image generation and fuzz testing within XNU env
 
 #### Installation
 
-1. **Cloning the Repository**
-
-   \`\`\`bash
-   git clone https://github.com/xsscx/xnuimagetools.git
-   cd XNUImageGenerator
-   \`\`\`
-
-2. **Opening the Project**
-   - Open \`XNUImageTools.xcworkspace\` in Xcode.
+1. **Open in Xcode**
+   - Open \`XNU Image Tools.xcworkspace\` in Xcode.
    - Update the Team ID
    - Select the appropriate scheme for the iOS or watchOS app.
    - Build and run the app on your desired device.
