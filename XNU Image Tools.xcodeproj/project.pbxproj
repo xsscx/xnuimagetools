@@ -7,12 +7,33 @@
 	objects = {
 
 /* Begin PBXContainerItemProxy section */
-		1D9710A62C029A0100BDF03F /* PBXContainerItemProxy */ = {
+		1D5CD3FE2C03A68600D3BACE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 1D9710A12C029A0100BDF03F /* XNU Image Fuzzer.xcodeproj */;
+			containerPortal = 1D5CD3F62C03A68500D3BACE /* XNU Image Generator for iOS.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1DC336D92C03981000689015;
+			remoteInfo = "XNU Image Generator for iOS";
+		};
+		1DC3371E2C03A09600689015 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1DC337182C03A09600689015 /* XNU Image Fuzzer.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 1DE208FF2B867C4700A3C0D5;
 			remoteInfo = "XNU Image Fuzzer";
+		};
+		1DC337202C03A09600689015 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1DC337182C03A09600689015 /* XNU Image Fuzzer.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1DE2091A2B867C4800A3C0D5;
+			remoteInfo = "XNU Image FuzzerTests";
+		};
+		1DC337222C03A09600689015 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1DC337182C03A09600689015 /* XNU Image Fuzzer.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1DE209242B867C4800A3C0D5;
+			remoteInfo = "XNU Image FuzzerUITests";
 		};
 		1DE46EB22C028B3E004A1A39 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -28,107 +49,69 @@
 			remoteGlobalIDString = 1DFFC0DB2C0230DE003B495B;
 			remoteInfo = "XNU Image Generator Watch App";
 		};
-		1DF39CA62C02878800F720B3 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 1DF39C9C2C02878700F720B3 /* cx.srd.imagegenerator-xnu-demo.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 1D8352A42BFD65F300E42AE1;
-			remoteInfo = "cx.srd.imagegenerator-xnu-demo";
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		1D04C27B2C028F0300A948A8 /* .gitnore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitnore; sourceTree = "<group>"; };
-		1D04C27C2C028F3200A948A8 /* .gitnore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitnore; sourceTree = "<group>"; };
-		1D04C27D2C028F4D00A948A8 /* .gitnore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitnore; sourceTree = "<group>"; };
+		1D5CD3F22C03A68500D3BACE /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		1D5CD3F32C03A68500D3BACE /* cx-srd-imagegenerator-xnu-demo-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "cx-srd-imagegenerator-xnu-demo-Info.plist"; sourceTree = "<group>"; };
+		1D5CD3F42C03A68500D3BACE /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		1D5CD3F52C03A68500D3BACE /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		1D5CD3F62C03A68500D3BACE /* XNU Image Generator for iOS.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = "XNU Image Generator for iOS.xcodeproj"; sourceTree = "<group>"; };
 		1D750C5D2C028FF40027E2D3 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
-		1D9710882C029A0100BDF03F /* bug_report.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = bug_report.md; sourceTree = "<group>"; };
-		1D97108B2C029A0100BDF03F /* 2225.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 2225.jpg; sourceTree = "<group>"; };
-		1D97108C2C029A0100BDF03F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		1D97108D2C029A0100BDF03F /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		1D97108E2C029A0100BDF03F /* CMakeLists.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
-		1D97108F2C029A0100BDF03F /* Flowers.exr */ = {isa = PBXFileReference; lastKnownFileType = file; path = Flowers.exr; sourceTree = "<group>"; };
-		1D9710902C029A0100BDF03F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1D9710912C029A0100BDF03F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		1D9710932C029A0100BDF03F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		1D9710952C029A0100BDF03F /* SceneDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneDelegate.h; sourceTree = "<group>"; };
-		1D9710962C029A0100BDF03F /* SceneDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SceneDelegate.m; sourceTree = "<group>"; };
-		1D9710972C029A0100BDF03F /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		1D9710982C029A0100BDF03F /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		1D9710992C029A0100BDF03F /* xnuimagefuzzer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = xnuimagefuzzer.m; sourceTree = "<group>"; };
 		1D97109B2C029A0100BDF03F /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		1D97109C2C029A0100BDF03F /* exr-channel-subsampling-example.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = "exr-channel-subsampling-example.py"; sourceTree = "<group>"; };
 		1D97109D2C029A0100BDF03F /* fuzzing-memory-pattern-generator.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = "fuzzing-memory-pattern-generator.py"; sourceTree = "<group>"; };
 		1D97109E2C029A0100BDF03F /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		1D97109F2C029A0100BDF03F /* read-magic-numbers.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = "read-magic-numbers.py"; sourceTree = "<group>"; };
 		1D9710A02C029A0100BDF03F /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		1D9710A12C029A0100BDF03F /* XNU Image Fuzzer.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = "XNU Image Fuzzer.xcodeproj"; sourceTree = "<group>"; };
-		1DD7AA0F2C02C16100506021 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		1DC337182C03A09600689015 /* XNU Image Fuzzer.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "XNU Image Fuzzer.xcodeproj"; path = "../../../../Developer/XNU Image Fuzzer/XNU Image Fuzzer.xcodeproj"; sourceTree = "<group>"; };
 		1DD7AA142C02C16C00506021 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		1DD7AA152C02C17400506021 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
-		1DD7AA162C02C18A00506021 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		1DF39C352C02878700F720B3 /* XNU Image Generator.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = "XNU Image Generator.xcodeproj"; sourceTree = "<group>"; };
-		1DF39C9A2C02878700F720B3 /* cx-srd-imagegenerator-xnu-demo-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "cx-srd-imagegenerator-xnu-demo-Info.plist"; sourceTree = "<group>"; };
-		1DF39C9C2C02878700F720B3 /* cx.srd.imagegenerator-xnu-demo.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = "cx.srd.imagegenerator-xnu-demo.xcodeproj"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
-		1D9710892C029A0100BDF03F /* ISSUE_TEMPLATE */ = {
+		1D5CD3F72C03A68500D3BACE /* XNU Image Generator for iOS */ = {
 			isa = PBXGroup;
 			children = (
-				1D9710882C029A0100BDF03F /* bug_report.md */,
+				1D5CD3F22C03A68500D3BACE /* .gitignore */,
+				1D5CD3F32C03A68500D3BACE /* cx-srd-imagegenerator-xnu-demo-Info.plist */,
+				1D5CD3F42C03A68500D3BACE /* LICENSE */,
+				1D5CD3F52C03A68500D3BACE /* README.md */,
+				1D5CD3F62C03A68500D3BACE /* XNU Image Generator for iOS.xcodeproj */,
 			);
-			path = ISSUE_TEMPLATE;
+			path = "XNU Image Generator for iOS";
 			sourceTree = "<group>";
 		};
-		1D97108A2C029A0100BDF03F /* .github */ = {
+		1D5CD3F82C03A68500D3BACE /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1D9710892C029A0100BDF03F /* ISSUE_TEMPLATE */,
+				1D5CD3FF2C03A68600D3BACE /* XNU Image Generator for iOS.app */,
 			);
-			path = .github;
-			sourceTree = "<group>";
-		};
-		1D97109A2C029A0100BDF03F /* XNU Image Fuzzer */ = {
-			isa = PBXGroup;
-			children = (
-				1D97108B2C029A0100BDF03F /* 2225.jpg */,
-				1D97108C2C029A0100BDF03F /* AppDelegate.h */,
-				1D97108D2C029A0100BDF03F /* AppDelegate.m */,
-				1D97108E2C029A0100BDF03F /* CMakeLists.txt */,
-				1D97108F2C029A0100BDF03F /* Flowers.exr */,
-				1D9710902C029A0100BDF03F /* Info.plist */,
-				1D9710922C029A0100BDF03F /* LaunchScreen.storyboard */,
-				1D9710942C029A0100BDF03F /* Main.storyboard */,
-				1D9710952C029A0100BDF03F /* SceneDelegate.h */,
-				1D9710962C029A0100BDF03F /* SceneDelegate.m */,
-				1D9710972C029A0100BDF03F /* ViewController.h */,
-				1D9710982C029A0100BDF03F /* ViewController.m */,
-				1D9710992C029A0100BDF03F /* xnuimagefuzzer.m */,
-			);
-			path = "XNU Image Fuzzer";
+			name = Products;
 			sourceTree = "<group>";
 		};
 		1D9710A22C029A0100BDF03F /* XNU Image Fuzzer */ = {
 			isa = PBXGroup;
 			children = (
-				1D97108A2C029A0100BDF03F /* .github */,
-				1D97109A2C029A0100BDF03F /* XNU Image Fuzzer */,
+				1DC337182C03A09600689015 /* XNU Image Fuzzer.xcodeproj */,
 				1D97109B2C029A0100BDF03F /* .gitignore */,
 				1D97109C2C029A0100BDF03F /* exr-channel-subsampling-example.py */,
 				1D97109D2C029A0100BDF03F /* fuzzing-memory-pattern-generator.py */,
 				1D97109E2C029A0100BDF03F /* LICENSE */,
 				1D97109F2C029A0100BDF03F /* read-magic-numbers.py */,
 				1D9710A02C029A0100BDF03F /* README.md */,
-				1D9710A12C029A0100BDF03F /* XNU Image Fuzzer.xcodeproj */,
 			);
 			path = "XNU Image Fuzzer";
 			sourceTree = "<group>";
 		};
-		1D9710A32C029A0100BDF03F /* Products */ = {
+		1DC337192C03A09600689015 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1D9710A72C029A0100BDF03F /* XNU Image Fuzzer.app */,
+				1DC3371F2C03A09600689015 /* XNU Image Fuzzer.app */,
+				1DC337212C03A09600689015 /* XNU Image FuzzerTests.xctest */,
+				1DC337232C03A09600689015 /* XNU Image FuzzerUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -145,10 +128,9 @@
 		1DF39BC02C0282E400F720B3 = {
 			isa = PBXGroup;
 			children = (
+				1D5CD3F72C03A68500D3BACE /* XNU Image Generator for iOS */,
 				1D9710A22C029A0100BDF03F /* XNU Image Fuzzer */,
 				1D750C5D2C028FF40027E2D3 /* LICENSE */,
-				1D04C27D2C028F4D00A948A8 /* .gitnore */,
-				1DF39C9D2C02878700F720B3 /* XNU Image Generator for iOS */,
 				1DF39C362C02878700F720B3 /* XNU Image Generator for Watch */,
 				1DF39BCA2C0282E400F720B3 /* Products */,
 			);
@@ -170,26 +152,6 @@
 				1D04C27B2C028F0300A948A8 /* .gitnore */,
 			);
 			path = "XNU Image Generator for Watch";
-			sourceTree = "<group>";
-		};
-		1DF39C9D2C02878700F720B3 /* XNU Image Generator for iOS */ = {
-			isa = PBXGroup;
-			children = (
-				1DD7AA162C02C18A00506021 /* LICENSE */,
-				1DD7AA0F2C02C16100506021 /* README.md */,
-				1DF39C9A2C02878700F720B3 /* cx-srd-imagegenerator-xnu-demo-Info.plist */,
-				1DF39C9C2C02878700F720B3 /* cx.srd.imagegenerator-xnu-demo.xcodeproj */,
-				1D04C27C2C028F3200A948A8 /* .gitnore */,
-			);
-			path = "XNU Image Generator for iOS";
-			sourceTree = "<group>";
-		};
-		1DF39CA02C02878700F720B3 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				1DF39CA72C02878800F720B3 /* XNU Image Generator for iOS.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -215,12 +177,12 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 1DF39CA02C02878700F720B3 /* Products */;
-					ProjectRef = 1DF39C9C2C02878700F720B3 /* cx.srd.imagegenerator-xnu-demo.xcodeproj */;
+					ProductGroup = 1DC337192C03A09600689015 /* Products */;
+					ProjectRef = 1DC337182C03A09600689015 /* XNU Image Fuzzer.xcodeproj */;
 				},
 				{
-					ProductGroup = 1D9710A32C029A0100BDF03F /* Products */;
-					ProjectRef = 1D9710A12C029A0100BDF03F /* XNU Image Fuzzer.xcodeproj */;
+					ProductGroup = 1D5CD3F82C03A68500D3BACE /* Products */;
+					ProjectRef = 1D5CD3F62C03A68500D3BACE /* XNU Image Generator for iOS.xcodeproj */;
 				},
 				{
 					ProductGroup = 1DE46EAC2C028B3E004A1A39 /* Products */;
@@ -234,11 +196,32 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		1D9710A72C029A0100BDF03F /* XNU Image Fuzzer.app */ = {
+		1D5CD3FF2C03A68600D3BACE /* XNU Image Generator for iOS.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = "XNU Image Generator for iOS.app";
+			remoteRef = 1D5CD3FE2C03A68600D3BACE /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		1DC3371F2C03A09600689015 /* XNU Image Fuzzer.app */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.application;
 			path = "XNU Image Fuzzer.app";
-			remoteRef = 1D9710A62C029A0100BDF03F /* PBXContainerItemProxy */;
+			remoteRef = 1DC3371E2C03A09600689015 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		1DC337212C03A09600689015 /* XNU Image FuzzerTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "XNU Image FuzzerTests.xctest";
+			remoteRef = 1DC337202C03A09600689015 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		1DC337232C03A09600689015 /* XNU Image FuzzerUITests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "XNU Image FuzzerUITests.xctest";
+			remoteRef = 1DC337222C03A09600689015 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		1DE46EB32C028B3E004A1A39 /* XNU Image Generator.app */ = {
@@ -255,33 +238,7 @@
 			remoteRef = 1DE46EB42C028B3E004A1A39 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		1DF39CA72C02878800F720B3 /* XNU Image Generator for iOS.app */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.application;
-			path = "XNU Image Generator for iOS.app";
-			remoteRef = 1DF39CA62C02878800F720B3 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 /* End PBXReferenceProxy section */
-
-/* Begin PBXVariantGroup section */
-		1D9710922C029A0100BDF03F /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				1D9710912C029A0100BDF03F /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-		1D9710942C029A0100BDF03F /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				1D9710932C029A0100BDF03F /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		1DF39BDB2C0282E500F720B3 /* Debug */ = {
