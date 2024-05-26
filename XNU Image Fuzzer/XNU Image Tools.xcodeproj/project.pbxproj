@@ -1,0 +1,348 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXContainerItemProxy section */
+		1D5CD3FE2C03A68600D3BACE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1D5CD3F62C03A68500D3BACE /* XNU Image Generator for iOS.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1DC336D92C03981000689015;
+			remoteInfo = "XNU Image Generator for iOS";
+		};
+		1DD95C482C03F3DB0002C51A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1DD95C442C03F3DB0002C51A /* XNU Image Fuzzer.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1DE208FF2B867C4700A3C0D5;
+			remoteInfo = "XNU Image Fuzzer";
+		};
+		1DE46EB22C028B3E004A1A39 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1DF39C352C02878700F720B3 /* XNU Image Generator.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1DFFC0D52C0230DE003B495B;
+			remoteInfo = "XNU Image Generator";
+		};
+		1DE46EB42C028B3E004A1A39 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1DF39C352C02878700F720B3 /* XNU Image Generator.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1DFFC0DB2C0230DE003B495B;
+			remoteInfo = "XNU Image Generator Watch App";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		1D04C27B2C028F0300A948A8 /* .gitnore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitnore; sourceTree = "<group>"; };
+		1D5CD3F22C03A68500D3BACE /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		1D5CD3F32C03A68500D3BACE /* cx-srd-imagegenerator-xnu-demo-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "cx-srd-imagegenerator-xnu-demo-Info.plist"; sourceTree = "<group>"; };
+		1D5CD3F42C03A68500D3BACE /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		1D5CD3F52C03A68500D3BACE /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		1D5CD3F62C03A68500D3BACE /* XNU Image Generator for iOS.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = "XNU Image Generator for iOS.xcodeproj"; sourceTree = "<group>"; };
+		1D750C5D2C028FF40027E2D3 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		1D97109B2C029A0100BDF03F /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		1D97109C2C029A0100BDF03F /* exr-channel-subsampling-example.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = "exr-channel-subsampling-example.py"; sourceTree = "<group>"; };
+		1D97109D2C029A0100BDF03F /* fuzzing-memory-pattern-generator.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = "fuzzing-memory-pattern-generator.py"; sourceTree = "<group>"; };
+		1D97109E2C029A0100BDF03F /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		1D97109F2C029A0100BDF03F /* read-magic-numbers.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = "read-magic-numbers.py"; sourceTree = "<group>"; };
+		1D9710A02C029A0100BDF03F /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		1DD7AA142C02C16C00506021 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		1DD7AA152C02C17400506021 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		1DD95C442C03F3DB0002C51A /* XNU Image Fuzzer.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = "XNU Image Fuzzer.xcodeproj"; sourceTree = "<group>"; };
+		1DF39C352C02878700F720B3 /* XNU Image Generator.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = "XNU Image Generator.xcodeproj"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		1D5CD3F72C03A68500D3BACE /* XNU Image Generator for iOS */ = {
+			isa = PBXGroup;
+			children = (
+				1D5CD3F22C03A68500D3BACE /* .gitignore */,
+				1D5CD3F32C03A68500D3BACE /* cx-srd-imagegenerator-xnu-demo-Info.plist */,
+				1D5CD3F42C03A68500D3BACE /* LICENSE */,
+				1D5CD3F52C03A68500D3BACE /* README.md */,
+				1D5CD3F62C03A68500D3BACE /* XNU Image Generator for iOS.xcodeproj */,
+			);
+			path = "XNU Image Generator for iOS";
+			sourceTree = "<group>";
+		};
+		1D5CD3F82C03A68500D3BACE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1D5CD3FF2C03A68600D3BACE /* XNU Image Generator for iOS.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		1D9710A22C029A0100BDF03F /* XNU Image Fuzzer */ = {
+			isa = PBXGroup;
+			children = (
+				1DD95C442C03F3DB0002C51A /* XNU Image Fuzzer.xcodeproj */,
+				1D97109B2C029A0100BDF03F /* .gitignore */,
+				1D97109C2C029A0100BDF03F /* exr-channel-subsampling-example.py */,
+				1D97109D2C029A0100BDF03F /* fuzzing-memory-pattern-generator.py */,
+				1D97109E2C029A0100BDF03F /* LICENSE */,
+				1D97109F2C029A0100BDF03F /* read-magic-numbers.py */,
+				1D9710A02C029A0100BDF03F /* README.md */,
+			);
+			path = "XNU Image Fuzzer";
+			sourceTree = "<group>";
+		};
+		1DD95C452C03F3DB0002C51A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1DD95C492C03F3DB0002C51A /* XNU Image Fuzzer.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		1DE46EAC2C028B3E004A1A39 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1DE46EB32C028B3E004A1A39 /* XNU Image Generator.app */,
+				1DE46EB52C028B3E004A1A39 /* XNU Image Generator Watch App.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		1DF39BC02C0282E400F720B3 = {
+			isa = PBXGroup;
+			children = (
+				1D5CD3F72C03A68500D3BACE /* XNU Image Generator for iOS */,
+				1D9710A22C029A0100BDF03F /* XNU Image Fuzzer */,
+				1D750C5D2C028FF40027E2D3 /* LICENSE */,
+				1DF39C362C02878700F720B3 /* XNU Image Generator for Watch */,
+				1DF39BCA2C0282E400F720B3 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		1DF39BCA2C0282E400F720B3 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		1DF39C362C02878700F720B3 /* XNU Image Generator for Watch */ = {
+			isa = PBXGroup;
+			children = (
+				1DD7AA152C02C17400506021 /* LICENSE */,
+				1DD7AA142C02C16C00506021 /* README.md */,
+				1DF39C352C02878700F720B3 /* XNU Image Generator.xcodeproj */,
+				1D04C27B2C028F0300A948A8 /* .gitnore */,
+			);
+			path = "XNU Image Generator for Watch";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXProject section */
+		1DF39BC12C0282E400F720B3 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1540;
+				LastUpgradeCheck = 1540;
+			};
+			buildConfigurationList = 1DF39BC42C0282E400F720B3 /* Build configuration list for PBXProject "XNU Image Tools" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 1DF39BC02C0282E400F720B3;
+			productRefGroup = 1DF39BCA2C0282E400F720B3 /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 1DD95C452C03F3DB0002C51A /* Products */;
+					ProjectRef = 1DD95C442C03F3DB0002C51A /* XNU Image Fuzzer.xcodeproj */;
+				},
+				{
+					ProductGroup = 1D5CD3F82C03A68500D3BACE /* Products */;
+					ProjectRef = 1D5CD3F62C03A68500D3BACE /* XNU Image Generator for iOS.xcodeproj */;
+				},
+				{
+					ProductGroup = 1DE46EAC2C028B3E004A1A39 /* Products */;
+					ProjectRef = 1DF39C352C02878700F720B3 /* XNU Image Generator.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		1D5CD3FF2C03A68600D3BACE /* XNU Image Generator for iOS.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = "XNU Image Generator for iOS.app";
+			remoteRef = 1D5CD3FE2C03A68600D3BACE /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		1DD95C492C03F3DB0002C51A /* XNU Image Fuzzer.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = "XNU Image Fuzzer.app";
+			remoteRef = 1DD95C482C03F3DB0002C51A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		1DE46EB32C028B3E004A1A39 /* XNU Image Generator.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = "XNU Image Generator.app";
+			remoteRef = 1DE46EB22C028B3E004A1A39 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		1DE46EB52C028B3E004A1A39 /* XNU Image Generator Watch App.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = "XNU Image Generator Watch App.app";
+			remoteRef = 1DE46EB42C028B3E004A1A39 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin XCBuildConfiguration section */
+		1DF39BDB2C0282E500F720B3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		1DF39BDC2C0282E500F720B3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DF39BC42C0282E400F720B3 /* Build configuration list for PBXProject "XNU Image Tools" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DF39BDB2C0282E500F720B3 /* Debug */,
+				1DF39BDC2C0282E500F720B3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 1DF39BC12C0282E400F720B3 /* Project object */;
+}
