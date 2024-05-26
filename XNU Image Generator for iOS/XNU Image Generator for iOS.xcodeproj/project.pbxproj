@@ -7,25 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1D9CE9502C03D4AA00D7514D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D9CE94F2C03D4AA00D7514D /* AppDelegate.swift */; };
-		1D9CE9522C03D4AA00D7514D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D9CE9512C03D4AA00D7514D /* SceneDelegate.swift */; };
-		1D9CE9542C03D4AA00D7514D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D9CE9532C03D4AA00D7514D /* ViewController.swift */; };
-		1D9CE9572C03D4AA00D7514D /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 1D9CE9562C03D4AA00D7514D /* Base */; };
-		1D9CE9592C03D4AB00D7514D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1D9CE9582C03D4AB00D7514D /* Assets.xcassets */; };
-		1D9CE95C2C03D4AB00D7514D /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 1D9CE95B2C03D4AB00D7514D /* Base */; };
+		1DF14AD52C03C0810053E897 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DF14ACC2C03C0810053E897 /* ContentView.swift */; };
+		1DF14AD62C03C0810053E897 /* cx_srd_imagegenerator_xnu_demoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DF14ACE2C03C0810053E897 /* cx_srd_imagegenerator_xnu_demoApp.swift */; };
+		1DF14AD72C03C0810053E897 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1DF14ACF2C03C0810053E897 /* LaunchScreen.storyboard */; };
+		1DF14AD82C03C0810053E897 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DF14AD02C03C0810053E897 /* SceneDelegate.swift */; };
+		1DF14AD92C03C0810053E897 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DF14AD12C03C0810053E897 /* ViewController.swift */; };
+		1DF14AE42C03C2420053E897 /* 2225.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 1DF14ADA2C03C0AA0053E897 /* 2225.jpg */; };
+		1DF14AE52C03C2470053E897 /* Flowers.exr in Resources */ = {isa = PBXBuildFile; fileRef = 1DF14ADC2C03C0EB0053E897 /* Flowers.exr */; };
+		1DFF90392C03CD3D00011940 /* cx-srd-imagegenerator-xnu-demo-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1DFF90382C03CD3D00011940 /* cx-srd-imagegenerator-xnu-demo-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1D9CE94D2C03D4AA00D7514D /* XNU Image Generator for iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "XNU Image Generator for iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		1D9CE94F2C03D4AA00D7514D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		1D9CE9512C03D4AA00D7514D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		1D9CE9532C03D4AA00D7514D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		1D9CE9562C03D4AA00D7514D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		1D9CE9582C03D4AB00D7514D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		1D9CE95B2C03D4AB00D7514D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		1D9CE95D2C03D4AB00D7514D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1DF14AC92C03C0810053E897 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		1DF14ACB2C03C0810053E897 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		1DE208FF2B867C4700A3C0D5 /* XNU Image Fuzzer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "XNU Image Fuzzer.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF14ACC2C03C0810053E897 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		1DF14ACD2C03C0810053E897 /* cx_srd_imagegenerator_xnu_demo.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = cx_srd_imagegenerator_xnu_demo.entitlements; sourceTree = "<group>"; };
 		1DF14ACE2C03C0810053E897 /* cx_srd_imagegenerator_xnu_demoApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = cx_srd_imagegenerator_xnu_demoApp.swift; sourceTree = "<group>"; };
@@ -38,7 +31,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		1D9CE94A2C03D4AA00D7514D /* Frameworks */ = {
+		1DE208FC2B867C4700A3C0D5 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -48,25 +41,10 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		1D9CE94E2C03D4AA00D7514D /* XNU Image Generator for iOS */ = {
-			isa = PBXGroup;
-			children = (
-				1D9CE94F2C03D4AA00D7514D /* AppDelegate.swift */,
-				1D9CE9512C03D4AA00D7514D /* SceneDelegate.swift */,
-				1D9CE9532C03D4AA00D7514D /* ViewController.swift */,
-				1D9CE9552C03D4AA00D7514D /* Main.storyboard */,
-				1D9CE9582C03D4AB00D7514D /* Assets.xcassets */,
-				1D9CE95A2C03D4AB00D7514D /* LaunchScreen.storyboard */,
-				1D9CE95D2C03D4AB00D7514D /* Info.plist */,
-			);
-			path = "XNU Image Generator for iOS";
-			sourceTree = "<group>";
-		};
 		1DE208F62B867C4700A3C0D5 = {
 			isa = PBXGroup;
 			children = (
 				1DF14AD22C03C0810053E897 /* cx.srd.imagegenerator-xnu-demo */,
-				1D9CE94E2C03D4AA00D7514D /* XNU Image Generator for iOS */,
 				1DE209002B867C4700A3C0D5 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -74,7 +52,7 @@
 		1DE209002B867C4700A3C0D5 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1D9CE94D2C03D4AA00D7514D /* XNU Image Generator for iOS.app */,
+				1DE208FF2B867C4700A3C0D5 /* XNU Image Fuzzer.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -82,7 +60,6 @@
 		1DF14ACA2C03C0810053E897 /* Preview Content */ = {
 			isa = PBXGroup;
 			children = (
-				1DF14AC92C03C0810053E897 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -92,7 +69,6 @@
 			children = (
 				1DFF90382C03CD3D00011940 /* cx-srd-imagegenerator-xnu-demo-Info.plist */,
 				1DF14ACA2C03C0810053E897 /* Preview Content */,
-				1DF14ACB2C03C0810053E897 /* Assets.xcassets */,
 				1DF14ACC2C03C0810053E897 /* ContentView.swift */,
 				1DF14ADA2C03C0AA0053E897 /* 2225.jpg */,
 				1DF14ADC2C03C0EB0053E897 /* Flowers.exr */,
@@ -108,21 +84,21 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1D9CE94C2C03D4AA00D7514D /* XNU Image Generator for iOS */ = {
+		1DE208FE2B867C4700A3C0D5 /* XNU Image Fuzzer */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1D9CE95E2C03D4AB00D7514D /* Build configuration list for PBXNativeTarget "XNU Image Generator for iOS" */;
+			buildConfigurationList = 1DE2092E2B867C4800A3C0D5 /* Build configuration list for PBXNativeTarget "XNU Image Fuzzer" */;
 			buildPhases = (
-				1D9CE9492C03D4AA00D7514D /* Sources */,
-				1D9CE94A2C03D4AA00D7514D /* Frameworks */,
-				1D9CE94B2C03D4AA00D7514D /* Resources */,
+				1DE208FB2B867C4700A3C0D5 /* Sources */,
+				1DE208FC2B867C4700A3C0D5 /* Frameworks */,
+				1DE208FD2B867C4700A3C0D5 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = "XNU Image Generator for iOS";
-			productName = "XNU Image Generator for iOS";
-			productReference = 1D9CE94D2C03D4AA00D7514D /* XNU Image Generator for iOS.app */;
+			name = "XNU Image Fuzzer";
+			productName = "XNU Image Fuzzer";
+			productReference = 1DE208FF2B867C4700A3C0D5 /* XNU Image Fuzzer.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -132,11 +108,10 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1540;
 				LastUpgradeCheck = 1520;
 				TargetAttributes = {
-					1D9CE94C2C03D4AA00D7514D = {
-						CreatedOnToolsVersion = 15.4;
+					1DE208FE2B867C4700A3C0D5 = {
+						CreatedOnToolsVersion = 15.2;
 					};
 				};
 			};
@@ -153,118 +128,40 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1D9CE94C2C03D4AA00D7514D /* XNU Image Generator for iOS */,
+				1DE208FE2B867C4700A3C0D5 /* XNU Image Fuzzer */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		1D9CE94B2C03D4AA00D7514D /* Resources */ = {
+		1DE208FD2B867C4700A3C0D5 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1D9CE9592C03D4AB00D7514D /* Assets.xcassets in Resources */,
-				1D9CE95C2C03D4AB00D7514D /* Base in Resources */,
-				1D9CE9572C03D4AA00D7514D /* Base in Resources */,
+				1DF14AE52C03C2470053E897 /* Flowers.exr in Resources */,
+				1DF14AE42C03C2420053E897 /* 2225.jpg in Resources */,
+				1DFF90392C03CD3D00011940 /* cx-srd-imagegenerator-xnu-demo-Info.plist in Resources */,
+				1DF14AD72C03C0810053E897 /* LaunchScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		1D9CE9492C03D4AA00D7514D /* Sources */ = {
+		1DE208FB2B867C4700A3C0D5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1D9CE9542C03D4AA00D7514D /* ViewController.swift in Sources */,
-				1D9CE9502C03D4AA00D7514D /* AppDelegate.swift in Sources */,
-				1D9CE9522C03D4AA00D7514D /* SceneDelegate.swift in Sources */,
+				1DF14AD82C03C0810053E897 /* SceneDelegate.swift in Sources */,
+				1DF14AD62C03C0810053E897 /* cx_srd_imagegenerator_xnu_demoApp.swift in Sources */,
+				1DF14AD52C03C0810053E897 /* ContentView.swift in Sources */,
+				1DF14AD92C03C0810053E897 /* ViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
-/* Begin PBXVariantGroup section */
-		1D9CE9552C03D4AA00D7514D /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				1D9CE9562C03D4AA00D7514D /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		1D9CE95A2C03D4AB00D7514D /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				1D9CE95B2C03D4AB00D7514D /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
-
 /* Begin XCBuildConfiguration section */
-		1D9CE95F2C03D4AB00D7514D /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 7KJ5XYCA8X;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "XNU Image Generator for iOS/Info.plist";
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "cx.srd.xnuimagegenerator-ios.XNU-Image-Generator-for-iOS";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		1D9CE9602C03D4AB00D7514D /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 7KJ5XYCA8X;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "XNU Image Generator for iOS/Info.plist";
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "cx.srd.xnuimagegenerator-ios.XNU-Image-Generator-for-iOS";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
 		1DE2092C2B867C4800A3C0D5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -400,23 +297,77 @@
 			};
 			name = Release;
 		};
+		1DE2092F2B867C4800A3C0D5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 10;
+				DEVELOPMENT_TEAM = 7KJ5XYCA8X;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = cx.srd.xnuimagefuzzer;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		1DE209302B867C4800A3C0D5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 10;
+				DEVELOPMENT_TEAM = 7KJ5XYCA8X;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = cx.srd.xnuimagefuzzer;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1D9CE95E2C03D4AB00D7514D /* Build configuration list for PBXNativeTarget "XNU Image Generator for iOS" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				1D9CE95F2C03D4AB00D7514D /* Debug */,
-				1D9CE9602C03D4AB00D7514D /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		1DE208FA2B867C4700A3C0D5 /* Build configuration list for PBXProject "XNU Image Generator for iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DE2092C2B867C4800A3C0D5 /* Debug */,
 				1DE2092D2B867C4800A3C0D5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DE2092E2B867C4800A3C0D5 /* Build configuration list for PBXNativeTarget "XNU Image Fuzzer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DE2092F2B867C4800A3C0D5 /* Debug */,
+				1DE209302B867C4800A3C0D5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
