@@ -7,6 +7,27 @@
 	objects = {
 
 /* Begin PBXContainerItemProxy section */
+		1D4FF9CC2C04E79A006BD698 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1D4FF9BE2C04E79A006BD698 /* VideoToolboxInterposing.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = EAAE62CDFF4B4C1EA6E4E585;
+			remoteInfo = "videotoolbox-interposer";
+		};
+		1D4FF9CE2C04E79A006BD698 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1D4FF9BE2C04E79A006BD698 /* VideoToolboxInterposing.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CFC8B9514C1C49C1B173BBEC;
+			remoteInfo = "videotoolbox-runner";
+		};
+		1D4FF9D02C04E79A006BD698 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1D4FF9BE2C04E79A006BD698 /* VideoToolboxInterposing.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 94B0F41E9B894C53B7841E66;
+			remoteInfo = "videotoolbox-runner-ios";
+		};
 		1D5CD3FE2C03A68600D3BACE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 1D5CD3F62C03A68500D3BACE /* XNU Image Generator for iOS.xcodeproj */;
@@ -39,6 +60,26 @@
 
 /* Begin PBXFileReference section */
 		1D04C27B2C028F0300A948A8 /* .gitnore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitnore; sourceTree = "<group>"; };
+		1D4FF9AF2C04E79A006BD698 /* big.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = big.mov; sourceTree = "<group>"; };
+		1D4FF9B02C04E79A006BD698 /* CMakeLists.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
+		1D4FF9B12C04E79A006BD698 /* entitlements.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = entitlements.xml; sourceTree = "<group>"; };
+		1D4FF9B22C04E79A006BD698 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1D4FF9B32C04E79A006BD698 /* interpose_dist.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = interpose_dist.c; sourceTree = "<group>"; };
+		1D4FF9B42C04E79A006BD698 /* interpose.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = interpose.c; sourceTree = "<group>"; };
+		1D4FF9B52C04E79A006BD698 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
+		1D4FF9B62C04E79A006BD698 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		1D4FF9B72C04E79A006BD698 /* Readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Readme.md; sourceTree = "<group>"; };
+		1D4FF9B82C04E79A006BD698 /* runner_dist.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = runner_dist.c; sourceTree = "<group>"; };
+		1D4FF9B92C04E79A006BD698 /* runner.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = runner.c; sourceTree = "<group>"; };
+		1D4FF9BA2C04E79A006BD698 /* videotoolbox_build.mk */ = {isa = PBXFileReference; lastKnownFileType = text; path = videotoolbox_build.mk; sourceTree = "<group>"; };
+		1D4FF9BB2C04E79A006BD698 /* videotoolbox_logging.mk */ = {isa = PBXFileReference; lastKnownFileType = text; path = videotoolbox_logging.mk; sourceTree = "<group>"; };
+		1D4FF9BC2C04E79A006BD698 /* videotoolbox-interposer.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = "videotoolbox-interposer.c"; sourceTree = "<group>"; };
+		1D4FF9BD2C04E79A006BD698 /* videotoolbox-runner.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "videotoolbox-runner.m"; sourceTree = "<group>"; };
+		1D4FF9BE2C04E79A006BD698 /* VideoToolboxInterposing.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = VideoToolboxInterposing.xcodeproj; sourceTree = "<group>"; };
+		1D4FF9C02C04E79A006BD698 /* CMakeLists.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
+		1D4FF9C12C04E79A006BD698 /* Readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Readme.md; sourceTree = "<group>"; };
+		1D4FF9C22C04E79A006BD698 /* video-fuzzer.zsh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "video-fuzzer.zsh"; sourceTree = "<group>"; };
+		1D4FF9C32C04E79A006BD698 /* vtdecode1.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = vtdecode1.m; sourceTree = "<group>"; };
 		1D5B00A42C04D65A00AA2069 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		1D5CD3F22C03A68500D3BACE /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		1D5CD3F32C03A68500D3BACE /* cx-srd-imagegenerator-xnu-demo-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "cx-srd-imagegenerator-xnu-demo-Info.plist"; sourceTree = "<group>"; };
@@ -59,6 +100,51 @@
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
+		1D4FF9BF2C04E79A006BD698 /* Fuzzing */ = {
+			isa = PBXGroup;
+			children = (
+				1D4FF9AF2C04E79A006BD698 /* big.mov */,
+				1D4FF9B02C04E79A006BD698 /* CMakeLists.txt */,
+				1D4FF9B12C04E79A006BD698 /* entitlements.xml */,
+				1D4FF9B22C04E79A006BD698 /* Info.plist */,
+				1D4FF9B32C04E79A006BD698 /* interpose_dist.c */,
+				1D4FF9B42C04E79A006BD698 /* interpose.c */,
+				1D4FF9B52C04E79A006BD698 /* main.c */,
+				1D4FF9B62C04E79A006BD698 /* Makefile */,
+				1D4FF9B72C04E79A006BD698 /* Readme.md */,
+				1D4FF9B82C04E79A006BD698 /* runner_dist.c */,
+				1D4FF9B92C04E79A006BD698 /* runner.c */,
+				1D4FF9BA2C04E79A006BD698 /* videotoolbox_build.mk */,
+				1D4FF9BB2C04E79A006BD698 /* videotoolbox_logging.mk */,
+				1D4FF9BC2C04E79A006BD698 /* videotoolbox-interposer.c */,
+				1D4FF9BD2C04E79A006BD698 /* videotoolbox-runner.m */,
+				1D4FF9BE2C04E79A006BD698 /* VideoToolboxInterposing.xcodeproj */,
+			);
+			path = Fuzzing;
+			sourceTree = "<group>";
+		};
+		1D4FF9C42C04E79A006BD698 /* VideoToolbox */ = {
+			isa = PBXGroup;
+			children = (
+				1D4FF9BF2C04E79A006BD698 /* Fuzzing */,
+				1D4FF9C02C04E79A006BD698 /* CMakeLists.txt */,
+				1D4FF9C12C04E79A006BD698 /* Readme.md */,
+				1D4FF9C22C04E79A006BD698 /* video-fuzzer.zsh */,
+				1D4FF9C32C04E79A006BD698 /* vtdecode1.m */,
+			);
+			path = VideoToolbox;
+			sourceTree = "<group>";
+		};
+		1D4FF9C52C04E79A006BD698 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1D4FF9CD2C04E79A006BD698 /* libvideotoolbox-interposer.dylib */,
+				1D4FF9CF2C04E79A006BD698 /* videotoolbox-runner */,
+				1D4FF9D12C04E79A006BD698 /* videotoolbox-runner-ios */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		1D5CD3F72C03A68500D3BACE /* XNU Image Generator for iOS */ = {
 			isa = PBXGroup;
 			children = (
@@ -113,6 +199,7 @@
 		1DF39BC02C0282E400F720B3 = {
 			isa = PBXGroup;
 			children = (
+				1D4FF9C42C04E79A006BD698 /* VideoToolbox */,
 				1D5B00A42C04D65A00AA2069 /* README.md */,
 				1D5CD3F72C03A68500D3BACE /* XNU Image Generator for iOS */,
 				1D9710A22C029A0100BDF03F /* XNU Image Fuzzer */,
@@ -163,6 +250,10 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
+					ProductGroup = 1D4FF9C52C04E79A006BD698 /* Products */;
+					ProjectRef = 1D4FF9BE2C04E79A006BD698 /* VideoToolboxInterposing.xcodeproj */;
+				},
+				{
 					ProductGroup = 1DC634FE2C03FA2500AC9F74 /* Products */;
 					ProjectRef = 1DC634FD2C03FA2500AC9F74 /* XNU Image Fuzzer.xcodeproj */;
 				},
@@ -182,6 +273,27 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		1D4FF9CD2C04E79A006BD698 /* libvideotoolbox-interposer.dylib */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.dylib";
+			path = "libvideotoolbox-interposer.dylib";
+			remoteRef = 1D4FF9CC2C04E79A006BD698 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		1D4FF9CF2C04E79A006BD698 /* videotoolbox-runner */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = "videotoolbox-runner";
+			remoteRef = 1D4FF9CE2C04E79A006BD698 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		1D4FF9D12C04E79A006BD698 /* videotoolbox-runner-ios */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = "videotoolbox-runner-ios";
+			remoteRef = 1D4FF9D02C04E79A006BD698 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		1D5CD3FF2C03A68600D3BACE /* XNU Image Generator for iOS.app */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.application;
