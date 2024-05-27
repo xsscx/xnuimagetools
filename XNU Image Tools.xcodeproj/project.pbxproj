@@ -1,488 +1,867 @@
 // !$*UTF8*$!
 {
-	archiveVersion = 1;
-	classes = {
-	};
-	objectVersion = 56;
-	objects = {
+        archiveVersion = 1;
+        classes = {
+        };
+        objectVersion = 56;
+        objects = {
 
 /* Begin PBXContainerItemProxy section */
-		1D4FF9CC2C04E79A006BD698 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 1D4FF9BE2C04E79A006BD698 /* VideoToolboxInterposing.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = EAAE62CDFF4B4C1EA6E4E585;
-			remoteInfo = "videotoolbox-interposer";
-		};
-		1D4FF9CE2C04E79A006BD698 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 1D4FF9BE2C04E79A006BD698 /* VideoToolboxInterposing.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = CFC8B9514C1C49C1B173BBEC;
-			remoteInfo = "videotoolbox-runner";
-		};
-		1D4FF9D02C04E79A006BD698 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 1D4FF9BE2C04E79A006BD698 /* VideoToolboxInterposing.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 94B0F41E9B894C53B7841E66;
-			remoteInfo = "videotoolbox-runner-ios";
-		};
-		1D5CD3FE2C03A68600D3BACE /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 1D5CD3F62C03A68500D3BACE /* XNU Image Generator for iOS.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 1DC336D92C03981000689015;
-			remoteInfo = "XNU Image Generator for iOS";
-		};
-		1DC635012C03FA2500AC9F74 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 1DC634FD2C03FA2500AC9F74 /* XNU Image Fuzzer.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 1DE208FF2B867C4700A3C0D5;
-			remoteInfo = "XNU Image Fuzzer";
-		};
-		1DE46EB22C028B3E004A1A39 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 1DF39C352C02878700F720B3 /* XNU Image Generator.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 1DFFC0D52C0230DE003B495B;
-			remoteInfo = "XNU Image Generator";
-		};
-		1DE46EB42C028B3E004A1A39 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 1DF39C352C02878700F720B3 /* XNU Image Generator.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 1DFFC0DB2C0230DE003B495B;
-			remoteInfo = "XNU Image Generator Watch App";
-		};
+                1D45341A2C7A196700617E6E /* PBXContainerItemProxy */ = {
+                        isa = PBXContainerItemProxy;
+                        containerPortal = 1DA41C322C0542BB002B63F8 /* fuzzer.xcodeproj */;
+                        proxyType = 2;
+                        remoteGlobalIDString = EA602C17760D447891A1D257;
+                        remoteInfo = "imageio-test-002_imageio";
+                };
+                1D45341C2C7A196700617E6E /* PBXContainerItemProxy */ = {
+                        isa = PBXContainerItemProxy;
+                        containerPortal = 1DA41C322C0542BB002B63F8 /* fuzzer.xcodeproj */;
+                        proxyType = 2;
+                        remoteGlobalIDString = 213F90B037224118B237C8D7;
+                        remoteInfo = "imageio-test-003_imageio";
+                };
+                1D45341E2C7A196700617E6E /* PBXContainerItemProxy */ = {
+                        isa = PBXContainerItemProxy;
+                        containerPortal = 1DA41C322C0542BB002B63F8 /* fuzzer.xcodeproj */;
+                        proxyType = 2;
+                        remoteGlobalIDString = AE0261C8D8264306BE4CF45D;
+                        remoteInfo = "imageio-test-004_imageio";
+                };
+                1D4534202C7A196700617E6E /* PBXContainerItemProxy */ = {
+                        isa = PBXContainerItemProxy;
+                        containerPortal = 1DA41C322C0542BB002B63F8 /* fuzzer.xcodeproj */;
+                        proxyType = 2;
+                        remoteGlobalIDString = 151205685E38441ABE2BBEA6;
+                        remoteInfo = "imageio-test-005_imageio";
+                };
+                1D4534222C7A196700617E6E /* PBXContainerItemProxy */ = {
+                        isa = PBXContainerItemProxy;
+                        containerPortal = 1DA41C322C0542BB002B63F8 /* fuzzer.xcodeproj */;
+                        proxyType = 2;
+                        remoteGlobalIDString = 859FB108C1EE4A3D95B55870;
+                        remoteInfo = "imageio-test-006_imageio";
+                };
+                1D5CD3FE2C03A68600D3BACE /* PBXContainerItemProxy */ = {
+                        isa = PBXContainerItemProxy;
+                        containerPortal = 1D5CD3F62C03A68500D3BACE /* XNU Image Generator for iOS.xcodeproj */;
+                        proxyType = 2;
+                        remoteGlobalIDString = 1DC336D92C03981000689015;
+                        remoteInfo = "XNU Image Generator for iOS";
+                };
+                1DA41C432C0542BB002B63F8 /* PBXContainerItemProxy */ = {
+                        isa = PBXContainerItemProxy;
+                        containerPortal = 1DA41C322C0542BB002B63F8 /* fuzzer.xcodeproj */;
+                        proxyType = 2;
+                        remoteGlobalIDString = 2D4CA16FAF4A4D57B2088FF9;
+                        remoteInfo = fuzzer;
+                };
+                1DA41C452C0542BB002B63F8 /* PBXContainerItemProxy */ = {
+                        isa = PBXContainerItemProxy;
+                        containerPortal = 1DA41C322C0542BB002B63F8 /* fuzzer.xcodeproj */;
+                        proxyType = 2;
+                        remoteGlobalIDString = 00A12E1D64AC47F5868580C5;
+                        remoteInfo = fuzzerlib;
+                };
+                1DA41C472C0542BB002B63F8 /* PBXContainerItemProxy */ = {
+                        isa = PBXContainerItemProxy;
+                        containerPortal = 1DA41C322C0542BB002B63F8 /* fuzzer.xcodeproj */;
+                        proxyType = 2;
+                        remoteGlobalIDString = 7E3AE6FFEFFF4232AFD6F165;
+                        remoteInfo = litecov;
+                };
+                1DA41C492C0542BB002B63F8 /* PBXContainerItemProxy */ = {
+                        isa = PBXContainerItemProxy;
+                        containerPortal = 1DA41C322C0542BB002B63F8 /* fuzzer.xcodeproj */;
+                        proxyType = 2;
+                        remoteGlobalIDString = C96FE9DE65B64BB98FF3A654;
+                        remoteInfo = reil;
+                };
+                1DA41C4B2C0542BB002B63F8 /* PBXContainerItemProxy */ = {
+                        isa = PBXContainerItemProxy;
+                        containerPortal = 1DA41C322C0542BB002B63F8 /* fuzzer.xcodeproj */;
+                        proxyType = 2;
+                        remoteGlobalIDString = B47CFEFAAD404A259767958C;
+                        remoteInfo = sslhook;
+                };
+                1DA41C4D2C0542BB002B63F8 /* PBXContainerItemProxy */ = {
+                        isa = PBXContainerItemProxy;
+                        containerPortal = 1DA41C322C0542BB002B63F8 /* fuzzer.xcodeproj */;
+                        proxyType = 2;
+                        remoteGlobalIDString = 536F7B42BA3945A7AE8102AC;
+                        remoteInfo = test;
+                };
+                1DA41C4F2C0542BB002B63F8 /* PBXContainerItemProxy */ = {
+                        isa = PBXContainerItemProxy;
+                        containerPortal = 1DA41C322C0542BB002B63F8 /* fuzzer.xcodeproj */;
+                        proxyType = 2;
+                        remoteGlobalIDString = 3035E11E6DDC4403830D6EA9;
+                        remoteInfo = test_imageio;
+                };
+                1DA41C512C0542BB002B63F8 /* PBXContainerItemProxy */ = {
+                        isa = PBXContainerItemProxy;
+                        containerPortal = 1DA41C322C0542BB002B63F8 /* fuzzer.xcodeproj */;
+                        proxyType = 2;
+                        remoteGlobalIDString = D613E282D84B4DA9AA3FD4A7;
+                        remoteInfo = tinyinst;
+                };
+                1DA41C532C0542BB002B63F8 /* PBXContainerItemProxy */ = {
+                        isa = PBXContainerItemProxy;
+                        containerPortal = 1DA41C322C0542BB002B63F8 /* fuzzer.xcodeproj */;
+                        proxyType = 2;
+                        remoteGlobalIDString = CCE86B8212154F9BB275D045;
+                        remoteInfo = vtdecode;
+                };
+                1DC635012C03FA2500AC9F74 /* PBXContainerItemProxy */ = {
+                        isa = PBXContainerItemProxy;
+                        containerPortal = 1DC634FD2C03FA2500AC9F74 /* XNU Image Fuzzer.xcodeproj */;
+                        proxyType = 2;
+                        remoteGlobalIDString = 1DE208FF2B867C4700A3C0D5;
+                        remoteInfo = "XNU Image Fuzzer";
+                };
+                1DE46EB22C028B3E004A1A39 /* PBXContainerItemProxy */ = {
+                        isa = PBXContainerItemProxy;
+                        containerPortal = 1DF39C352C02878700F720B3 /* XNU Image Generator.xcodeproj */;
+                        proxyType = 2;
+                        remoteGlobalIDString = 1DFFC0D52C0230DE003B495B;
+                        remoteInfo = "XNU Image Generator";
+                };
+                1DE46EB42C028B3E004A1A39 /* PBXContainerItemProxy */ = {
+                        isa = PBXContainerItemProxy;
+                        containerPortal = 1DF39C352C02878700F720B3 /* XNU Image Generator.xcodeproj */;
+                        proxyType = 2;
+                        remoteGlobalIDString = 1DFFC0DB2C0230DE003B495B;
+                        remoteInfo = "XNU Image Generator Watch App";
+                };
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1D04C27B2C028F0300A948A8 /* .gitnore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitnore; sourceTree = "<group>"; };
-		1D4FF9AF2C04E79A006BD698 /* big.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = big.mov; sourceTree = "<group>"; };
-		1D4FF9B02C04E79A006BD698 /* CMakeLists.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
-		1D4FF9B12C04E79A006BD698 /* entitlements.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = entitlements.xml; sourceTree = "<group>"; };
-		1D4FF9B22C04E79A006BD698 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1D4FF9B32C04E79A006BD698 /* interpose_dist.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = interpose_dist.c; sourceTree = "<group>"; };
-		1D4FF9B42C04E79A006BD698 /* interpose.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = interpose.c; sourceTree = "<group>"; };
-		1D4FF9B52C04E79A006BD698 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
-		1D4FF9B62C04E79A006BD698 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		1D4FF9B72C04E79A006BD698 /* Readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Readme.md; sourceTree = "<group>"; };
-		1D4FF9B82C04E79A006BD698 /* runner_dist.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = runner_dist.c; sourceTree = "<group>"; };
-		1D4FF9B92C04E79A006BD698 /* runner.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = runner.c; sourceTree = "<group>"; };
-		1D4FF9BA2C04E79A006BD698 /* videotoolbox_build.mk */ = {isa = PBXFileReference; lastKnownFileType = text; path = videotoolbox_build.mk; sourceTree = "<group>"; };
-		1D4FF9BB2C04E79A006BD698 /* videotoolbox_logging.mk */ = {isa = PBXFileReference; lastKnownFileType = text; path = videotoolbox_logging.mk; sourceTree = "<group>"; };
-		1D4FF9BC2C04E79A006BD698 /* videotoolbox-interposer.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = "videotoolbox-interposer.c"; sourceTree = "<group>"; };
-		1D4FF9BD2C04E79A006BD698 /* videotoolbox-runner.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "videotoolbox-runner.m"; sourceTree = "<group>"; };
-		1D4FF9BE2C04E79A006BD698 /* VideoToolboxInterposing.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = VideoToolboxInterposing.xcodeproj; sourceTree = "<group>"; };
-		1D4FF9C02C04E79A006BD698 /* CMakeLists.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
-		1D4FF9C12C04E79A006BD698 /* Readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Readme.md; sourceTree = "<group>"; };
-		1D4FF9C22C04E79A006BD698 /* video-fuzzer.zsh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "video-fuzzer.zsh"; sourceTree = "<group>"; };
-		1D4FF9C32C04E79A006BD698 /* vtdecode1.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = vtdecode1.m; sourceTree = "<group>"; };
-		1D531C2A2C04FC7600628DDB /* code_statistics_report.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = code_statistics_report.py; sourceTree = "<group>"; };
-		1D531C2B2C04FC7600628DDB /* compare_image_directories.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = compare_image_directories.py; sourceTree = "<group>"; };
-		1D531C2C2C04FC7600628DDB /* reset_thumbnail_cache.zsh */ = {isa = PBXFileReference; lastKnownFileType = text; path = reset_thumbnail_cache.zsh; sourceTree = "<group>"; };
-		1D531C2D2C04FC7600628DDB /* test_image_thumbnail.zsh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = test_image_thumbnail.zsh; sourceTree = "<group>"; };
-		1D531C2F2C04FC7600628DDB /* readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = readme.md; sourceTree = "<group>"; };
-		1D5B00A42C04D65A00AA2069 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		1D5CD3F22C03A68500D3BACE /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
-		1D5CD3F32C03A68500D3BACE /* cx-srd-imagegenerator-xnu-demo-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "cx-srd-imagegenerator-xnu-demo-Info.plist"; sourceTree = "<group>"; };
-		1D5CD3F42C03A68500D3BACE /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
-		1D5CD3F52C03A68500D3BACE /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		1D5CD3F62C03A68500D3BACE /* XNU Image Generator for iOS.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = "XNU Image Generator for iOS.xcodeproj"; sourceTree = "<group>"; };
-		1D750C5D2C028FF40027E2D3 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
-		1D97109B2C029A0100BDF03F /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
-		1D97109C2C029A0100BDF03F /* exr-channel-subsampling-example.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = "exr-channel-subsampling-example.py"; sourceTree = "<group>"; };
-		1D97109D2C029A0100BDF03F /* fuzzing-memory-pattern-generator.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = "fuzzing-memory-pattern-generator.py"; sourceTree = "<group>"; };
-		1D97109E2C029A0100BDF03F /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
-		1D97109F2C029A0100BDF03F /* read-magic-numbers.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = "read-magic-numbers.py"; sourceTree = "<group>"; };
-		1D9710A02C029A0100BDF03F /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		1DC634FD2C03FA2500AC9F74 /* XNU Image Fuzzer.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = "XNU Image Fuzzer.xcodeproj"; sourceTree = "<group>"; };
-		1DD7AA142C02C16C00506021 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		1DD7AA152C02C17400506021 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
-		1DF39C352C02878700F720B3 /* XNU Image Generator.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = "XNU Image Generator.xcodeproj"; sourceTree = "<group>"; };
+                1D04C27B2C028F0300A948A8 /* .gitnore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitnore; sourceTree = "<group>"; };
+                1D4FF9AF2C04E79A006BD698 /* big.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = big.mov; sourceTree = "<group>"; };
+                1D4FF9B02C04E79A006BD698 /* CMakeLists.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
+                1D4FF9B12C04E79A006BD698 /* entitlements.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = entitlements.xml; sourceTree = "<group>"; };
+                1D4FF9B22C04E79A006BD698 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+                1D4FF9B32C04E79A006BD698 /* interpose_dist.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = interpose_dist.c; sourceTree = "<group>"; };
+                1D4FF9B42C04E79A006BD698 /* interpose.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = interpose.c; sourceTree = "<group>"; };
+                1D4FF9B52C04E79A006BD698 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
+                1D4FF9B62C04E79A006BD698 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+                1D4FF9B72C04E79A006BD698 /* Readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Readme.md; sourceTree = "<group>"; };
+                1D4FF9B82C04E79A006BD698 /* runner_dist.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = runner_dist.c; sourceTree = "<group>"; };
+                1D4FF9B92C04E79A006BD698 /* runner.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = runner.c; sourceTree = "<group>"; };
+                1D4FF9BA2C04E79A006BD698 /* videotoolbox_build.mk */ = {isa = PBXFileReference; lastKnownFileType = text; path = videotoolbox_build.mk; sourceTree = "<group>"; };
+                1D4FF9BB2C04E79A006BD698 /* videotoolbox_logging.mk */ = {isa = PBXFileReference; lastKnownFileType = text; path = videotoolbox_logging.mk; sourceTree = "<group>"; };
+                1D4FF9BC2C04E79A006BD698 /* videotoolbox-interposer.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = "videotoolbox-interposer.c"; sourceTree = "<group>"; };
+                1D4FF9BD2C04E79A006BD698 /* videotoolbox-runner.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "videotoolbox-runner.m"; sourceTree = "<group>"; };
+                1D4FF9C12C04E79A006BD698 /* Readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Readme.md; sourceTree = "<group>"; };
+                1D531C2A2C04FC7600628DDB /* code_statistics_report.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = code_statistics_report.py; sourceTree = "<group>"; };
+                1D531C2B2C04FC7600628DDB /* compare_image_directories.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = compare_image_directories.py; sourceTree = "<group>"; };
+                1D531C2C2C04FC7600628DDB /* reset_thumbnail_cache.zsh */ = {isa = PBXFileReference; lastKnownFileType = text; path = reset_thumbnail_cache.zsh; sourceTree = "<group>"; };
+                1D531C2D2C04FC7600628DDB /* test_image_thumbnail.zsh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = test_image_thumbnail.zsh; sourceTree = "<group>"; };
+                1D531C2F2C04FC7600628DDB /* readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = readme.md; sourceTree = "<group>"; };
+                1D5B00A42C04D65A00AA2069 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+                1D5CD3F22C03A68500D3BACE /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+                1D5CD3F32C03A68500D3BACE /* cx-srd-imagegenerator-xnu-demo-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "cx-srd-imagegenerator-xnu-demo-Info.plist"; sourceTree = "<group>"; };
+                1D5CD3F42C03A68500D3BACE /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+                1D5CD3F52C03A68500D3BACE /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+                1D5CD3F62C03A68500D3BACE /* XNU Image Generator for iOS.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = "XNU Image Generator for iOS.xcodeproj"; sourceTree = "<group>"; };
+                1D750C5D2C028FF40027E2D3 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+                1D97109B2C029A0100BDF03F /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+                1D97109E2C029A0100BDF03F /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+                1D9710A02C029A0100BDF03F /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+                1DA41C302C0542BB002B63F8 /* cmake_install.cmake */ = {isa = PBXFileReference; lastKnownFileType = text; path = cmake_install.cmake; sourceTree = "<group>"; };
+                1DA41C312C0542BB002B63F8 /* CMakeCache.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = CMakeCache.txt; sourceTree = "<group>"; };
+                1DA41C322C0542BB002B63F8 /* fuzzer.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = fuzzer.xcodeproj; sourceTree = "<group>"; };
+                1DA41C332C0542BB002B63F8 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+                1DA41C342C0542BB002B63F8 /* xcode_build.zsh */ = {isa = PBXFileReference; lastKnownFileType = text; path = xcode_build.zsh; sourceTree = "<group>"; };
+                1DC634FD2C03FA2500AC9F74 /* XNU Image Fuzzer.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = "XNU Image Fuzzer.xcodeproj"; sourceTree = "<group>"; };
+                1DD6028E2C051D3A00155B30 /* jsgrammar.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = jsgrammar.txt; sourceTree = "<group>"; };
+                1DD602902C051D3A00155B30 /* CMakeLists.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
+                1DD602912C051D3A00155B30 /* imageio.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = imageio.m; sourceTree = "<group>"; };
+                1DD602922C051D3A00155B30 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+                1DD602942C051D3A00155B30 /* CMakeLists.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
+                1DD602952C051D3A00155B30 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+                1DD602962C051D3A00155B30 /* vtdecode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = vtdecode.m; sourceTree = "<group>"; };
+                1DD602982C051D3A00155B30 /* CMakeLists.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
+                1DD6029A2C051D3A00155B30 /* grammar.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = grammar.cpp; sourceTree = "<group>"; };
+                1DD6029B2C051D3A00155B30 /* grammar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = grammar.h; sourceTree = "<group>"; };
+                1DD6029C2C051D3A00155B30 /* grammarminimizer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = grammarminimizer.cpp; sourceTree = "<group>"; };
+                1DD6029D2C051D3A00155B30 /* grammarminimizer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = grammarminimizer.h; sourceTree = "<group>"; };
+                1DD6029E2C051D3A00155B30 /* grammarmutator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = grammarmutator.cpp; sourceTree = "<group>"; };
+                1DD6029F2C051D3A00155B30 /* grammarmutator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = grammarmutator.h; sourceTree = "<group>"; };
+                1DD602A02C051D3A00155B30 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+                1DD602A32C051D3A00155B30 /* mersenne.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = mersenne.cpp; sourceTree = "<group>"; };
+                1DD602A42C051D3A00155B30 /* mersenne.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mersenne.h; sourceTree = "<group>"; };
+                1DD616482C051D3A00155B30 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+                1DD616492C051D3A00155B30 /* client.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = client.cpp; sourceTree = "<group>"; };
+                1DD6164A2C051D3A00155B30 /* client.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = client.h; sourceTree = "<group>"; };
+                1DD6164B2C051D3A00155B30 /* CMakeLists.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
+                1DD6164C2C051D3A00155B30 /* CONTRIBUTING.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CONTRIBUTING.md; sourceTree = "<group>"; };
+                1DD6164D2C051D3A00155B30 /* directory.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = directory.cpp; sourceTree = "<group>"; };
+                1DD6164E2C051D3A00155B30 /* directory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = directory.h; sourceTree = "<group>"; };
+                1DD6164F2C051D3A00155B30 /* fuzzer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = fuzzer.cpp; sourceTree = "<group>"; };
+                1DD616502C051D3A00155B30 /* fuzzer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fuzzer.h; sourceTree = "<group>"; };
+                1DD616512C051D3A00155B30 /* instrumentation.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = instrumentation.cpp; sourceTree = "<group>"; };
+                1DD616522C051D3A00155B30 /* instrumentation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = instrumentation.h; sourceTree = "<group>"; };
+                1DD616532C051D3A00155B30 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+                1DD616542C051D3A00155B30 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+                1DD616552C051D3A00155B30 /* minimizer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = minimizer.cpp; sourceTree = "<group>"; };
+                1DD616562C051D3A00155B30 /* minimizer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = minimizer.h; sourceTree = "<group>"; };
+                1DD616572C051D3A00155B30 /* mutator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = mutator.cpp; sourceTree = "<group>"; };
+                1DD616582C051D3A00155B30 /* mutator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mutator.h; sourceTree = "<group>"; };
+                1DD616592C051D3A00155B30 /* mutex.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = mutex.cpp; sourceTree = "<group>"; };
+                1DD6165A2C051D3A00155B30 /* mutex.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mutex.h; sourceTree = "<group>"; };
+                1DD6165B2C051D3A00155B30 /* prng.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = prng.cpp; sourceTree = "<group>"; };
+                1DD6165C2C051D3A00155B30 /* prng.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = prng.h; sourceTree = "<group>"; };
+                1DD6165D2C051D3A00155B30 /* range.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = range.h; sourceTree = "<group>"; };
+                1DD6165E2C051D3A00155B30 /* rangetracker.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = rangetracker.cpp; sourceTree = "<group>"; };
+                1DD6165F2C051D3A00155B30 /* rangetracker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = rangetracker.h; sourceTree = "<group>"; };
+                1DD616602C051D3A00155B30 /* README_ranges.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README_ranges.md; sourceTree = "<group>"; };
+                1DD616612C051D3A00155B30 /* README_sancov.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README_sancov.md; sourceTree = "<group>"; };
+                1DD616622C051D3A00155B30 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+                1DD616632C051D3A00155B30 /* runresult.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = runresult.h; sourceTree = "<group>"; };
+                1DD616642C051D3A00155B30 /* sample.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = sample.cpp; sourceTree = "<group>"; };
+                1DD616652C051D3A00155B30 /* sample.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sample.h; sourceTree = "<group>"; };
+                1DD616662C051D3A00155B30 /* sampledelivery.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = sampledelivery.cpp; sourceTree = "<group>"; };
+                1DD616672C051D3A00155B30 /* sampledelivery.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sampledelivery.h; sourceTree = "<group>"; };
+                1DD616682C051D3A00155B30 /* sancovclient.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = sancovclient.cpp; sourceTree = "<group>"; };
+                1DD616692C051D3A00155B30 /* sancovclient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sancovclient.h; sourceTree = "<group>"; };
+                1DD6166A2C051D3A00155B30 /* sancovinstrumentation.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = sancovinstrumentation.cpp; sourceTree = "<group>"; };
+                1DD6166B2C051D3A00155B30 /* sancovinstrumentation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sancovinstrumentation.h; sourceTree = "<group>"; };
+                1DD6166C2C051D3A00155B30 /* sancovtest.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = sancovtest.cpp; sourceTree = "<group>"; };
+                1DD6166D2C051D3A00155B30 /* server.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = server.cpp; sourceTree = "<group>"; };
+                1DD6166E2C051D3A00155B30 /* server.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = server.h; sourceTree = "<group>"; };
+                1DD6166F2C051D3A00155B30 /* shm.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = shm.cpp; sourceTree = "<group>"; };
+                1DD616702C051D3A00155B30 /* shm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = shm.h; sourceTree = "<group>"; };
+                1DD616712C051D3A00155B30 /* test.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = test.cpp; sourceTree = "<group>"; };
+                1DD616722C051D3A00155B30 /* thread.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = thread.cpp; sourceTree = "<group>"; };
+                1DD616732C051D3A00155B30 /* thread.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = thread.h; sourceTree = "<group>"; };
+                1DD616742C051D3A00155B30 /* tinyinstinstrumentation.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = tinyinstinstrumentation.cpp; sourceTree = "<group>"; };
+                1DD616752C051D3A00155B30 /* tinyinstinstrumentation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = tinyinstinstrumentation.h; sourceTree = "<group>"; };
+                1DD7AA142C02C16C00506021 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+                1DD7AA152C02C17400506021 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+                1DEBE5E72C051CD4001829EA /* requirements.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = requirements.txt; sourceTree = "<group>"; };
+                1DEBE5E82C051CD4001829EA /* validate_fuzzed_images.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = validate_fuzzed_images.py; sourceTree = "<group>"; };
+                1DEBE5E92C051CD4001829EA /* exr-channel-subsampling-example.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = "exr-channel-subsampling-example.py"; sourceTree = "<group>"; };
+                1DEBE5EA2C051CD4001829EA /* generate_filmstrip.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = generate_filmstrip.py; sourceTree = "<group>"; };
+                1DEBE5EB2C051CD4001829EA /* fuzzing-memory-pattern-generator.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = "fuzzing-memory-pattern-generator.py"; sourceTree = "<group>"; };
+                1DEBE5EC2C051CD4001829EA /* read-magic-numbers.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = "read-magic-numbers.py"; sourceTree = "<group>"; };
+                1DF39C352C02878700F720B3 /* XNU Image Generator.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = "XNU Image Generator.xcodeproj"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
-		1D4FF9BF2C04E79A006BD698 /* Fuzzing */ = {
-			isa = PBXGroup;
-			children = (
-				1D4FF9AF2C04E79A006BD698 /* big.mov */,
-				1D4FF9B02C04E79A006BD698 /* CMakeLists.txt */,
-				1D4FF9B12C04E79A006BD698 /* entitlements.xml */,
-				1D4FF9B22C04E79A006BD698 /* Info.plist */,
-				1D4FF9B32C04E79A006BD698 /* interpose_dist.c */,
-				1D4FF9B42C04E79A006BD698 /* interpose.c */,
-				1D4FF9B52C04E79A006BD698 /* main.c */,
-				1D4FF9B62C04E79A006BD698 /* Makefile */,
-				1D4FF9B72C04E79A006BD698 /* Readme.md */,
-				1D4FF9B82C04E79A006BD698 /* runner_dist.c */,
-				1D4FF9B92C04E79A006BD698 /* runner.c */,
-				1D4FF9BA2C04E79A006BD698 /* videotoolbox_build.mk */,
-				1D4FF9BB2C04E79A006BD698 /* videotoolbox_logging.mk */,
-				1D4FF9BC2C04E79A006BD698 /* videotoolbox-interposer.c */,
-				1D4FF9BD2C04E79A006BD698 /* videotoolbox-runner.m */,
-				1D4FF9BE2C04E79A006BD698 /* VideoToolboxInterposing.xcodeproj */,
-			);
-			path = Fuzzing;
-			sourceTree = "<group>";
-		};
-		1D4FF9C42C04E79A006BD698 /* VideoToolbox */ = {
-			isa = PBXGroup;
-			children = (
-				1D4FF9BF2C04E79A006BD698 /* Fuzzing */,
-				1D4FF9C02C04E79A006BD698 /* CMakeLists.txt */,
-				1D4FF9C12C04E79A006BD698 /* Readme.md */,
-				1D4FF9C22C04E79A006BD698 /* video-fuzzer.zsh */,
-				1D4FF9C32C04E79A006BD698 /* vtdecode1.m */,
-			);
-			path = VideoToolbox;
-			sourceTree = "<group>";
-		};
-		1D4FF9C52C04E79A006BD698 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				1D4FF9CD2C04E79A006BD698 /* libvideotoolbox-interposer.dylib */,
-				1D4FF9CF2C04E79A006BD698 /* videotoolbox-runner */,
-				1D4FF9D12C04E79A006BD698 /* videotoolbox-runner-ios */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		1D531C2E2C04FC7600628DDB /* scripts */ = {
-			isa = PBXGroup;
-			children = (
-				1D531C2A2C04FC7600628DDB /* code_statistics_report.py */,
-				1D531C2B2C04FC7600628DDB /* compare_image_directories.py */,
-				1D531C2C2C04FC7600628DDB /* reset_thumbnail_cache.zsh */,
-				1D531C2D2C04FC7600628DDB /* test_image_thumbnail.zsh */,
-			);
-			path = scripts;
-			sourceTree = "<group>";
-		};
-		1D531C302C04FC7600628DDB /* contrib */ = {
-			isa = PBXGroup;
-			children = (
-				1D531C2E2C04FC7600628DDB /* scripts */,
-				1D531C2F2C04FC7600628DDB /* readme.md */,
-			);
-			path = contrib;
-			sourceTree = "<group>";
-		};
-		1D5CD3F72C03A68500D3BACE /* XNU Image Generator for iOS */ = {
-			isa = PBXGroup;
-			children = (
-				1D5CD3F22C03A68500D3BACE /* .gitignore */,
-				1D5CD3F32C03A68500D3BACE /* cx-srd-imagegenerator-xnu-demo-Info.plist */,
-				1D5CD3F42C03A68500D3BACE /* LICENSE */,
-				1D5CD3F52C03A68500D3BACE /* README.md */,
-				1D5CD3F62C03A68500D3BACE /* XNU Image Generator for iOS.xcodeproj */,
-			);
-			path = "XNU Image Generator for iOS";
-			sourceTree = "<group>";
-		};
-		1D5CD3F82C03A68500D3BACE /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				1D5CD3FF2C03A68600D3BACE /* XNU Image Generator for iOS.app */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		1D9710A22C029A0100BDF03F /* XNU Image Fuzzer */ = {
-			isa = PBXGroup;
-			children = (
-				1DC634FD2C03FA2500AC9F74 /* XNU Image Fuzzer.xcodeproj */,
-				1D97109B2C029A0100BDF03F /* .gitignore */,
-				1D97109C2C029A0100BDF03F /* exr-channel-subsampling-example.py */,
-				1D97109D2C029A0100BDF03F /* fuzzing-memory-pattern-generator.py */,
-				1D97109E2C029A0100BDF03F /* LICENSE */,
-				1D97109F2C029A0100BDF03F /* read-magic-numbers.py */,
-				1D9710A02C029A0100BDF03F /* README.md */,
-			);
-			path = "XNU Image Fuzzer";
-			sourceTree = "<group>";
-		};
-		1DC634FE2C03FA2500AC9F74 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				1DC635022C03FA2500AC9F74 /* XNU Image Fuzzer.app */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		1DE46EAC2C028B3E004A1A39 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				1DE46EB32C028B3E004A1A39 /* XNU Image Generator.app */,
-				1DE46EB52C028B3E004A1A39 /* XNU Image Generator Watch App.app */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		1DF39BC02C0282E400F720B3 = {
-			isa = PBXGroup;
-			children = (
-				1D531C302C04FC7600628DDB /* contrib */,
-				1D4FF9C42C04E79A006BD698 /* VideoToolbox */,
-				1D5B00A42C04D65A00AA2069 /* README.md */,
-				1D5CD3F72C03A68500D3BACE /* XNU Image Generator for iOS */,
-				1D9710A22C029A0100BDF03F /* XNU Image Fuzzer */,
-				1D750C5D2C028FF40027E2D3 /* LICENSE */,
-				1DF39C362C02878700F720B3 /* XNU Image Generator for Watch */,
-				1DF39BCA2C0282E400F720B3 /* Products */,
-			);
-			sourceTree = "<group>";
-		};
-		1DF39BCA2C0282E400F720B3 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		1DF39C362C02878700F720B3 /* XNU Image Generator for Watch */ = {
-			isa = PBXGroup;
-			children = (
-				1DD7AA152C02C17400506021 /* LICENSE */,
-				1DD7AA142C02C16C00506021 /* README.md */,
-				1DF39C352C02878700F720B3 /* XNU Image Generator.xcodeproj */,
-				1D04C27B2C028F0300A948A8 /* .gitnore */,
-			);
-			path = "XNU Image Generator for Watch";
-			sourceTree = "<group>";
-		};
+                1D4FF9BF2C04E79A006BD698 /* Fuzzing */ = {
+                        isa = PBXGroup;
+                        children = (
+                                1D4FF9AF2C04E79A006BD698 /* big.mov */,
+                                1D4FF9B02C04E79A006BD698 /* CMakeLists.txt */,
+                                1D4FF9B12C04E79A006BD698 /* entitlements.xml */,
+                                1D4FF9B22C04E79A006BD698 /* Info.plist */,
+                                1D4FF9B32C04E79A006BD698 /* interpose_dist.c */,
+                                1D4FF9B42C04E79A006BD698 /* interpose.c */,
+                                1D4FF9B52C04E79A006BD698 /* main.c */,
+                                1D4FF9B62C04E79A006BD698 /* Makefile */,
+                                1D4FF9B72C04E79A006BD698 /* Readme.md */,
+                                1D4FF9B82C04E79A006BD698 /* runner_dist.c */,
+                                1D4FF9B92C04E79A006BD698 /* runner.c */,
+                                1D4FF9BA2C04E79A006BD698 /* videotoolbox_build.mk */,
+                                1D4FF9BB2C04E79A006BD698 /* videotoolbox_logging.mk */,
+                                1D4FF9BC2C04E79A006BD698 /* videotoolbox-interposer.c */,
+                                1D4FF9BD2C04E79A006BD698 /* videotoolbox-runner.m */,
+                        );
+                        path = Fuzzing;
+                        sourceTree = "<group>";
+                };
+                1D4FF9C42C04E79A006BD698 /* VideoToolbox */ = {
+                        isa = PBXGroup;
+                        children = (
+                                1D4FF9BF2C04E79A006BD698 /* Fuzzing */,
+                                1D4FF9C12C04E79A006BD698 /* Readme.md */,
+                        );
+                        path = VideoToolbox;
+                        sourceTree = "<group>";
+                };
+                1D531C2E2C04FC7600628DDB /* scripts */ = {
+                        isa = PBXGroup;
+                        children = (
+                                1DEBE5E92C051CD4001829EA /* exr-channel-subsampling-example.py */,
+                                1DEBE5EB2C051CD4001829EA /* fuzzing-memory-pattern-generator.py */,
+                                1DEBE5EA2C051CD4001829EA /* generate_filmstrip.py */,
+                                1DEBE5EC2C051CD4001829EA /* read-magic-numbers.py */,
+                                1DEBE5E72C051CD4001829EA /* requirements.txt */,
+                                1DEBE5E82C051CD4001829EA /* validate_fuzzed_images.py */,
+                                1D531C2A2C04FC7600628DDB /* code_statistics_report.py */,
+                                1D531C2B2C04FC7600628DDB /* compare_image_directories.py */,
+                                1D531C2C2C04FC7600628DDB /* reset_thumbnail_cache.zsh */,
+                                1D531C2D2C04FC7600628DDB /* test_image_thumbnail.zsh */,
+                        );
+                        path = scripts;
+                        sourceTree = "<group>";
+                };
+                1D531C302C04FC7600628DDB /* contrib */ = {
+                        isa = PBXGroup;
+                        children = (
+                                1D531C2E2C04FC7600628DDB /* scripts */,
+                                1D531C2F2C04FC7600628DDB /* readme.md */,
+                        );
+                        path = contrib;
+                        sourceTree = "<group>";
+                };
+                1D5CD3F72C03A68500D3BACE /* XNU Image Generator for iOS */ = {
+                        isa = PBXGroup;
+                        children = (
+                                1D5CD3F22C03A68500D3BACE /* .gitignore */,
+                                1D5CD3F32C03A68500D3BACE /* cx-srd-imagegenerator-xnu-demo-Info.plist */,
+                                1D5CD3F42C03A68500D3BACE /* LICENSE */,
+                                1D5CD3F52C03A68500D3BACE /* README.md */,
+                                1D5CD3F62C03A68500D3BACE /* XNU Image Generator for iOS.xcodeproj */,
+                        );
+                        path = "XNU Image Generator for iOS";
+                        sourceTree = "<group>";
+                };
+                1D5CD3F82C03A68500D3BACE /* Products */ = {
+                        isa = PBXGroup;
+                        children = (
+                                1D5CD3FF2C03A68600D3BACE /* XNU Image Generator for iOS.app */,
+                        );
+                        name = Products;
+                        sourceTree = "<group>";
+                };
+                1D9710A22C029A0100BDF03F /* XNU Image Fuzzer */ = {
+                        isa = PBXGroup;
+                        children = (
+                                1DC634FD2C03FA2500AC9F74 /* XNU Image Fuzzer.xcodeproj */,
+                                1D97109B2C029A0100BDF03F /* .gitignore */,
+                                1D97109E2C029A0100BDF03F /* LICENSE */,
+                                1D9710A02C029A0100BDF03F /* README.md */,
+                        );
+                        path = "XNU Image Fuzzer";
+                        sourceTree = "<group>";
+                };
+                1DA41C352C0542BB002B63F8 /* xcode_build */ = {
+                        isa = PBXGroup;
+                        children = (
+                                1DA41C302C0542BB002B63F8 /* cmake_install.cmake */,
+                                1DA41C312C0542BB002B63F8 /* CMakeCache.txt */,
+                                1DA41C322C0542BB002B63F8 /* fuzzer.xcodeproj */,
+                                1DA41C332C0542BB002B63F8 /* Makefile */,
+                                1DA41C342C0542BB002B63F8 /* xcode_build.zsh */,
+                        );
+                        path = xcode_build;
+                        sourceTree = "<group>";
+                };
+                1DA41C362C0542BB002B63F8 /* Products */ = {
+                        isa = PBXGroup;
+                        children = (
+                                1DA41C442C0542BB002B63F8 /* fuzzer */,
+                                1DA41C462C0542BB002B63F8 /* libfuzzerlib.a */,
+                                1D45341B2C7A196700617E6E /* imageio-test-002_imageio */,
+                                1D45341D2C7A196700617E6E /* imageio-test-003_imageio */,
+                                1D45341F2C7A196700617E6E /* imageio-test-004_imageio */,
+                                1D4534212C7A196700617E6E /* imageio-test-005_imageio */,
+                                1D4534232C7A196700617E6E /* imageio-test-006_imageio */,
+                                1DA41C482C0542BB002B63F8 /* litecov */,
+                                1DA41C4A2C0542BB002B63F8 /* libreil.a */,
+                                1DA41C4C2C0542BB002B63F8 /* sslhook */,
+                                1DA41C4E2C0542BB002B63F8 /* test */,
+                                1DA41C502C0542BB002B63F8 /* test_imageio */,
+                                1DA41C522C0542BB002B63F8 /* libtinyinst.a */,
+                                1DA41C542C0542BB002B63F8 /* vtdecode */,
+                        );
+                        name = Products;
+                        sourceTree = "<group>";
+                };
+                1DC634FE2C03FA2500AC9F74 /* Products */ = {
+                        isa = PBXGroup;
+                        children = (
+                                1DC635022C03FA2500AC9F74 /* XNU Image Fuzzer.app */,
+                        );
+                        name = Products;
+                        sourceTree = "<group>";
+                };
+                1DD6028F2C051D3A00155B30 /* grammar */ = {
+                        isa = PBXGroup;
+                        children = (
+                                1DD6028E2C051D3A00155B30 /* jsgrammar.txt */,
+                        );
+                        path = grammar;
+                        sourceTree = "<group>";
+                };
+                1DD602932C051D3A00155B30 /* ImageIO */ = {
+                        isa = PBXGroup;
+                        children = (
+                                1DD602902C051D3A00155B30 /* CMakeLists.txt */,
+                                1DD602912C051D3A00155B30 /* imageio.m */,
+                                1DD602922C051D3A00155B30 /* README.md */,
+                        );
+                        path = ImageIO;
+                        sourceTree = "<group>";
+                };
+                1DD602972C051D3A00155B30 /* VideoToolbox */ = {
+                        isa = PBXGroup;
+                        children = (
+                                1DD602942C051D3A00155B30 /* CMakeLists.txt */,
+                                1DD602952C051D3A00155B30 /* README.md */,
+                                1DD602962C051D3A00155B30 /* vtdecode.m */,
+                        );
+                        path = VideoToolbox;
+                        sourceTree = "<group>";
+                };
+                1DD602992C051D3A00155B30 /* examples */ = {
+                        isa = PBXGroup;
+                        children = (
+                                1DD6028F2C051D3A00155B30 /* grammar */,
+                                1DD602932C051D3A00155B30 /* ImageIO */,
+                                1DD602972C051D3A00155B30 /* VideoToolbox */,
+                                1DD602982C051D3A00155B30 /* CMakeLists.txt */,
+                        );
+                        path = examples;
+                        sourceTree = "<group>";
+                };
+                1DD602A12C051D3A00155B30 /* grammar */ = {
+                        isa = PBXGroup;
+                        children = (
+                                1DD6029A2C051D3A00155B30 /* grammar.cpp */,
+                                1DD6029B2C051D3A00155B30 /* grammar.h */,
+                                1DD6029C2C051D3A00155B30 /* grammarminimizer.cpp */,
+                                1DD6029D2C051D3A00155B30 /* grammarminimizer.h */,
+                                1DD6029E2C051D3A00155B30 /* grammarmutator.cpp */,
+                                1DD6029F2C051D3A00155B30 /* grammarmutator.h */,
+                                1DD602A02C051D3A00155B30 /* README.md */,
+                        );
+                        path = grammar;
+                        sourceTree = "<group>";
+                };
+                1DD602A22C051D3A00155B30 /* mutators */ = {
+                        isa = PBXGroup;
+                        children = (
+                                1DD602A12C051D3A00155B30 /* grammar */,
+                        );
+                        path = mutators;
+                        sourceTree = "<group>";
+                };
+                1DD602A52C051D3A00155B30 /* Mersenne */ = {
+                        isa = PBXGroup;
+                        children = (
+                                1DD602A32C051D3A00155B30 /* mersenne.cpp */,
+                                1DD602A42C051D3A00155B30 /* mersenne.h */,
+                        );
+                        path = Mersenne;
+                        sourceTree = "<group>";
+                };
+                1DD602A62C051D3A00155B30 /* third_party */ = {
+                        isa = PBXGroup;
+                        children = (
+                                1DD602A52C051D3A00155B30 /* Mersenne */,
+                        );
+                        path = third_party;
+                        sourceTree = "<group>";
+                };
+                1DD616762C051D3A00155B30 /* Jackalope */ = {
+                        isa = PBXGroup;
+                        children = (
+                                1DA41C352C0542BB002B63F8 /* xcode_build */,
+                                1DD602992C051D3A00155B30 /* examples */,
+                                1DD602A22C051D3A00155B30 /* mutators */,
+                                1DD602A62C051D3A00155B30 /* third_party */,
+                                1DD616482C051D3A00155B30 /* .gitignore */,
+                                1DD616492C051D3A00155B30 /* client.cpp */,
+                                1DD6164A2C051D3A00155B30 /* client.h */,
+                                1DD6164B2C051D3A00155B30 /* CMakeLists.txt */,
+                                1DD6164C2C051D3A00155B30 /* CONTRIBUTING.md */,
+                                1DD6164D2C051D3A00155B30 /* directory.cpp */,
+                                1DD6164E2C051D3A00155B30 /* directory.h */,
+                                1DD6164F2C051D3A00155B30 /* fuzzer.cpp */,
+                                1DD616502C051D3A00155B30 /* fuzzer.h */,
+                                1DD616512C051D3A00155B30 /* instrumentation.cpp */,
+                                1DD616522C051D3A00155B30 /* instrumentation.h */,
+                                1DD616532C051D3A00155B30 /* LICENSE */,
+                                1DD616542C051D3A00155B30 /* main.cpp */,
+                                1DD616552C051D3A00155B30 /* minimizer.cpp */,
+                                1DD616562C051D3A00155B30 /* minimizer.h */,
+                                1DD616572C051D3A00155B30 /* mutator.cpp */,
+                                1DD616582C051D3A00155B30 /* mutator.h */,
+                                1DD616592C051D3A00155B30 /* mutex.cpp */,
+                                1DD6165A2C051D3A00155B30 /* mutex.h */,
+                                1DD6165B2C051D3A00155B30 /* prng.cpp */,
+                                1DD6165C2C051D3A00155B30 /* prng.h */,
+                                1DD6165D2C051D3A00155B30 /* range.h */,
+                                1DD6165E2C051D3A00155B30 /* rangetracker.cpp */,
+                                1DD6165F2C051D3A00155B30 /* rangetracker.h */,
+                                1DD616602C051D3A00155B30 /* README_ranges.md */,
+                                1DD616612C051D3A00155B30 /* README_sancov.md */,
+                                1DD616622C051D3A00155B30 /* README.md */,
+                                1DD616632C051D3A00155B30 /* runresult.h */,
+                                1DD616642C051D3A00155B30 /* sample.cpp */,
+                                1DD616652C051D3A00155B30 /* sample.h */,
+                                1DD616662C051D3A00155B30 /* sampledelivery.cpp */,
+                                1DD616672C051D3A00155B30 /* sampledelivery.h */,
+                                1DD616682C051D3A00155B30 /* sancovclient.cpp */,
+                                1DD616692C051D3A00155B30 /* sancovclient.h */,
+                                1DD6166A2C051D3A00155B30 /* sancovinstrumentation.cpp */,
+                                1DD6166B2C051D3A00155B30 /* sancovinstrumentation.h */,
+                                1DD6166C2C051D3A00155B30 /* sancovtest.cpp */,
+                                1DD6166D2C051D3A00155B30 /* server.cpp */,
+                                1DD6166E2C051D3A00155B30 /* server.h */,
+                                1DD6166F2C051D3A00155B30 /* shm.cpp */,
+                                1DD616702C051D3A00155B30 /* shm.h */,
+                                1DD616712C051D3A00155B30 /* test.cpp */,
+                                1DD616722C051D3A00155B30 /* thread.cpp */,
+                                1DD616732C051D3A00155B30 /* thread.h */,
+                                1DD616742C051D3A00155B30 /* tinyinstinstrumentation.cpp */,
+                                1DD616752C051D3A00155B30 /* tinyinstinstrumentation.h */,
+                        );
+                        path = Jackalope;
+                        sourceTree = "<group>";
+                };
+                1DE46EAC2C028B3E004A1A39 /* Products */ = {
+                        isa = PBXGroup;
+                        children = (
+                                1DE46EB32C028B3E004A1A39 /* XNU Image Generator.app */,
+                                1DE46EB52C028B3E004A1A39 /* XNU Image Generator Watch App.app */,
+                        );
+                        name = Products;
+                        sourceTree = "<group>";
+                };
+                1DF39BC02C0282E400F720B3 = {
+                        isa = PBXGroup;
+                        children = (
+                                1DD616762C051D3A00155B30 /* Jackalope */,
+                                1D531C302C04FC7600628DDB /* contrib */,
+                                1D4FF9C42C04E79A006BD698 /* VideoToolbox */,
+                                1D5B00A42C04D65A00AA2069 /* README.md */,
+                                1D5CD3F72C03A68500D3BACE /* XNU Image Generator for iOS */,
+                                1D9710A22C029A0100BDF03F /* XNU Image Fuzzer */,
+                                1D750C5D2C028FF40027E2D3 /* LICENSE */,
+                                1DF39C362C02878700F720B3 /* XNU Image Generator for Watch */,
+                                1DF39BCA2C0282E400F720B3 /* Products */,
+                        );
+                        sourceTree = "<group>";
+                };
+                1DF39BCA2C0282E400F720B3 /* Products */ = {
+                        isa = PBXGroup;
+                        children = (
+                        );
+                        name = Products;
+                        sourceTree = "<group>";
+                };
+                1DF39C362C02878700F720B3 /* XNU Image Generator for Watch */ = {
+                        isa = PBXGroup;
+                        children = (
+                                1DD7AA152C02C17400506021 /* LICENSE */,
+                                1DD7AA142C02C16C00506021 /* README.md */,
+                                1DF39C352C02878700F720B3 /* XNU Image Generator.xcodeproj */,
+                                1D04C27B2C028F0300A948A8 /* .gitnore */,
+                        );
+                        path = "XNU Image Generator for Watch";
+                        sourceTree = "<group>";
+                };
 /* End PBXGroup section */
 
 /* Begin PBXProject section */
-		1DF39BC12C0282E400F720B3 /* Project object */ = {
-			isa = PBXProject;
-			attributes = {
-				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1540;
-				LastUpgradeCheck = 1540;
-			};
-			buildConfigurationList = 1DF39BC42C0282E400F720B3 /* Build configuration list for PBXProject "XNU Image Tools" */;
-			compatibilityVersion = "Xcode 14.0";
-			developmentRegion = en;
-			hasScannedForEncodings = 0;
-			knownRegions = (
-				en,
-				Base,
-			);
-			mainGroup = 1DF39BC02C0282E400F720B3;
-			productRefGroup = 1DF39BCA2C0282E400F720B3 /* Products */;
-			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 1D4FF9C52C04E79A006BD698 /* Products */;
-					ProjectRef = 1D4FF9BE2C04E79A006BD698 /* VideoToolboxInterposing.xcodeproj */;
-				},
-				{
-					ProductGroup = 1DC634FE2C03FA2500AC9F74 /* Products */;
-					ProjectRef = 1DC634FD2C03FA2500AC9F74 /* XNU Image Fuzzer.xcodeproj */;
-				},
-				{
-					ProductGroup = 1D5CD3F82C03A68500D3BACE /* Products */;
-					ProjectRef = 1D5CD3F62C03A68500D3BACE /* XNU Image Generator for iOS.xcodeproj */;
-				},
-				{
-					ProductGroup = 1DE46EAC2C028B3E004A1A39 /* Products */;
-					ProjectRef = 1DF39C352C02878700F720B3 /* XNU Image Generator.xcodeproj */;
-				},
-			);
-			projectRoot = "";
-			targets = (
-			);
-		};
+                1DF39BC12C0282E400F720B3 /* Project object */ = {
+                        isa = PBXProject;
+                        attributes = {
+                                BuildIndependentTargetsInParallel = 1;
+                                LastSwiftUpdateCheck = 1540;
+                                LastUpgradeCheck = 1540;
+                        };
+                        buildConfigurationList = 1DF39BC42C0282E400F720B3 /* Build configuration list for PBXProject "XNU Image Tools" */;
+                        compatibilityVersion = "Xcode 14.0";
+                        developmentRegion = en;
+                        hasScannedForEncodings = 0;
+                        knownRegions = (
+                                en,
+                                Base,
+                        );
+                        mainGroup = 1DF39BC02C0282E400F720B3;
+                        productRefGroup = 1DF39BCA2C0282E400F720B3 /* Products */;
+                        projectDirPath = "";
+                        projectReferences = (
+                                {
+                                        ProductGroup = 1DA41C362C0542BB002B63F8 /* Products */;
+                                        ProjectRef = 1DA41C322C0542BB002B63F8 /* fuzzer.xcodeproj */;
+                                },
+                                {
+                                        ProductGroup = 1DC634FE2C03FA2500AC9F74 /* Products */;
+                                        ProjectRef = 1DC634FD2C03FA2500AC9F74 /* XNU Image Fuzzer.xcodeproj */;
+                                },
+                                {
+                                        ProductGroup = 1D5CD3F82C03A68500D3BACE /* Products */;
+                                        ProjectRef = 1D5CD3F62C03A68500D3BACE /* XNU Image Generator for iOS.xcodeproj */;
+                                },
+                                {
+                                        ProductGroup = 1DE46EAC2C028B3E004A1A39 /* Products */;
+                                        ProjectRef = 1DF39C352C02878700F720B3 /* XNU Image Generator.xcodeproj */;
+                                },
+                        );
+                        projectRoot = "";
+                        targets = (
+                        );
+                };
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		1D4FF9CD2C04E79A006BD698 /* libvideotoolbox-interposer.dylib */ = {
-			isa = PBXReferenceProxy;
-			fileType = "compiled.mach-o.dylib";
-			path = "libvideotoolbox-interposer.dylib";
-			remoteRef = 1D4FF9CC2C04E79A006BD698 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		1D4FF9CF2C04E79A006BD698 /* videotoolbox-runner */ = {
-			isa = PBXReferenceProxy;
-			fileType = "compiled.mach-o.executable";
-			path = "videotoolbox-runner";
-			remoteRef = 1D4FF9CE2C04E79A006BD698 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		1D4FF9D12C04E79A006BD698 /* videotoolbox-runner-ios */ = {
-			isa = PBXReferenceProxy;
-			fileType = "compiled.mach-o.executable";
-			path = "videotoolbox-runner-ios";
-			remoteRef = 1D4FF9D02C04E79A006BD698 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		1D5CD3FF2C03A68600D3BACE /* XNU Image Generator for iOS.app */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.application;
-			path = "XNU Image Generator for iOS.app";
-			remoteRef = 1D5CD3FE2C03A68600D3BACE /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		1DC635022C03FA2500AC9F74 /* XNU Image Fuzzer.app */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.application;
-			path = "XNU Image Fuzzer.app";
-			remoteRef = 1DC635012C03FA2500AC9F74 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		1DE46EB32C028B3E004A1A39 /* XNU Image Generator.app */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.application;
-			path = "XNU Image Generator.app";
-			remoteRef = 1DE46EB22C028B3E004A1A39 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		1DE46EB52C028B3E004A1A39 /* XNU Image Generator Watch App.app */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.application;
-			path = "XNU Image Generator Watch App.app";
-			remoteRef = 1DE46EB42C028B3E004A1A39 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
+                1D45341B2C7A196700617E6E /* imageio-test-002_imageio */ = {
+                        isa = PBXReferenceProxy;
+                        fileType = "compiled.mach-o.executable";
+                        path = "imageio-test-002_imageio";
+                        remoteRef = 1D45341A2C7A196700617E6E /* PBXContainerItemProxy */;
+                        sourceTree = BUILT_PRODUCTS_DIR;
+                };
+                1D45341D2C7A196700617E6E /* imageio-test-003_imageio */ = {
+                        isa = PBXReferenceProxy;
+                        fileType = "compiled.mach-o.executable";
+                        path = "imageio-test-003_imageio";
+                        remoteRef = 1D45341C2C7A196700617E6E /* PBXContainerItemProxy */;
+                        sourceTree = BUILT_PRODUCTS_DIR;
+                };
+                1D45341F2C7A196700617E6E /* imageio-test-004_imageio */ = {
+                        isa = PBXReferenceProxy;
+                        fileType = "compiled.mach-o.executable";
+                        path = "imageio-test-004_imageio";
+                        remoteRef = 1D45341E2C7A196700617E6E /* PBXContainerItemProxy */;
+                        sourceTree = BUILT_PRODUCTS_DIR;
+                };
+                1D4534212C7A196700617E6E /* imageio-test-005_imageio */ = {
+                        isa = PBXReferenceProxy;
+                        fileType = "compiled.mach-o.executable";
+                        path = "imageio-test-005_imageio";
+                        remoteRef = 1D4534202C7A196700617E6E /* PBXContainerItemProxy */;
+                        sourceTree = BUILT_PRODUCTS_DIR;
+                };
+                1D4534232C7A196700617E6E /* imageio-test-006_imageio */ = {
+                        isa = PBXReferenceProxy;
+                        fileType = "compiled.mach-o.executable";
+                        path = "imageio-test-006_imageio";
+                        remoteRef = 1D4534222C7A196700617E6E /* PBXContainerItemProxy */;
+                        sourceTree = BUILT_PRODUCTS_DIR;
+                };
+                1D5CD3FF2C03A68600D3BACE /* XNU Image Generator for iOS.app */ = {
+                        isa = PBXReferenceProxy;
+                        fileType = wrapper.application;
+                        path = "XNU Image Generator for iOS.app";
+                        remoteRef = 1D5CD3FE2C03A68600D3BACE /* PBXContainerItemProxy */;
+                        sourceTree = BUILT_PRODUCTS_DIR;
+                };
+                1DA41C442C0542BB002B63F8 /* fuzzer */ = {
+                        isa = PBXReferenceProxy;
+                        fileType = "compiled.mach-o.executable";
+                        path = fuzzer;
+                        remoteRef = 1DA41C432C0542BB002B63F8 /* PBXContainerItemProxy */;
+                        sourceTree = BUILT_PRODUCTS_DIR;
+                };
+                1DA41C462C0542BB002B63F8 /* libfuzzerlib.a */ = {
+                        isa = PBXReferenceProxy;
+                        fileType = archive.ar;
+                        path = libfuzzerlib.a;
+                        remoteRef = 1DA41C452C0542BB002B63F8 /* PBXContainerItemProxy */;
+                        sourceTree = BUILT_PRODUCTS_DIR;
+                };
+                1DA41C482C0542BB002B63F8 /* litecov */ = {
+                        isa = PBXReferenceProxy;
+                        fileType = "compiled.mach-o.executable";
+                        path = litecov;
+                        remoteRef = 1DA41C472C0542BB002B63F8 /* PBXContainerItemProxy */;
+                        sourceTree = BUILT_PRODUCTS_DIR;
+                };
+                1DA41C4A2C0542BB002B63F8 /* libreil.a */ = {
+                        isa = PBXReferenceProxy;
+                        fileType = archive.ar;
+                        path = libreil.a;
+                        remoteRef = 1DA41C492C0542BB002B63F8 /* PBXContainerItemProxy */;
+                        sourceTree = BUILT_PRODUCTS_DIR;
+                };
+                1DA41C4C2C0542BB002B63F8 /* sslhook */ = {
+                        isa = PBXReferenceProxy;
+                        fileType = "compiled.mach-o.executable";
+                        path = sslhook;
+                        remoteRef = 1DA41C4B2C0542BB002B63F8 /* PBXContainerItemProxy */;
+                        sourceTree = BUILT_PRODUCTS_DIR;
+                };
+                1DA41C4E2C0542BB002B63F8 /* test */ = {
+                        isa = PBXReferenceProxy;
+                        fileType = "compiled.mach-o.executable";
+                        path = test;
+                        remoteRef = 1DA41C4D2C0542BB002B63F8 /* PBXContainerItemProxy */;
+                        sourceTree = BUILT_PRODUCTS_DIR;
+                };
+                1DA41C502C0542BB002B63F8 /* test_imageio */ = {
+                        isa = PBXReferenceProxy;
+                        fileType = "compiled.mach-o.executable";
+                        path = test_imageio;
+                        remoteRef = 1DA41C4F2C0542BB002B63F8 /* PBXContainerItemProxy */;
+                        sourceTree = BUILT_PRODUCTS_DIR;
+                };
+                1DA41C522C0542BB002B63F8 /* libtinyinst.a */ = {
+                        isa = PBXReferenceProxy;
+                        fileType = archive.ar;
+                        path = libtinyinst.a;
+                        remoteRef = 1DA41C512C0542BB002B63F8 /* PBXContainerItemProxy */;
+                        sourceTree = BUILT_PRODUCTS_DIR;
+                };
+                1DA41C542C0542BB002B63F8 /* vtdecode */ = {
+                        isa = PBXReferenceProxy;
+                        fileType = "compiled.mach-o.executable";
+                        path = vtdecode;
+                        remoteRef = 1DA41C532C0542BB002B63F8 /* PBXContainerItemProxy */;
+                        sourceTree = BUILT_PRODUCTS_DIR;
+                };
+                1DC635022C03FA2500AC9F74 /* XNU Image Fuzzer.app */ = {
+                        isa = PBXReferenceProxy;
+                        fileType = wrapper.application;
+                        path = "XNU Image Fuzzer.app";
+                        remoteRef = 1DC635012C03FA2500AC9F74 /* PBXContainerItemProxy */;
+                        sourceTree = BUILT_PRODUCTS_DIR;
+                };
+                1DE46EB32C028B3E004A1A39 /* XNU Image Generator.app */ = {
+                        isa = PBXReferenceProxy;
+                        fileType = wrapper.application;
+                        path = "XNU Image Generator.app";
+                        remoteRef = 1DE46EB22C028B3E004A1A39 /* PBXContainerItemProxy */;
+                        sourceTree = BUILT_PRODUCTS_DIR;
+                };
+                1DE46EB52C028B3E004A1A39 /* XNU Image Generator Watch App.app */ = {
+                        isa = PBXReferenceProxy;
+                        fileType = wrapper.application;
+                        path = "XNU Image Generator Watch App.app";
+                        remoteRef = 1DE46EB42C028B3E004A1A39 /* PBXContainerItemProxy */;
+                        sourceTree = BUILT_PRODUCTS_DIR;
+                };
 /* End PBXReferenceProxy section */
 
 /* Begin XCBuildConfiguration section */
-		1DF39BDB2C0282E500F720B3 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = iphoneos;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-			};
-			name = Debug;
-		};
-		1DF39BDC2C0282E500F720B3 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				MTL_FAST_MATH = YES;
-				SDKROOT = iphoneos;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
+                1DF39BDB2C0282E500F720B3 /* Debug */ = {
+                        isa = XCBuildConfiguration;
+                        buildSettings = {
+                                ALWAYS_SEARCH_USER_PATHS = NO;
+                                ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+                                CLANG_ANALYZER_NONNULL = YES;
+                                CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+                                CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+                                CLANG_ENABLE_MODULES = YES;
+                                CLANG_ENABLE_OBJC_ARC = YES;
+                                CLANG_ENABLE_OBJC_WEAK = YES;
+                                CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+                                CLANG_WARN_BOOL_CONVERSION = YES;
+                                CLANG_WARN_COMMA = YES;
+                                CLANG_WARN_CONSTANT_CONVERSION = YES;
+                                CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+                                CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+                                CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+                                CLANG_WARN_EMPTY_BODY = YES;
+                                CLANG_WARN_ENUM_CONVERSION = YES;
+                                CLANG_WARN_INFINITE_RECURSION = YES;
+                                CLANG_WARN_INT_CONVERSION = YES;
+                                CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+                                CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+                                CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+                                CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+                                CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+                                CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+                                CLANG_WARN_STRICT_PROTOTYPES = YES;
+                                CLANG_WARN_SUSPICIOUS_MOVE = YES;
+                                CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+                                CLANG_WARN_UNREACHABLE_CODE = YES;
+                                CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+                                COPY_PHASE_STRIP = NO;
+                                DEBUG_INFORMATION_FORMAT = dwarf;
+                                ENABLE_STRICT_OBJC_MSGSEND = YES;
+                                ENABLE_TESTABILITY = YES;
+                                ENABLE_USER_SCRIPT_SANDBOXING = YES;
+                                GCC_C_LANGUAGE_STANDARD = gnu17;
+                                GCC_DYNAMIC_NO_PIC = NO;
+                                GCC_NO_COMMON_BLOCKS = YES;
+                                GCC_OPTIMIZATION_LEVEL = 0;
+                                GCC_PREPROCESSOR_DEFINITIONS = (
+                                        "DEBUG=1",
+                                        "$(inherited)",
+                                );
+                                GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+                                GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+                                GCC_WARN_UNDECLARED_SELECTOR = YES;
+                                GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+                                GCC_WARN_UNUSED_FUNCTION = YES;
+                                GCC_WARN_UNUSED_VARIABLE = YES;
+                                IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+                                LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+                                MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+                                MTL_FAST_MATH = YES;
+                                ONLY_ACTIVE_ARCH = YES;
+                                SDKROOT = iphoneos;
+                                SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+                                SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+                        };
+                        name = Debug;
+                };
+                1DF39BDC2C0282E500F720B3 /* Release */ = {
+                        isa = XCBuildConfiguration;
+                        buildSettings = {
+                                ALWAYS_SEARCH_USER_PATHS = NO;
+                                ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+                                CLANG_ANALYZER_NONNULL = YES;
+                                CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+                                CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+                                CLANG_ENABLE_MODULES = YES;
+                                CLANG_ENABLE_OBJC_ARC = YES;
+                                CLANG_ENABLE_OBJC_WEAK = YES;
+                                CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+                                CLANG_WARN_BOOL_CONVERSION = YES;
+                                CLANG_WARN_COMMA = YES;
+                                CLANG_WARN_CONSTANT_CONVERSION = YES;
+                                CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+                                CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+                                CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+                                CLANG_WARN_EMPTY_BODY = YES;
+                                CLANG_WARN_ENUM_CONVERSION = YES;
+                                CLANG_WARN_INFINITE_RECURSION = YES;
+                                CLANG_WARN_INT_CONVERSION = YES;
+                                CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+                                CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+                                CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+                                CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+                                CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+                                CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+                                CLANG_WARN_STRICT_PROTOTYPES = YES;
+                                CLANG_WARN_SUSPICIOUS_MOVE = YES;
+                                CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+                                CLANG_WARN_UNREACHABLE_CODE = YES;
+                                CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+                                COPY_PHASE_STRIP = NO;
+                                DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+                                ENABLE_NS_ASSERTIONS = NO;
+                                ENABLE_STRICT_OBJC_MSGSEND = YES;
+                                ENABLE_USER_SCRIPT_SANDBOXING = YES;
+                                GCC_C_LANGUAGE_STANDARD = gnu17;
+                                GCC_NO_COMMON_BLOCKS = YES;
+                                GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+                                GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+                                GCC_WARN_UNDECLARED_SELECTOR = YES;
+                                GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+                                GCC_WARN_UNUSED_FUNCTION = YES;
+                                GCC_WARN_UNUSED_VARIABLE = YES;
+                                IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+                                LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+                                MTL_ENABLE_DEBUG_INFO = NO;
+                                MTL_FAST_MATH = YES;
+                                SDKROOT = iphoneos;
+                                SWIFT_COMPILATION_MODE = wholemodule;
+                                VALIDATE_PRODUCT = YES;
+                        };
+                        name = Release;
+                };
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1DF39BC42C0282E400F720B3 /* Build configuration list for PBXProject "XNU Image Tools" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				1DF39BDB2C0282E500F720B3 /* Debug */,
-				1DF39BDC2C0282E500F720B3 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
-		};
+                1DF39BC42C0282E400F720B3 /* Build configuration list for PBXProject "XNU Image Tools" */ = {
+                        isa = XCConfigurationList;
+                        buildConfigurations = (
+                                1DF39BDB2C0282E500F720B3 /* Debug */,
+                                1DF39BDC2C0282E500F720B3 /* Release */,
+                        );
+                        defaultConfigurationIsVisible = 0;
+                        defaultConfigurationName = Debug;
+                };
 /* End XCConfigurationList section */
-	};
-	rootObject = 1DF39BC12C0282E400F720B3 /* Project object */;
+        };
+        rootObject = 1DF39BC12C0282E400F720B3 /* Project object */;
 }

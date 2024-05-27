@@ -1,0 +1,905 @@
+
+---
+events:
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/opt/homebrew/lib/python3.11/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeDetermineSystem.cmake:211 (message)"
+      - "TinyInst/third_party/CMakeLists.txt:19 (project)"
+    message: |
+      The system is: Darwin - 23.5.0 - arm64
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/opt/homebrew/lib/python3.11/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/opt/homebrew/lib/python3.11/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/opt/homebrew/lib/python3.11/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeDetermineCCompiler.cmake:123 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "TinyInst/third_party/CMakeLists.txt:19 (project)"
+    message: |
+      Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+      Compiler:  
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      Command line invocation:
+          /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild
+      
+      User defaults from command line:
+          IDEPackageSupportUseBuiltinSCM = YES
+      
+      ComputeTargetDependencyGraph
+      note: Building targets in dependency order
+      note: Target dependency graph (1 target)
+          Target 'CompilerIdC' in project 'CompilerIdC' (no dependencies)
+      
+      GatherProvisioningInputs
+      
+      CreateBuildDescription
+      
+      ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -x c -c /dev/null
+      
+      ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -x c -c /dev/null
+      
+      ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+      
+      Build description signature: 177fa509b5e220087c15c031a61a5876
+      Build description path: /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/./XCBuildData/177fa509b5e220087c15c031a61a5876.xcbuilddata
+      CreateBuildDirectory /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.xcodeproj
+          builtin-create-build-directory /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC
+      
+      ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk /var/folders/pj/39ntzx3s2zg1gpwh_t6kg9gw0000gn/C/com.apple.DeveloperTools/15.4-15F31d/Xcode/SDKStatCaches.noindex/macosx14.5-23F73-7e3fd6dc4171e65dbd154ba8db3956d2.sdkstatcache
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.xcodeproj
+          /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -o /var/folders/pj/39ntzx3s2zg1gpwh_t6kg9gw0000gn/C/com.apple.DeveloperTools/15.4-15F31d/Xcode/SDKStatCaches.noindex/macosx14.5-23F73-7e3fd6dc4171e65dbd154ba8db3956d2.sdkstatcache
+      
+      CreateBuildDirectory /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/EagerLinkingTBDs/Debug
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.xcodeproj
+          builtin-create-build-directory /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/EagerLinkingTBDs/Debug
+      
+      WriteAuxiliaryFile /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/DerivedSources/Entitlements.plist (in target 'CompilerIdC' from project 'CompilerIdC')
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC
+          write-file /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/DerivedSources/Entitlements.plist
+      
+      ProcessProductPackaging "" /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/CompilerIdC.xcent (in target 'CompilerIdC' from project 'CompilerIdC')
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC
+          
+          Entitlements:
+          
+          {
+          "com.apple.application-identifier" = "";
+          "com.apple.security.get-task-allow" = 1;
+      }
+          
+          builtin-productPackagingUtility -entitlements -format xml -o /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/CompilerIdC.xcent
+      
+      ProcessProductPackagingDER /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/CompilerIdC.xcent /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/CompilerIdC.xcent.der (in target 'CompilerIdC' from project 'CompilerIdC')
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC
+          /usr/bin/derq query -f xml -i /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/CompilerIdC.xcent -o /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/CompilerIdC.xcent.der --raw
+      
+      WriteAuxiliaryFile /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/all-product-headers.yaml (in target 'CompilerIdC' from project 'CompilerIdC')
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC
+          write-file /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/all-product-headers.yaml
+      
+      WriteAuxiliaryFile /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/CompilerIdC-project-headers.hmap (in target 'CompilerIdC' from project 'CompilerIdC')
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC
+          write-file /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/CompilerIdC-project-headers.hmap
+      
+      WriteAuxiliaryFile /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/CompilerIdC.hmap (in target 'CompilerIdC' from project 'CompilerIdC')
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC
+          write-file /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/CompilerIdC.hmap
+      
+      WriteAuxiliaryFile /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/CompilerIdC-generated-files.hmap (in target 'CompilerIdC' from project 'CompilerIdC')
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC
+          write-file /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/CompilerIdC-generated-files.hmap
+      
+      WriteAuxiliaryFile /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/CompilerIdC-own-target-headers.hmap (in target 'CompilerIdC' from project 'CompilerIdC')
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC
+          write-file /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/CompilerIdC-own-target-headers.hmap
+      
+      WriteAuxiliaryFile /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/CompilerIdC-all-target-headers.hmap (in target 'CompilerIdC' from project 'CompilerIdC')
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC
+          write-file /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/CompilerIdC-all-target-headers.hmap
+      
+      WriteAuxiliaryFile /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/CompilerIdC-all-non-framework-target-headers.hmap (in target 'CompilerIdC' from project 'CompilerIdC')
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC
+          write-file /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/CompilerIdC-all-non-framework-target-headers.hmap
+      
+      WriteAuxiliaryFile /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/Objects-normal/arm64/7187679823f38a2a940e0043cdf9d637-common-args.resp (in target 'CompilerIdC' from project 'CompilerIdC')
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC
+          write-file /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/Objects-normal/arm64/7187679823f38a2a940e0043cdf9d637-common-args.resp
+      -target arm64-apple-macos14.5 -fpascal-strings -Os -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -g '-fvisibility=hidden' -iquote /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/CompilerIdC-generated-files.hmap -I/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/CompilerIdC-own-target-headers.hmap -I/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/CompilerIdC-all-target-headers.hmap -iquote /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/CompilerIdC-project-headers.hmap -I/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/include -I/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/DerivedSources-normal/arm64 -I/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/DerivedSources/arm64 -I/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/DerivedSources -F/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC
+      
+      WriteAuxiliaryFile /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/Objects-normal/arm64/CompilerIdC.LinkFileList (in target 'CompilerIdC' from project 'CompilerIdC')
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC
+          write-file /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/Objects-normal/arm64/CompilerIdC.LinkFileList
+      
+      CompileC /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/Objects-normal/arm64/CMakeCCompilerId.o /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CMakeCCompilerId.c normal arm64 c com.apple.compilers.llvm.clang.1_0.compiler (in target 'CompilerIdC' from project 'CompilerIdC')
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC
+          /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x c -ivfsstatcache /var/folders/pj/39ntzx3s2zg1gpwh_t6kg9gw0000gn/C/com.apple.DeveloperTools/15.4-15F31d/Xcode/SDKStatCaches.noindex/macosx14.5-23F73-7e3fd6dc4171e65dbd154ba8db3956d2.sdkstatcache -fmessage-length\\=0 -fdiagnostics-show-note-include-stack -fmacro-backtrace-limit\\=0 -fno-color-diagnostics -Wno-trigraphs -Wno-missing-field-initializers -Wno-missing-prototypes -Wno-return-type -Wno-missing-braces -Wparentheses -Wswitch -Wno-unused-function -Wno-unused-label -Wno-unused-parameter -Wno-unused-variable -Wunused-value -Wno-empty-body -Wno-uninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wno-constant-conversion -Wno-int-conversion -Wno-bool-conversion -Wno-enum-conversion -Wno-float-conversion -Wno-non-literal-null-conversion -Wno-objc-literal-conversion -Wshorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-implicit-fallthrough -fstrict-aliasing -Wdeprecated-declarations -Wno-sign-conversion -Wno-infinite-recursion -Wno-comma -Wno-block-capture-autoreleasing -Wno-strict-prototypes -Wno-semicolon-before-method-body @/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/Objects-normal/arm64/7187679823f38a2a940e0043cdf9d637-common-args.resp -MMD -MT dependencies -MF /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/Objects-normal/arm64/CMakeCCompilerId.d --serialize-diagnostics /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/Objects-normal/arm64/CMakeCCompilerId.dia -c /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CMakeCCompilerId.c -o /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/Objects-normal/arm64/CMakeCCompilerId.o
+      
+      Ld /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC normal (in target 'CompilerIdC' from project 'CompilerIdC')
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC
+          /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos14.5 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -Os -L/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/EagerLinkingTBDs/Debug -L/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC -F/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/EagerLinkingTBDs/Debug -F/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC -filelist /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/Objects-normal/arm64/CompilerIdC.LinkFileList -Xlinker -object_path_lto -Xlinker /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/Objects-normal/arm64/CompilerIdC_lto.o -Xlinker -no_adhoc_codesign -Xlinker -dependency_info -Xlinker /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/Objects-normal/arm64/CompilerIdC_dependency_info.dat -o /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC
+      
+      WriteAuxiliaryFile /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/Script-2C8FEB8E15DC1A1A00E56A5D.sh (in target 'CompilerIdC' from project 'CompilerIdC')
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC
+          write-file /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/Script-2C8FEB8E15DC1A1A00E56A5D.sh
+      
+      PhaseScriptExecution Run\\ Script /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/Script-2C8FEB8E15DC1A1A00E56A5D.sh (in target 'CompilerIdC' from project 'CompilerIdC')
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC
+          /bin/sh -c /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/Script-2C8FEB8E15DC1A1A00E56A5D.sh
+      GCC_VERSION=com.apple.compilers.llvm.clang.1_0
+      ARCHS=arm64
+      
+      CodeSign /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC (in target 'CompilerIdC' from project 'CompilerIdC')
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC
+          
+          Signing Identity:     "-"
+          
+          /usr/bin/codesign --force --sign - --entitlements /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC.build/Debug/CompilerIdC.build/CompilerIdC.xcent --timestamp\\=none --generate-entitlement-der /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC
+      
+      RegisterExecutionPolicyException /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC (in target 'CompilerIdC' from project 'CompilerIdC')
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC
+          builtin-RegisterExecutionPolicyException /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC
+      
+      warning: Traditional headermap style is no longer supported; please migrate to using separate headermaps and set 'ALWAYS_SEARCH_USER_PATHS' to NO. (in target 'CompilerIdC' from project 'CompilerIdC')
+      note: Run script build phase 'Run Script' will be run during every build because the option to run the script phase "Based on dependency analysis" is unchecked. (in target 'CompilerIdC' from project 'CompilerIdC')
+      ** BUILD SUCCEEDED **
+      
+      
+      
+      Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CompilerIdC"
+      
+      The C compiler identification is AppleClang, found in:
+        /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdC/CompilerIdC
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/opt/homebrew/lib/python3.11/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/opt/homebrew/lib/python3.11/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/opt/homebrew/lib/python3.11/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "TinyInst/third_party/CMakeLists.txt:19 (project)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+      Compiler:  
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      Command line invocation:
+          /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild
+      
+      User defaults from command line:
+          IDEPackageSupportUseBuiltinSCM = YES
+      
+      ComputeTargetDependencyGraph
+      note: Building targets in dependency order
+      note: Target dependency graph (1 target)
+          Target 'CompilerIdCXX' in project 'CompilerIdCXX' (no dependencies)
+      
+      GatherProvisioningInputs
+      
+      CreateBuildDescription
+      
+      ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -x c++ -c /dev/null
+      
+      ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -x c -c /dev/null
+      
+      ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -x c -c /dev/null
+      
+      ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+      
+      Build description signature: 85f792a21d21747f302c53bc3385bd8c
+      Build description path: /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/./XCBuildData/85f792a21d21747f302c53bc3385bd8c.xcbuilddata
+      CreateBuildDirectory /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.xcodeproj
+          builtin-create-build-directory /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX
+      
+      ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk /var/folders/pj/39ntzx3s2zg1gpwh_t6kg9gw0000gn/C/com.apple.DeveloperTools/15.4-15F31d/Xcode/SDKStatCaches.noindex/macosx14.5-23F73-7e3fd6dc4171e65dbd154ba8db3956d2.sdkstatcache
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.xcodeproj
+          /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -o /var/folders/pj/39ntzx3s2zg1gpwh_t6kg9gw0000gn/C/com.apple.DeveloperTools/15.4-15F31d/Xcode/SDKStatCaches.noindex/macosx14.5-23F73-7e3fd6dc4171e65dbd154ba8db3956d2.sdkstatcache
+      
+      CreateBuildDirectory /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/EagerLinkingTBDs/Debug
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.xcodeproj
+          builtin-create-build-directory /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/EagerLinkingTBDs/Debug
+      
+      WriteAuxiliaryFile /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/DerivedSources/Entitlements.plist (in target 'CompilerIdCXX' from project 'CompilerIdCXX')
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX
+          write-file /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/DerivedSources/Entitlements.plist
+      
+      ProcessProductPackaging "" /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/CompilerIdCXX.xcent (in target 'CompilerIdCXX' from project 'CompilerIdCXX')
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX
+          
+          Entitlements:
+          
+          {
+          "com.apple.application-identifier" = "";
+          "com.apple.security.get-task-allow" = 1;
+      }
+          
+          builtin-productPackagingUtility -entitlements -format xml -o /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/CompilerIdCXX.xcent
+      
+      ProcessProductPackagingDER /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/CompilerIdCXX.xcent /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/CompilerIdCXX.xcent.der (in target 'CompilerIdCXX' from project 'CompilerIdCXX')
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX
+          /usr/bin/derq query -f xml -i /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/CompilerIdCXX.xcent -o /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/CompilerIdCXX.xcent.der --raw
+      
+      WriteAuxiliaryFile /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/all-product-headers.yaml (in target 'CompilerIdCXX' from project 'CompilerIdCXX')
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX
+          write-file /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/all-product-headers.yaml
+      
+      WriteAuxiliaryFile /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/CompilerIdCXX.hmap (in target 'CompilerIdCXX' from project 'CompilerIdCXX')
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX
+          write-file /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/CompilerIdCXX.hmap
+      
+      WriteAuxiliaryFile /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/CompilerIdCXX-project-headers.hmap (in target 'CompilerIdCXX' from project 'CompilerIdCXX')
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX
+          write-file /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/CompilerIdCXX-project-headers.hmap
+      
+      WriteAuxiliaryFile /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/CompilerIdCXX-generated-files.hmap (in target 'CompilerIdCXX' from project 'CompilerIdCXX')
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX
+          write-file /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/CompilerIdCXX-generated-files.hmap
+      
+      WriteAuxiliaryFile /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/CompilerIdCXX-all-target-headers.hmap (in target 'CompilerIdCXX' from project 'CompilerIdCXX')
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX
+          write-file /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/CompilerIdCXX-all-target-headers.hmap
+      
+      WriteAuxiliaryFile /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/CompilerIdCXX-own-target-headers.hmap (in target 'CompilerIdCXX' from project 'CompilerIdCXX')
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX
+          write-file /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/CompilerIdCXX-own-target-headers.hmap
+      
+      WriteAuxiliaryFile /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/CompilerIdCXX-all-non-framework-target-headers.hmap (in target 'CompilerIdCXX' from project 'CompilerIdCXX')
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX
+          write-file /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/CompilerIdCXX-all-non-framework-target-headers.hmap
+      
+      WriteAuxiliaryFile /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/Objects-normal/arm64/82b82416624d2658e5098eb0a28c15c5-common-args.resp (in target 'CompilerIdCXX' from project 'CompilerIdCXX')
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX
+          write-file /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/Objects-normal/arm64/82b82416624d2658e5098eb0a28c15c5-common-args.resp
+      -target arm64-apple-macos14.5 -fpascal-strings -Os -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -g '-fvisibility=hidden' -fvisibility-inlines-hidden -iquote /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/CompilerIdCXX-generated-files.hmap -I/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/CompilerIdCXX-own-target-headers.hmap -I/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/CompilerIdCXX-all-target-headers.hmap -iquote /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/CompilerIdCXX-project-headers.hmap -I/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/include -I/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/DerivedSources-normal/arm64 -I/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/DerivedSources/arm64 -I/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/DerivedSources -F/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX
+      WriteAuxiliaryFile /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/Objects-normal/arm64/CompilerIdCXX.LinkFileList (in target 'CompilerIdCXX' from project 'CompilerIdCXX')
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX
+          write-file /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/Objects-normal/arm64/CompilerIdCXX.LinkFileList
+      
+      CompileC /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/Objects-normal/arm64/CMakeCXXCompilerId.o /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CMakeCXXCompilerId.cpp normal arm64 c++ com.apple.compilers.llvm.clang.1_0.compiler (in target 'CompilerIdCXX' from project 'CompilerIdCXX')
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX
+          /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x c++ -ivfsstatcache /var/folders/pj/39ntzx3s2zg1gpwh_t6kg9gw0000gn/C/com.apple.DeveloperTools/15.4-15F31d/Xcode/SDKStatCaches.noindex/macosx14.5-23F73-7e3fd6dc4171e65dbd154ba8db3956d2.sdkstatcache -fmessage-length\\=0 -fdiagnostics-show-note-include-stack -fmacro-backtrace-limit\\=0 -fno-color-diagnostics -Wno-trigraphs -Wno-missing-field-initializers -Wno-missing-prototypes -Wno-return-type -Wno-non-virtual-dtor -Wno-overloaded-virtual -Wno-exit-time-destructors -Wno-missing-braces -Wparentheses -Wswitch -Wno-unused-function -Wno-unused-label -Wno-unused-parameter -Wno-unused-variable -Wunused-value -Wno-empty-body -Wno-uninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wno-constant-conversion -Wno-int-conversion -Wno-bool-conversion -Wno-enum-conversion -Wno-float-conversion -Wno-non-literal-null-conversion -Wno-objc-literal-conversion -Wshorten-64-to-32 -Wno-newline-eof -Wno-c++11-extensions -Wno-implicit-fallthrough -fstrict-aliasing -Wdeprecated-declarations -Winvalid-offsetof -Wno-sign-conversion -Wno-infinite-recursion -Wno-move -Wno-comma -Wno-block-capture-autoreleasing -Wno-strict-prototypes -Wno-range-loop-analysis -Wno-semicolon-before-method-body @/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/Objects-normal/arm64/82b82416624d2658e5098eb0a28c15c5-common-args.resp -MMD -MT dependencies -MF /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/Objects-normal/arm64/CMakeCXXCompilerId.d --serialize-diagnostics /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/Objects-normal/arm64/CMakeCXXCompilerId.dia -c /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CMakeCXXCompilerId.cpp -o /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/Objects-normal/arm64/CMakeCXXCompilerId.o
+      
+      Ld /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX normal (in target 'CompilerIdCXX' from project 'CompilerIdCXX')
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX
+          /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++ -Xlinker -reproducible -target arm64-apple-macos14.5 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -Os -L/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/EagerLinkingTBDs/Debug -L/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX -F/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/EagerLinkingTBDs/Debug -F/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX -filelist /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/Objects-normal/arm64/CompilerIdCXX.LinkFileList -Xlinker -object_path_lto -Xlinker /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/Objects-normal/arm64/CompilerIdCXX_lto.o -Xlinker -no_adhoc_codesign -Xlinker -dependency_info -Xlinker /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/Objects-normal/arm64/CompilerIdCXX_dependency_info.dat -o /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX
+      
+      WriteAuxiliaryFile /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/Script-2C8FEB8E15DC1A1A00E56A5D.sh (in target 'CompilerIdCXX' from project 'CompilerIdCXX')
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX
+          write-file /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/Script-2C8FEB8E15DC1A1A00E56A5D.sh
+      
+      PhaseScriptExecution Run\\ Script /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/Script-2C8FEB8E15DC1A1A00E56A5D.sh (in target 'CompilerIdCXX' from project 'CompilerIdCXX')
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX
+          /bin/sh -c /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/Script-2C8FEB8E15DC1A1A00E56A5D.sh
+      GCC_VERSION=com.apple.compilers.llvm.clang.1_0
+      ARCHS=arm64
+      
+      CodeSign /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX (in target 'CompilerIdCXX' from project 'CompilerIdCXX')
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX
+          
+          Signing Identity:     "-"
+          
+          /usr/bin/codesign --force --sign - --entitlements /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX.build/Debug/CompilerIdCXX.build/CompilerIdCXX.xcent --timestamp\\=none --generate-entitlement-der /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX
+      
+      RegisterExecutionPolicyException /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX (in target 'CompilerIdCXX' from project 'CompilerIdCXX')
+          cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX
+          builtin-RegisterExecutionPolicyException /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX
+      
+      warning: Traditional headermap style is no longer supported; please migrate to using separate headermaps and set 'ALWAYS_SEARCH_USER_PATHS' to NO. (in target 'CompilerIdCXX' from project 'CompilerIdCXX')
+      note: Run script build phase 'Run Script' will be run during every build because the option to run the script phase "Based on dependency analysis" is unchecked. (in target 'CompilerIdCXX' from project 'CompilerIdCXX')
+      ** BUILD SUCCEEDED **
+      
+      
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX"
+      
+      The CXX compiler identification is AppleClang, found in:
+        /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/3.27.9/CompilerIdCXX/CompilerIdCXX
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/opt/homebrew/lib/python3.11/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeDetermineCompilerABI.cmake:57 (try_compile)"
+      - "/opt/homebrew/lib/python3.11/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "TinyInst/third_party/CMakeLists.txt:19 (project)"
+    checks:
+      - "Detecting C compiler ABI info"
+    directories:
+      source: "/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA"
+      binary: "/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_OSX_ARCHITECTURES: ""
+      CMAKE_OSX_DEPLOYMENT_TARGET: ""
+      CMAKE_OSX_SYSROOT: "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk"
+    buildResult:
+      variable: "CMAKE_C_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: '/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA'
+        
+        Run Build Command(s): /usr/bin/xcodebuild -project CMAKE_TRY_COMPILE.xcodeproj build -target cmTC_a8925 -parallelizeTargets -configuration Debug -hideShellScriptEnvironment
+        Command line invocation:
+            /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project CMAKE_TRY_COMPILE.xcodeproj build -target cmTC_a8925 -parallelizeTargets -configuration Debug -hideShellScriptEnvironment
+        
+        User defaults from command line:
+            HideShellScriptEnvironment = YES
+            IDEPackageSupportUseBuiltinSCM = YES
+        
+        ComputeTargetDependencyGraph
+        note: Building targets in dependency order
+        note: Target dependency graph (1 target)
+            Target 'cmTC_a8925' in project 'CMAKE_TRY_COMPILE' (no dependencies)
+        
+        GatherProvisioningInputs
+        
+        CreateBuildDescription
+        
+        ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -x c -c /dev/null
+        
+        ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -x c -c /dev/null
+        
+        ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+        
+        Build description signature: bb5b8deb752525eb704fe4a3c62dfa23
+        Build description path: /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/XCBuildData/bb5b8deb752525eb704fe4a3c62dfa23.xcbuilddata
+        CreateBuildDirectory /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build
+            cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/CMAKE_TRY_COMPILE.xcodeproj
+            builtin-create-build-directory /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build
+        
+        CreateBuildDirectory /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug
+            cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/CMAKE_TRY_COMPILE.xcodeproj
+            builtin-create-build-directory /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug
+        
+        ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk /var/folders/pj/39ntzx3s2zg1gpwh_t6kg9gw0000gn/C/com.apple.DeveloperTools/15.4-15F31d/Xcode/SDKStatCaches.noindex/macosx14.5-23F73-7e3fd6dc4171e65dbd154ba8db3956d2.sdkstatcache
+            cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/CMAKE_TRY_COMPILE.xcodeproj
+            /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -o /var/folders/pj/39ntzx3s2zg1gpwh_t6kg9gw0000gn/C/com.apple.DeveloperTools/15.4-15F31d/Xcode/SDKStatCaches.noindex/macosx14.5-23F73-7e3fd6dc4171e65dbd154ba8db3956d2.sdkstatcache
+        
+        CreateBuildDirectory /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/EagerLinkingTBDs/Debug
+            cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/CMAKE_TRY_COMPILE.xcodeproj
+            builtin-create-build-directory /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/EagerLinkingTBDs/Debug
+        
+        WriteAuxiliaryFile /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/cmTC_a8925.LinkFileList (in target 'cmTC_a8925' from project 'CMAKE_TRY_COMPILE')
+            cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA
+            write-file /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/cmTC_a8925.LinkFileList
+        
+        WriteAuxiliaryFile /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/7187679823f38a2a940e0043cdf9d637-common-args.resp (in target 'cmTC_a8925' from project 'CMAKE_TRY_COMPILE')
+            cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA
+            write-file /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/7187679823f38a2a940e0043cdf9d637-common-args.resp
+        -target arm64-apple-macos14.5 -fpascal-strings -O0 '-DCMAKE_INTDIR="Debug"' -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -g -I/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug/include -I/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/DerivedSources-normal/arm64 -I/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/DerivedSources/arm64 -I/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/DerivedSources -F/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug
+        
+        CompileC /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/CMakeCCompilerABI.o /opt/homebrew/lib/python3.11/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeCCompilerABI.c normal arm64 c com.apple.compilers.llvm.clang.1_0.compiler (in target 'cmTC_a8925' from project 'CMAKE_TRY_COMPILE')
+            cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA
+            /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x c -ivfsstatcache /var/folders/pj/39ntzx3s2zg1gpwh_t6kg9gw0000gn/C/com.apple.DeveloperTools/15.4-15F31d/Xcode/SDKStatCaches.noindex/macosx14.5-23F73-7e3fd6dc4171e65dbd154ba8db3956d2.sdkstatcache -fmessage-length\\=0 -fdiagnostics-show-note-include-stack -fmacro-backtrace-limit\\=0 -fno-color-diagnostics -Wno-trigraphs -Wno-missing-field-initializers -Wno-missing-prototypes -Wno-return-type -Wno-missing-braces -Wparentheses -Wswitch -Wno-unused-function -Wno-unused-label -Wno-unused-parameter -Wno-unused-variable -Wunused-value -Wno-empty-body -Wno-uninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wno-constant-conversion -Wno-int-conversion -Wno-bool-conversion -Wno-enum-conversion -Wno-float-conversion -Wno-non-literal-null-conversion -Wno-objc-literal-conversion -Wshorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-implicit-fallthrough -fstrict-aliasing -Wdeprecated-declarations -Wno-sign-conversion -Wno-infinite-recursion -Wno-comma -Wno-block-capture-autoreleasing -Wno-strict-prototypes -Wno-semicolon-before-method-body -v -Wl,-v @/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/7187679823f38a2a940e0043cdf9d637-common-args.resp -MMD -MT dependencies -MF /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/CMakeCCompilerABI.d --serialize-diagnostics /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/CMakeCCompilerABI.dia -c /opt/homebrew/lib/python3.11/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeCCompilerABI.c -o /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/CMakeCCompilerABI.o
+        Apple clang version 15.0.0 (clang-1500.3.9.4)
+        Target: arm64-apple-macos14.5
+        Thread model: posix
+        InstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin
+        clang: warning: -Wl,-v: 'linker' input unused [-Wunused-command-line-argument]
+         "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang" -cc1 -triple arm64-apple-macosx14.5.0 -Wundef-prefix=TARGET_OS_ -Wdeprecated-objc-isa-usage -Werror=deprecated-objc-isa-usage -Werror=implicit-function-declaration -emit-obj -mrelax-all --mrelax-relocations -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name CMakeCCompilerABI.c -mrelocation-model pic -pic-level 2 -mframe-pointer=non-leaf -fno-strict-return -ffp-contract=on -fno-rounding-math -funwind-tables=1 -fobjc-msgsend-selector-stubs -target-sdk-version=14.5 -fvisibility-inlines-hidden-static-local-var -target-cpu apple-m1 -target-feature +v8.5a -target-feature +crc -target-feature +lse -target-feature +rdm -target-feature +crypto -target-feature +dotprod -target-feature +fp-armv8 -target-feature +neon -target-feature +fp16fml -target-feature +ras -target-feature +rcpc -target-feature +zcm -target-feature +zcz -target-feature +fullfp16 -target-feature +sm4 -target-feature +sha3 -target-feature +sha2 -target-feature +aes -target-abi darwinpcs -debug-info-kind=standalone -dwarf-version=4 -debugger-tuning=lldb -target-linker-version 1053.12 -v -fcoverage-compilation-dir=/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA -resource-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0 -dependency-file /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/CMakeCCompilerABI.d -skip-unused-modulemap-deps -MT dependencies -ivfsstatcache /var/folders/pj/39ntzx3s2zg1gpwh_t6kg9gw0000gn/C/com.apple.DeveloperTools/15.4-15F31d/Xcode/SDKStatCaches.noindex/macosx14.5-23F73-7e3fd6dc4171e65dbd154ba8db3956d2.sdkstatcache -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -D "CMAKE_INTDIR=\\"Debug\\"" -I /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug/include -I /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/DerivedSources-normal/arm64 -I /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/DerivedSources/arm64 -I /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/DerivedSources -F/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug -internal-isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/local/include -internal-isystem /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include -internal-externc-isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/include -internal-externc-isystem /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -O0 -Wno-trigraphs -Wno-missing-field-initializers -Wno-missing-prototypes -Wno-return-type -Wno-missing-braces -Wparentheses -Wswitch -Wno-unused-function -Wno-unused-label -Wno-unused-parameter -Wno-unused-variable -Wunused-value -Wno-empty-body -Wno-uninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wno-constant-conversion -Wno-int-conversion -Wno-bool-conversion -Wno-enum-conversion -Wno-float-conversion -Wno-non-literal-null-conversion -Wno-objc-literal-conversion -Wshorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-implicit-fallthrough -Wdeprecated-declarations -Wno-sign-conversion -Wno-infinite-recursion -Wno-comma -Wno-block-capture-autoreleasing -Wno-strict-prototypes -Wno-semicolon-before-method-body -Wno-reorder-init-list -Wno-implicit-int-float-conversion -Wno-c99-designator -Wno-final-dtor-non-final-class -Wno-extra-semi-stmt -Wno-misleading-indentation -Wno-quoted-include-in-framework-header -Wno-implicit-fallthrough -Wno-enum-enum-conversion -Wno-enum-float-conversion -Wno-elaborated-enum-base -Wno-reserved-identifier -Wno-gnu-folding-constant -fdebug-compilation-dir=/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA -ferror-limit 19 -fmacro-backtrace-limit 0 -stack-protector 1 -fstack-check -mdarwin-stkchk-strong-link -fblocks -fencode-extended-block-signature -fregister-global-dtors-with-atexit -fgnuc-version=4.2.1 -fpascal-strings -fmax-type-align=16 -fcommon -fdiagnostics-show-note-include-stack -serialize-diagnostic-file /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/CMakeCCompilerABI.dia -clang-vendor-feature=+disableNonDependentMemberExprInCurrentInstantiation -fno-odr-hash-protocols -clang-vendor-feature=+enableAggressiveVLAFolding -clang-vendor-feature=+revert09abecef7bbf -clang-vendor-feature=+thisNoAlignAttr -clang-vendor-feature=+thisNoNullAttr -mllvm -disable-aligned-alloc-awareness=1 -D__GCC_HAVE_DWARF2_CFI_ASM=1 -o /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/CMakeCCompilerABI.o -x c /opt/homebrew/lib/python3.11/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeCCompilerABI.c
+        clang -cc1 version 15.0.0 (clang-1500.3.9.4) default target arm64-apple-darwin23.5.0
+        ignoring nonexistent directory "/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug/include"
+        ignoring nonexistent directory "/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/DerivedSources-normal/arm64"
+        ignoring nonexistent directory "/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/DerivedSources/arm64"
+        ignoring nonexistent directory "/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/DerivedSources"
+        ignoring nonexistent directory "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/local/include"
+        ignoring nonexistent directory "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/Library/Frameworks"
+        #include "..." search starts here:
+        #include <...> search starts here:
+         /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug (framework directory)
+         /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include
+         /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/include
+         /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include
+         /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/System/Library/Frameworks (framework directory)
+        End of search list.
+        
+        Ld /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug/cmTC_a8925 normal (in target 'cmTC_a8925' from project 'CMAKE_TRY_COMPILE')
+            cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA
+            /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos14.5 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -O0 -L/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/EagerLinkingTBDs/Debug -L/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug -F/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/EagerLinkingTBDs/Debug -F/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug -filelist /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/cmTC_a8925.LinkFileList -Xlinker -object_path_lto -Xlinker /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/cmTC_a8925_lto.o -Xlinker -no_deduplicate -v -Wl,-v -Wl,-search_paths_first -Wl,-headerpad_max_install_names -Xlinker -dependency_info -Xlinker /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/cmTC_a8925_dependency_info.dat -o /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug/cmTC_a8925
+        Apple clang version 15.0.0 (clang-1500.3.9.4)
+        Target: arm64-apple-macos14.5
+        Thread model: posix
+        InstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin
+         "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld" -demangle -lto_library /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libLTO.dylib -no_deduplicate -dynamic -arch arm64 -platform_version macos 14.5.0 14.5 -syslibroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -O0 -o /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug/cmTC_a8925 -L/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/EagerLinkingTBDs/Debug -L/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug -reproducible -filelist /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/cmTC_a8925.LinkFileList -object_path_lto /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/cmTC_a8925_lto.o -no_deduplicate -v -search_paths_first -headerpad_max_install_names -dependency_info /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/cmTC_a8925_dependency_info.dat -lSystem /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/lib/darwin/libclang_rt.osx.a -F/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/EagerLinkingTBDs/Debug -F/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug
+        @(#)PROGRAM:ld PROJECT:ld-1053.12
+        BUILD 10:15:51 Mar 29 2024
+        configured to support archs: armv6 armv7 armv7s arm64 arm64e arm64_32 i386 x86_64 x86_64h armv6m armv7k armv7m armv7em
+        will use ld-classic for: armv6 armv7 armv7s arm64_32 i386 armv6m armv7k armv7m armv7em
+        LTO support using: LLVM version 15.0.0 (static support for 29, runtime is 29)
+        TAPI support using: Apple TAPI version 15.0.0 (tapi-1500.3.2.2)
+        Library search paths:
+        	/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/EagerLinkingTBDs/Debug
+        	/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug
+        	/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/lib
+        	/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/lib/swift
+        Framework search paths:
+        	/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/EagerLinkingTBDs/Debug
+        	/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug
+        	/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/System/Library/Frameworks
+        
+        RegisterExecutionPolicyException /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug/cmTC_a8925 (in target 'cmTC_a8925' from project 'CMAKE_TRY_COMPILE')
+            cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA
+            builtin-RegisterExecutionPolicyException /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug/cmTC_a8925
+        
+        ** BUILD SUCCEEDED **
+        
+        
+      exitCode: 0
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/opt/homebrew/lib/python3.11/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeDetermineCompilerABI.cmake:127 (message)"
+      - "/opt/homebrew/lib/python3.11/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "TinyInst/third_party/CMakeLists.txt:19 (project)"
+    message: |
+      Parsed C implicit include dir info: rv=done
+        found start of include info
+        found start of implicit include info
+          add: [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include]
+          add: [/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/include]
+          add: [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include]
+        end of search list found
+        collapse include dir [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include] ==> [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include]
+        collapse include dir [/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/include] ==> [/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/include]
+        collapse include dir [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include] ==> [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include]
+        implicit include dirs: [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include;/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/include;/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include]
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/opt/homebrew/lib/python3.11/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeDetermineCompilerABI.cmake:152 (message)"
+      - "/opt/homebrew/lib/python3.11/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "TinyInst/third_party/CMakeLists.txt:19 (project)"
+    message: |
+      Parsed C implicit link information:
+        link line regex: [^( *|.*[/\\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        ignore line: [Change Dir: '/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA']
+        ignore line: []
+        ignore line: [Run Build Command(s): /usr/bin/xcodebuild -project CMAKE_TRY_COMPILE.xcodeproj build -target cmTC_a8925 -parallelizeTargets -configuration Debug -hideShellScriptEnvironment]
+        ignore line: [Command line invocation:]
+        ignore line: [    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project CMAKE_TRY_COMPILE.xcodeproj build -target cmTC_a8925 -parallelizeTargets -configuration Debug -hideShellScriptEnvironment]
+        ignore line: []
+        ignore line: [User defaults from command line:]
+        ignore line: [    HideShellScriptEnvironment = YES]
+        ignore line: [    IDEPackageSupportUseBuiltinSCM = YES]
+        ignore line: []
+        ignore line: [ComputeTargetDependencyGraph]
+        ignore line: [note: Building targets in dependency order]
+        ignore line: [note: Target dependency graph (1 target)]
+        ignore line: [    Target 'cmTC_a8925' in project 'CMAKE_TRY_COMPILE' (no dependencies)]
+        ignore line: []
+        ignore line: [GatherProvisioningInputs]
+        ignore line: []
+        ignore line: [CreateBuildDescription]
+        ignore line: []
+        ignore line: [ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -x c -c /dev/null]
+        ignore line: []
+        ignore line: [ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -x c -c /dev/null]
+        ignore line: []
+        ignore line: [ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details]
+        ignore line: []
+        ignore line: [Build description signature: bb5b8deb752525eb704fe4a3c62dfa23]
+        ignore line: [Build description path: /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/XCBuildData/bb5b8deb752525eb704fe4a3c62dfa23.xcbuilddata]
+        ignore line: [CreateBuildDirectory /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build]
+        ignore line: [    cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/CMAKE_TRY_COMPILE.xcodeproj]
+        ignore line: [    builtin-create-build-directory /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build]
+        ignore line: []
+        ignore line: [CreateBuildDirectory /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug]
+        ignore line: [    cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/CMAKE_TRY_COMPILE.xcodeproj]
+        ignore line: [    builtin-create-build-directory /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug]
+        ignore line: []
+        ignore line: [ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk /var/folders/pj/39ntzx3s2zg1gpwh_t6kg9gw0000gn/C/com.apple.DeveloperTools/15.4-15F31d/Xcode/SDKStatCaches.noindex/macosx14.5-23F73-7e3fd6dc4171e65dbd154ba8db3956d2.sdkstatcache]
+        ignore line: [    cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/CMAKE_TRY_COMPILE.xcodeproj]
+        ignore line: [    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -o /var/folders/pj/39ntzx3s2zg1gpwh_t6kg9gw0000gn/C/com.apple.DeveloperTools/15.4-15F31d/Xcode/SDKStatCaches.noindex/macosx14.5-23F73-7e3fd6dc4171e65dbd154ba8db3956d2.sdkstatcache]
+        ignore line: []
+        ignore line: [CreateBuildDirectory /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/EagerLinkingTBDs/Debug]
+        ignore line: [    cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/CMAKE_TRY_COMPILE.xcodeproj]
+        ignore line: [    builtin-create-build-directory /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/EagerLinkingTBDs/Debug]
+        ignore line: []
+        ignore line: [WriteAuxiliaryFile /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/cmTC_a8925.LinkFileList (in target 'cmTC_a8925' from project 'CMAKE_TRY_COMPILE')]
+        ignore line: [    cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA]
+        ignore line: [    write-file /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/cmTC_a8925.LinkFileList]
+        ignore line: []
+        ignore line: [WriteAuxiliaryFile /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/7187679823f38a2a940e0043cdf9d637-common-args.resp (in target 'cmTC_a8925' from project 'CMAKE_TRY_COMPILE')]
+        ignore line: [    cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA]
+        ignore line: [    write-file /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/7187679823f38a2a940e0043cdf9d637-common-args.resp]
+        ignore line: [-target arm64-apple-macos14.5 -fpascal-strings -O0 '-DCMAKE_INTDIR="Debug"' -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -g -I/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug/include -I/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/DerivedSources-normal/arm64 -I/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/DerivedSources/arm64 -I/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/DerivedSources -F/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug]
+        ignore line: []
+        ignore line: [CompileC /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/CMakeCCompilerABI.o /opt/homebrew/lib/python3.11/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeCCompilerABI.c normal arm64 c com.apple.compilers.llvm.clang.1_0.compiler (in target 'cmTC_a8925' from project 'CMAKE_TRY_COMPILE')]
+        ignore line: [    cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA]
+        ignore line: [    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x c -ivfsstatcache /var/folders/pj/39ntzx3s2zg1gpwh_t6kg9gw0000gn/C/com.apple.DeveloperTools/15.4-15F31d/Xcode/SDKStatCaches.noindex/macosx14.5-23F73-7e3fd6dc4171e65dbd154ba8db3956d2.sdkstatcache -fmessage-length\\=0 -fdiagnostics-show-note-include-stack -fmacro-backtrace-limit\\=0 -fno-color-diagnostics -Wno-trigraphs -Wno-missing-field-initializers -Wno-missing-prototypes -Wno-return-type -Wno-missing-braces -Wparentheses -Wswitch -Wno-unused-function -Wno-unused-label -Wno-unused-parameter -Wno-unused-variable -Wunused-value -Wno-empty-body -Wno-uninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wno-constant-conversion -Wno-int-conversion -Wno-bool-conversion -Wno-enum-conversion -Wno-float-conversion -Wno-non-literal-null-conversion -Wno-objc-literal-conversion -Wshorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-implicit-fallthrough -fstrict-aliasing -Wdeprecated-declarations -Wno-sign-conversion -Wno-infinite-recursion -Wno-comma -Wno-block-capture-autoreleasing -Wno-strict-prototypes -Wno-semicolon-before-method-body -v -Wl -v @/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/7187679823f38a2a940e0043cdf9d637-common-args.resp -MMD -MT dependencies -MF /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/CMakeCCompilerABI.d --serialize-diagnostics /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/CMakeCCompilerABI.dia -c /opt/homebrew/lib/python3.11/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeCCompilerABI.c -o /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/CMakeCCompilerABI.o]
+        ignore line: [Apple clang version 15.0.0 (clang-1500.3.9.4)]
+        ignore line: [Target: arm64-apple-macos14.5]
+        ignore line: [Thread model: posix]
+        ignore line: [InstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin]
+        ignore line: [clang: warning: -Wl -v: 'linker' input unused [-Wunused-command-line-argument]]
+        ignore line: [ "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang" -cc1 -triple arm64-apple-macosx14.5.0 -Wundef-prefix=TARGET_OS_ -Wdeprecated-objc-isa-usage -Werror=deprecated-objc-isa-usage -Werror=implicit-function-declaration -emit-obj -mrelax-all --mrelax-relocations -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name CMakeCCompilerABI.c -mrelocation-model pic -pic-level 2 -mframe-pointer=non-leaf -fno-strict-return -ffp-contract=on -fno-rounding-math -funwind-tables=1 -fobjc-msgsend-selector-stubs -target-sdk-version=14.5 -fvisibility-inlines-hidden-static-local-var -target-cpu apple-m1 -target-feature +v8.5a -target-feature +crc -target-feature +lse -target-feature +rdm -target-feature +crypto -target-feature +dotprod -target-feature +fp-armv8 -target-feature +neon -target-feature +fp16fml -target-feature +ras -target-feature +rcpc -target-feature +zcm -target-feature +zcz -target-feature +fullfp16 -target-feature +sm4 -target-feature +sha3 -target-feature +sha2 -target-feature +aes -target-abi darwinpcs -debug-info-kind=standalone -dwarf-version=4 -debugger-tuning=lldb -target-linker-version 1053.12 -v -fcoverage-compilation-dir=/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA -resource-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0 -dependency-file /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/CMakeCCompilerABI.d -skip-unused-modulemap-deps -MT dependencies -ivfsstatcache /var/folders/pj/39ntzx3s2zg1gpwh_t6kg9gw0000gn/C/com.apple.DeveloperTools/15.4-15F31d/Xcode/SDKStatCaches.noindex/macosx14.5-23F73-7e3fd6dc4171e65dbd154ba8db3956d2.sdkstatcache -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -D "CMAKE_INTDIR=\\"Debug\\"" -I /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug/include -I /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/DerivedSources-normal/arm64 -I /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/DerivedSources/arm64 -I /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/DerivedSources -F/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug -internal-isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/local/include -internal-isystem /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include -internal-externc-isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/include -internal-externc-isystem /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -O0 -Wno-trigraphs -Wno-missing-field-initializers -Wno-missing-prototypes -Wno-return-type -Wno-missing-braces -Wparentheses -Wswitch -Wno-unused-function -Wno-unused-label -Wno-unused-parameter -Wno-unused-variable -Wunused-value -Wno-empty-body -Wno-uninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wno-constant-conversion -Wno-int-conversion -Wno-bool-conversion -Wno-enum-conversion -Wno-float-conversion -Wno-non-literal-null-conversion -Wno-objc-literal-conversion -Wshorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-implicit-fallthrough -Wdeprecated-declarations -Wno-sign-conversion -Wno-infinite-recursion -Wno-comma -Wno-block-capture-autoreleasing -Wno-strict-prototypes -Wno-semicolon-before-method-body -Wno-reorder-init-list -Wno-implicit-int-float-conversion -Wno-c99-designator -Wno-final-dtor-non-final-class -Wno-extra-semi-stmt -Wno-misleading-indentation -Wno-quoted-include-in-framework-header -Wno-implicit-fallthrough -Wno-enum-enum-conversion -Wno-enum-float-conversion -Wno-elaborated-enum-base -Wno-reserved-identifier -Wno-gnu-folding-constant -fdebug-compilation-dir=/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA -ferror-limit 19 -fmacro-backtrace-limit 0 -stack-protector 1 -fstack-check -mdarwin-stkchk-strong-link -fblocks -fencode-extended-block-signature -fregister-global-dtors-with-atexit -fgnuc-version=4.2.1 -fpascal-strings -fmax-type-align=16 -fcommon -fdiagnostics-show-note-include-stack -serialize-diagnostic-file /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/CMakeCCompilerABI.dia -clang-vendor-feature=+disableNonDependentMemberExprInCurrentInstantiation -fno-odr-hash-protocols -clang-vendor-feature=+enableAggressiveVLAFolding -clang-vendor-feature=+revert09abecef7bbf -clang-vendor-feature=+thisNoAlignAttr -clang-vendor-feature=+thisNoNullAttr -mllvm -disable-aligned-alloc-awareness=1 -D__GCC_HAVE_DWARF2_CFI_ASM=1 -o /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/CMakeCCompilerABI.o -x c /opt/homebrew/lib/python3.11/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeCCompilerABI.c]
+        ignore line: [clang -cc1 version 15.0.0 (clang-1500.3.9.4) default target arm64-apple-darwin23.5.0]
+        ignore line: [ignoring nonexistent directory "/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug/include"]
+        ignore line: [ignoring nonexistent directory "/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/DerivedSources-normal/arm64"]
+        ignore line: [ignoring nonexistent directory "/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/DerivedSources/arm64"]
+        ignore line: [ignoring nonexistent directory "/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/DerivedSources"]
+        ignore line: [ignoring nonexistent directory "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/local/include"]
+        ignore line: [ignoring nonexistent directory "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/Library/Frameworks"]
+        ignore line: [#include "..." search starts here:]
+        ignore line: [#include <...> search starts here:]
+        ignore line: [ /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug (framework directory)]
+        ignore line: [ /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include]
+        ignore line: [ /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/include]
+        ignore line: [ /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include]
+        ignore line: [ /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/System/Library/Frameworks (framework directory)]
+        ignore line: [End of search list.]
+        ignore line: []
+        ignore line: [Ld /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug/cmTC_a8925 normal (in target 'cmTC_a8925' from project 'CMAKE_TRY_COMPILE')]
+        ignore line: [    cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA]
+        ignore line: [    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos14.5 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -O0 -L/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/EagerLinkingTBDs/Debug -L/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug -F/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/EagerLinkingTBDs/Debug -F/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug -filelist /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/cmTC_a8925.LinkFileList -Xlinker -object_path_lto -Xlinker /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/cmTC_a8925_lto.o -Xlinker -no_deduplicate -v -Wl -v -Wl -search_paths_first -Wl -headerpad_max_install_names -Xlinker -dependency_info -Xlinker /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/cmTC_a8925_dependency_info.dat -o /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug/cmTC_a8925]
+        ignore line: [Apple clang version 15.0.0 (clang-1500.3.9.4)]
+        ignore line: [Target: arm64-apple-macos14.5]
+        ignore line: [Thread model: posix]
+        ignore line: [InstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin]
+        reduced line: [ "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld" -demangle -lto_library /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libLTO.dylib -no_deduplicate -dynamic -arch arm64 -platform_version macos 14.5.0 14.5 -syslibroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -O0 -o /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug/cmTC_a8925 -L/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/EagerLinkingTBDs/Debug -L/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug -reproducible -filelist /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/cmTC_a8925.LinkFileList -object_path_lto /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/cmTC_a8925_lto.o -no_deduplicate -v -search_paths_first -headerpad_max_install_names -dependency_info /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/cmTC_a8925_dependency_info.dat -lSystem /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/lib/darwin/libclang_rt.osx.a -F/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/EagerLinkingTBDs/Debug -F/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug]
+                  to: [ "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld" -demangle -lto_library /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libLTO.dylib -no_deduplicate -dynamic -arch arm64 -platform_version macos 14.5.0 14.5 -syslibroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -O0 -o /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug/cmTC_a8925 -L/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug -reproducible -filelist /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/cmTC_a8925.LinkFileList -object_path_lto /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/cmTC_a8925_lto.o -no_deduplicate -v -search_paths_first -headerpad_max_install_names -dependency_info /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/cmTC_a8925_dependency_info.dat -lSystem /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/lib/darwin/libclang_rt.osx.a -F/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug]
+        link line: [ "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld" -demangle -lto_library /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libLTO.dylib -no_deduplicate -dynamic -arch arm64 -platform_version macos 14.5.0 14.5 -syslibroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -O0 -o /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug/cmTC_a8925 -L/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug -reproducible -filelist /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/cmTC_a8925.LinkFileList -object_path_lto /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/cmTC_a8925_lto.o -no_deduplicate -v -search_paths_first -headerpad_max_install_names -dependency_info /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/cmTC_a8925_dependency_info.dat -lSystem /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/lib/darwin/libclang_rt.osx.a -F/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug]
+          arg [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld] ==> ignore
+          arg [-demangle] ==> ignore
+          arg [-lto_library] ==> ignore, skip following value
+          arg [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libLTO.dylib] ==> skip value of -lto_library
+          arg [-no_deduplicate] ==> ignore
+          arg [-dynamic] ==> ignore
+          arg [-arch] ==> ignore
+          arg [arm64] ==> ignore
+          arg [-platform_version] ==> ignore
+          arg [macos] ==> ignore
+          arg [14.5.0] ==> ignore
+          arg [14.5] ==> ignore
+          arg [-syslibroot] ==> ignore
+          arg [/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk] ==> ignore
+          arg [-O0] ==> ignore
+          arg [-o] ==> ignore
+          arg [/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug/cmTC_a8925] ==> ignore
+          arg [-L/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug] ==> dir [/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug]
+          arg [-reproducible] ==> ignore
+          arg [-filelist] ==> ignore
+          arg [/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/cmTC_a8925.LinkFileList] ==> ignore
+          arg [-object_path_lto] ==> ignore
+          arg [/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/cmTC_a8925_lto.o] ==> obj [/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/cmTC_a8925_lto.o]
+          arg [-no_deduplicate] ==> ignore
+          arg [-v] ==> ignore
+          arg [-search_paths_first] ==> ignore
+          arg [-headerpad_max_install_names] ==> ignore
+          arg [-dependency_info] ==> ignore
+          arg [/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/cmTC_a8925_dependency_info.dat] ==> ignore
+          arg [-lSystem] ==> lib [System]
+          arg [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/lib/darwin/libclang_rt.osx.a] ==> lib [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/lib/darwin/libclang_rt.osx.a]
+          arg [-F/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug] ==> ignore
+        Library search paths: [;/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/EagerLinkingTBDs/Debug;/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug;/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/lib;/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/lib/swift]
+        Framework search paths: [;/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/EagerLinkingTBDs/Debug;/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug;/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/System/Library/Frameworks]
+        remove lib [System]
+        remove lib [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/lib/darwin/libclang_rt.osx.a]
+        collapse library dir [/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug] ==> [/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug], skipping non-system directory
+        collapse library dir [/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/EagerLinkingTBDs/Debug] ==> [/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/EagerLinkingTBDs/Debug], skipping non-system directory
+        collapse library dir [/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug] ==> [/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug], skipping non-system directory
+        collapse library dir [/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/lib] ==> [/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/lib]
+        collapse library dir [/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/lib/swift] ==> [/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/lib/swift]
+        collapse framework dir [/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/EagerLinkingTBDs/Debug] ==> [/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/EagerLinkingTBDs/Debug], skipping non-system directory
+        collapse framework dir [/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug] ==> [/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/Debug], skipping non-system directory
+        collapse framework dir [/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/System/Library/Frameworks] ==> [/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/System/Library/Frameworks]
+        implicit libs: []
+        implicit objs: [/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-DaijGA/build/cmTC_a8925.build/Debug/Objects-normal/arm64/cmTC_a8925_lto.o]
+        implicit dirs: [/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/lib;/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/lib/swift]
+        implicit fwks: [/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/System/Library/Frameworks]
+      
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/opt/homebrew/lib/python3.11/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeDetermineCompilerABI.cmake:57 (try_compile)"
+      - "/opt/homebrew/lib/python3.11/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "TinyInst/third_party/CMakeLists.txt:19 (project)"
+    checks:
+      - "Detecting CXX compiler ABI info"
+    directories:
+      source: "/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F"
+      binary: "/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_OSX_ARCHITECTURES: ""
+      CMAKE_OSX_DEPLOYMENT_TARGET: ""
+      CMAKE_OSX_SYSROOT: "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk"
+    buildResult:
+      variable: "CMAKE_CXX_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: '/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F'
+        
+        Run Build Command(s): /usr/bin/xcodebuild -project CMAKE_TRY_COMPILE.xcodeproj build -target cmTC_a35c0 -parallelizeTargets -configuration Debug -hideShellScriptEnvironment
+        Command line invocation:
+            /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project CMAKE_TRY_COMPILE.xcodeproj build -target cmTC_a35c0 -parallelizeTargets -configuration Debug -hideShellScriptEnvironment
+        
+        User defaults from command line:
+            HideShellScriptEnvironment = YES
+            IDEPackageSupportUseBuiltinSCM = YES
+        
+        ComputeTargetDependencyGraph
+        note: Building targets in dependency order
+        note: Target dependency graph (1 target)
+            Target 'cmTC_a35c0' in project 'CMAKE_TRY_COMPILE' (no dependencies)
+        
+        GatherProvisioningInputs
+        
+        CreateBuildDescription
+        
+        ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -x c -c /dev/null
+        
+        ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -x c++ -c /dev/null
+        
+        ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -x c -c /dev/null
+        
+        ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+        
+        Build description signature: 58560ed74c92326c00491b5b43483fd8
+        Build description path: /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/XCBuildData/58560ed74c92326c00491b5b43483fd8.xcbuilddata
+        CreateBuildDirectory /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build
+            cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/CMAKE_TRY_COMPILE.xcodeproj
+            builtin-create-build-directory /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build
+        
+        CreateBuildDirectory /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug
+            cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/CMAKE_TRY_COMPILE.xcodeproj
+            builtin-create-build-directory /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug
+        
+        ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk /var/folders/pj/39ntzx3s2zg1gpwh_t6kg9gw0000gn/C/com.apple.DeveloperTools/15.4-15F31d/Xcode/SDKStatCaches.noindex/macosx14.5-23F73-7e3fd6dc4171e65dbd154ba8db3956d2.sdkstatcache
+            cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/CMAKE_TRY_COMPILE.xcodeproj
+            /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -o /var/folders/pj/39ntzx3s2zg1gpwh_t6kg9gw0000gn/C/com.apple.DeveloperTools/15.4-15F31d/Xcode/SDKStatCaches.noindex/macosx14.5-23F73-7e3fd6dc4171e65dbd154ba8db3956d2.sdkstatcache
+        
+        CreateBuildDirectory /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/EagerLinkingTBDs/Debug
+            cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/CMAKE_TRY_COMPILE.xcodeproj
+            builtin-create-build-directory /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/EagerLinkingTBDs/Debug
+        
+        WriteAuxiliaryFile /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/cmTC_a35c0.LinkFileList (in target 'cmTC_a35c0' from project 'CMAKE_TRY_COMPILE')
+            cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F
+            write-file /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/cmTC_a35c0.LinkFileList
+        
+        WriteAuxiliaryFile /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/82b82416624d2658e5098eb0a28c15c5-common-args.resp (in target 'cmTC_a35c0' from project 'CMAKE_TRY_COMPILE')
+            cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F
+            write-file /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/82b82416624d2658e5098eb0a28c15c5-common-args.resp
+        -target arm64-apple-macos14.5 -fpascal-strings -O0 '-DCMAKE_INTDIR="Debug"' -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -g -I/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug/include -I/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/DerivedSources-normal/arm64 -I/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/DerivedSources/arm64 -I/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/DerivedSources -F/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug
+        
+        CompileC /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/CMakeCXXCompilerABI.o /opt/homebrew/lib/python3.11/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeCXXCompilerABI.cpp normal arm64 c++ com.apple.compilers.llvm.clang.1_0.compiler (in target 'cmTC_a35c0' from project 'CMAKE_TRY_COMPILE')
+            cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F
+            /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x c++ -ivfsstatcache /var/folders/pj/39ntzx3s2zg1gpwh_t6kg9gw0000gn/C/com.apple.DeveloperTools/15.4-15F31d/Xcode/SDKStatCaches.noindex/macosx14.5-23F73-7e3fd6dc4171e65dbd154ba8db3956d2.sdkstatcache -fmessage-length\\=0 -fdiagnostics-show-note-include-stack -fmacro-backtrace-limit\\=0 -fno-color-diagnostics -Wno-trigraphs -Wno-missing-field-initializers -Wno-missing-prototypes -Wno-return-type -Wno-non-virtual-dtor -Wno-overloaded-virtual -Wno-exit-time-destructors -Wno-missing-braces -Wparentheses -Wswitch -Wno-unused-function -Wno-unused-label -Wno-unused-parameter -Wno-unused-variable -Wunused-value -Wno-empty-body -Wno-uninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wno-constant-conversion -Wno-int-conversion -Wno-bool-conversion -Wno-enum-conversion -Wno-float-conversion -Wno-non-literal-null-conversion -Wno-objc-literal-conversion -Wshorten-64-to-32 -Wno-newline-eof -Wno-c++11-extensions -Wno-implicit-fallthrough -fstrict-aliasing -Wdeprecated-declarations -Winvalid-offsetof -Wno-sign-conversion -Wno-infinite-recursion -Wno-move -Wno-comma -Wno-block-capture-autoreleasing -Wno-strict-prototypes -Wno-range-loop-analysis -Wno-semicolon-before-method-body -v -Wl,-v @/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/82b82416624d2658e5098eb0a28c15c5-common-args.resp -MMD -MT dependencies -MF /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/CMakeCXXCompilerABI.d --serialize-diagnostics /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/CMakeCXXCompilerABI.dia -c /opt/homebrew/lib/python3.11/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeCXXCompilerABI.cpp -o /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/CMakeCXXCompilerABI.o
+        Apple clang version 15.0.0 (clang-1500.3.9.4)
+        Target: arm64-apple-macos14.5
+        Thread model: posix
+        InstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin
+        clang: warning: -Wl,-v: 'linker' input unused [-Wunused-command-line-argument]
+         "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang" -cc1 -triple arm64-apple-macosx14.5.0 -Wundef-prefix=TARGET_OS_ -Wdeprecated-objc-isa-usage -Werror=deprecated-objc-isa-usage -Werror=implicit-function-declaration -emit-obj -mrelax-all --mrelax-relocations -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name CMakeCXXCompilerABI.cpp -mrelocation-model pic -pic-level 2 -mframe-pointer=non-leaf -fno-strict-return -ffp-contract=on -fno-rounding-math -funwind-tables=1 -fobjc-msgsend-selector-stubs -target-sdk-version=14.5 -fvisibility-inlines-hidden-static-local-var -target-cpu apple-m1 -target-feature +v8.5a -target-feature +crc -target-feature +lse -target-feature +rdm -target-feature +crypto -target-feature +dotprod -target-feature +fp-armv8 -target-feature +neon -target-feature +fp16fml -target-feature +ras -target-feature +rcpc -target-feature +zcm -target-feature +zcz -target-feature +fullfp16 -target-feature +sm4 -target-feature +sha3 -target-feature +sha2 -target-feature +aes -target-abi darwinpcs -debug-info-kind=standalone -dwarf-version=4 -debugger-tuning=lldb -target-linker-version 1053.12 -v -fcoverage-compilation-dir=/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F -resource-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0 -dependency-file /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/CMakeCXXCompilerABI.d -skip-unused-modulemap-deps -MT dependencies -ivfsstatcache /var/folders/pj/39ntzx3s2zg1gpwh_t6kg9gw0000gn/C/com.apple.DeveloperTools/15.4-15F31d/Xcode/SDKStatCaches.noindex/macosx14.5-23F73-7e3fd6dc4171e65dbd154ba8db3956d2.sdkstatcache -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -D "CMAKE_INTDIR=\\"Debug\\"" -I /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug/include -I /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/DerivedSources-normal/arm64 -I /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/DerivedSources/arm64 -I /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/DerivedSources -F/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug -internal-isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/include/c++/v1 -internal-isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/local/include -internal-isystem /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include -internal-externc-isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/include -internal-externc-isystem /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -O0 -Wno-trigraphs -Wno-missing-field-initializers -Wno-missing-prototypes -Wno-return-type -Wno-non-virtual-dtor -Wno-overloaded-virtual -Wno-exit-time-destructors -Wno-missing-braces -Wparentheses -Wswitch -Wno-unused-function -Wno-unused-label -Wno-unused-parameter -Wno-unused-variable -Wunused-value -Wno-empty-body -Wno-uninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wno-constant-conversion -Wno-int-conversion -Wno-bool-conversion -Wno-enum-conversion -Wno-float-conversion -Wno-non-literal-null-conversion -Wno-objc-literal-conversion -Wshorten-64-to-32 -Wno-newline-eof -Wno-c++11-extensions -Wno-implicit-fallthrough -Wdeprecated-declarations -Winvalid-offsetof -Wno-sign-conversion -Wno-infinite-recursion -Wno-move -Wno-comma -Wno-block-capture-autoreleasing -Wno-strict-prototypes -Wno-range-loop-analysis -Wno-semicolon-before-method-body -Wno-reorder-init-list -Wno-implicit-int-float-conversion -Wno-c99-designator -Wno-final-dtor-non-final-class -Wno-extra-semi-stmt -Wno-misleading-indentation -Wno-quoted-include-in-framework-header -Wno-implicit-fallthrough -Wno-enum-enum-conversion -Wno-enum-float-conversion -Wno-elaborated-enum-base -Wno-reserved-identifier -Wno-gnu-folding-constant -fdeprecated-macro -fdebug-compilation-dir=/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F -ferror-limit 19 -fmacro-backtrace-limit 0 -stack-protector 1 -fstack-check -mdarwin-stkchk-strong-link -fblocks -fencode-extended-block-signature -fregister-global-dtors-with-atexit -fgnuc-version=4.2.1 -fno-cxx-modules -fcxx-exceptions -fexceptions -fpascal-strings -fmax-type-align=16 -fcommon -fdiagnostics-show-note-include-stack -serialize-diagnostic-file /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/CMakeCXXCompilerABI.dia -clang-vendor-feature=+disableNonDependentMemberExprInCurrentInstantiation -fno-odr-hash-protocols -clang-vendor-feature=+enableAggressiveVLAFolding -clang-vendor-feature=+revert09abecef7bbf -clang-vendor-feature=+thisNoAlignAttr -clang-vendor-feature=+thisNoNullAttr -mllvm -disable-aligned-alloc-awareness=1 -D__GCC_HAVE_DWARF2_CFI_ASM=1 -o /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/CMakeCXXCompilerABI.o -x c++ /opt/homebrew/lib/python3.11/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeCXXCompilerABI.cpp
+        clang -cc1 version 15.0.0 (clang-1500.3.9.4) default target arm64-apple-darwin23.5.0
+        ignoring nonexistent directory "/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug/include"
+        ignoring nonexistent directory "/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/DerivedSources-normal/arm64"
+        ignoring nonexistent directory "/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/DerivedSources/arm64"
+        ignoring nonexistent directory "/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/DerivedSources"
+        ignoring nonexistent directory "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/local/include"
+        ignoring nonexistent directory "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/Library/Frameworks"
+        #include "..." search starts here:
+        #include <...> search starts here:
+         /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug (framework directory)
+         /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/include/c++/v1
+         /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include
+         /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/include
+         /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include
+         /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/System/Library/Frameworks (framework directory)
+        End of search list.
+        
+        Ld /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug/cmTC_a35c0 normal (in target 'cmTC_a35c0' from project 'CMAKE_TRY_COMPILE')
+            cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F
+            /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++ -Xlinker -reproducible -target arm64-apple-macos14.5 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -O0 -L/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/EagerLinkingTBDs/Debug -L/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug -F/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/EagerLinkingTBDs/Debug -F/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug -filelist /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/cmTC_a35c0.LinkFileList -Xlinker -object_path_lto -Xlinker /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/cmTC_a35c0_lto.o -Xlinker -no_deduplicate -v -Wl,-v -Wl,-search_paths_first -Wl,-headerpad_max_install_names -Xlinker -dependency_info -Xlinker /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/cmTC_a35c0_dependency_info.dat -o /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug/cmTC_a35c0
+        Apple clang version 15.0.0 (clang-1500.3.9.4)
+        Target: arm64-apple-macos14.5
+        Thread model: posix
+        InstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin
+         "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld" -demangle -lto_library /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libLTO.dylib -no_deduplicate -dynamic -arch arm64 -platform_version macos 14.5.0 14.5 -syslibroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -O0 -o /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug/cmTC_a35c0 -L/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/EagerLinkingTBDs/Debug -L/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug -reproducible -filelist /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/cmTC_a35c0.LinkFileList -object_path_lto /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/cmTC_a35c0_lto.o -no_deduplicate -v -search_paths_first -headerpad_max_install_names -dependency_info /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/cmTC_a35c0_dependency_info.dat -lc++ -lSystem /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/lib/darwin/libclang_rt.osx.a -F/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/EagerLinkingTBDs/Debug -F/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug
+        @(#)PROGRAM:ld PROJECT:ld-1053.12
+        BUILD 10:15:51 Mar 29 2024
+        configured to support archs: armv6 armv7 armv7s arm64 arm64e arm64_32 i386 x86_64 x86_64h armv6m armv7k armv7m armv7em
+        will use ld-classic for: armv6 armv7 armv7s arm64_32 i386 armv6m armv7k armv7m armv7em
+        LTO support using: LLVM version 15.0.0 (static support for 29, runtime is 29)
+        TAPI support using: Apple TAPI version 15.0.0 (tapi-1500.3.2.2)
+        Library search paths:
+        	/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/EagerLinkingTBDs/Debug
+        	/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug
+        	/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/lib
+        	/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/lib/swift
+        Framework search paths:
+        	/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/EagerLinkingTBDs/Debug
+        	/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug
+        	/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/System/Library/Frameworks
+        
+        RegisterExecutionPolicyException /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug/cmTC_a35c0 (in target 'cmTC_a35c0' from project 'CMAKE_TRY_COMPILE')
+            cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F
+            builtin-RegisterExecutionPolicyException /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug/cmTC_a35c0
+        
+        ** BUILD SUCCEEDED **
+        
+        
+      exitCode: 0
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/opt/homebrew/lib/python3.11/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeDetermineCompilerABI.cmake:127 (message)"
+      - "/opt/homebrew/lib/python3.11/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "TinyInst/third_party/CMakeLists.txt:19 (project)"
+    message: |
+      Parsed CXX implicit include dir info: rv=done
+        found start of include info
+        found start of implicit include info
+          add: [/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/include/c++/v1]
+          add: [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include]
+          add: [/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/include]
+          add: [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include]
+        end of search list found
+        collapse include dir [/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/include/c++/v1] ==> [/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/include/c++/v1]
+        collapse include dir [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include] ==> [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include]
+        collapse include dir [/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/include] ==> [/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/include]
+        collapse include dir [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include] ==> [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include]
+        implicit include dirs: [/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/include/c++/v1;/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include;/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/include;/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include]
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/opt/homebrew/lib/python3.11/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeDetermineCompilerABI.cmake:152 (message)"
+      - "/opt/homebrew/lib/python3.11/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "TinyInst/third_party/CMakeLists.txt:19 (project)"
+    message: |
+      Parsed CXX implicit link information:
+        link line regex: [^( *|.*[/\\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        ignore line: [Change Dir: '/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F']
+        ignore line: []
+        ignore line: [Run Build Command(s): /usr/bin/xcodebuild -project CMAKE_TRY_COMPILE.xcodeproj build -target cmTC_a35c0 -parallelizeTargets -configuration Debug -hideShellScriptEnvironment]
+        ignore line: [Command line invocation:]
+        ignore line: [    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project CMAKE_TRY_COMPILE.xcodeproj build -target cmTC_a35c0 -parallelizeTargets -configuration Debug -hideShellScriptEnvironment]
+        ignore line: []
+        ignore line: [User defaults from command line:]
+        ignore line: [    HideShellScriptEnvironment = YES]
+        ignore line: [    IDEPackageSupportUseBuiltinSCM = YES]
+        ignore line: []
+        ignore line: [ComputeTargetDependencyGraph]
+        ignore line: [note: Building targets in dependency order]
+        ignore line: [note: Target dependency graph (1 target)]
+        ignore line: [    Target 'cmTC_a35c0' in project 'CMAKE_TRY_COMPILE' (no dependencies)]
+        ignore line: []
+        ignore line: [GatherProvisioningInputs]
+        ignore line: []
+        ignore line: [CreateBuildDescription]
+        ignore line: []
+        ignore line: [ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -x c -c /dev/null]
+        ignore line: []
+        ignore line: [ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -x c++ -c /dev/null]
+        ignore line: []
+        ignore line: [ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -x c -c /dev/null]
+        ignore line: []
+        ignore line: [ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details]
+        ignore line: []
+        ignore line: [Build description signature: 58560ed74c92326c00491b5b43483fd8]
+        ignore line: [Build description path: /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/XCBuildData/58560ed74c92326c00491b5b43483fd8.xcbuilddata]
+        ignore line: [CreateBuildDirectory /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build]
+        ignore line: [    cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/CMAKE_TRY_COMPILE.xcodeproj]
+        ignore line: [    builtin-create-build-directory /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build]
+        ignore line: []
+        ignore line: [CreateBuildDirectory /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug]
+        ignore line: [    cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/CMAKE_TRY_COMPILE.xcodeproj]
+        ignore line: [    builtin-create-build-directory /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug]
+        ignore line: []
+        ignore line: [ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk /var/folders/pj/39ntzx3s2zg1gpwh_t6kg9gw0000gn/C/com.apple.DeveloperTools/15.4-15F31d/Xcode/SDKStatCaches.noindex/macosx14.5-23F73-7e3fd6dc4171e65dbd154ba8db3956d2.sdkstatcache]
+        ignore line: [    cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/CMAKE_TRY_COMPILE.xcodeproj]
+        ignore line: [    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -o /var/folders/pj/39ntzx3s2zg1gpwh_t6kg9gw0000gn/C/com.apple.DeveloperTools/15.4-15F31d/Xcode/SDKStatCaches.noindex/macosx14.5-23F73-7e3fd6dc4171e65dbd154ba8db3956d2.sdkstatcache]
+        ignore line: []
+        ignore line: [CreateBuildDirectory /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/EagerLinkingTBDs/Debug]
+        ignore line: [    cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/CMAKE_TRY_COMPILE.xcodeproj]
+        ignore line: [    builtin-create-build-directory /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/EagerLinkingTBDs/Debug]
+        ignore line: []
+        ignore line: [WriteAuxiliaryFile /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/cmTC_a35c0.LinkFileList (in target 'cmTC_a35c0' from project 'CMAKE_TRY_COMPILE')]
+        ignore line: [    cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F]
+        ignore line: [    write-file /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/cmTC_a35c0.LinkFileList]
+        ignore line: []
+        ignore line: [WriteAuxiliaryFile /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/82b82416624d2658e5098eb0a28c15c5-common-args.resp (in target 'cmTC_a35c0' from project 'CMAKE_TRY_COMPILE')]
+        ignore line: [    cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F]
+        ignore line: [    write-file /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/82b82416624d2658e5098eb0a28c15c5-common-args.resp]
+        ignore line: [-target arm64-apple-macos14.5 -fpascal-strings -O0 '-DCMAKE_INTDIR="Debug"' -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -g -I/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug/include -I/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/DerivedSources-normal/arm64 -I/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/DerivedSources/arm64 -I/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/DerivedSources -F/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug]
+        ignore line: []
+        ignore line: [CompileC /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/CMakeCXXCompilerABI.o /opt/homebrew/lib/python3.11/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeCXXCompilerABI.cpp normal arm64 c++ com.apple.compilers.llvm.clang.1_0.compiler (in target 'cmTC_a35c0' from project 'CMAKE_TRY_COMPILE')]
+        ignore line: [    cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F]
+        ignore line: [    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x c++ -ivfsstatcache /var/folders/pj/39ntzx3s2zg1gpwh_t6kg9gw0000gn/C/com.apple.DeveloperTools/15.4-15F31d/Xcode/SDKStatCaches.noindex/macosx14.5-23F73-7e3fd6dc4171e65dbd154ba8db3956d2.sdkstatcache -fmessage-length\\=0 -fdiagnostics-show-note-include-stack -fmacro-backtrace-limit\\=0 -fno-color-diagnostics -Wno-trigraphs -Wno-missing-field-initializers -Wno-missing-prototypes -Wno-return-type -Wno-non-virtual-dtor -Wno-overloaded-virtual -Wno-exit-time-destructors -Wno-missing-braces -Wparentheses -Wswitch -Wno-unused-function -Wno-unused-label -Wno-unused-parameter -Wno-unused-variable -Wunused-value -Wno-empty-body -Wno-uninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wno-constant-conversion -Wno-int-conversion -Wno-bool-conversion -Wno-enum-conversion -Wno-float-conversion -Wno-non-literal-null-conversion -Wno-objc-literal-conversion -Wshorten-64-to-32 -Wno-newline-eof -Wno-c++11-extensions -Wno-implicit-fallthrough -fstrict-aliasing -Wdeprecated-declarations -Winvalid-offsetof -Wno-sign-conversion -Wno-infinite-recursion -Wno-move -Wno-comma -Wno-block-capture-autoreleasing -Wno-strict-prototypes -Wno-range-loop-analysis -Wno-semicolon-before-method-body -v -Wl -v @/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/82b82416624d2658e5098eb0a28c15c5-common-args.resp -MMD -MT dependencies -MF /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/CMakeCXXCompilerABI.d --serialize-diagnostics /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/CMakeCXXCompilerABI.dia -c /opt/homebrew/lib/python3.11/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeCXXCompilerABI.cpp -o /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/CMakeCXXCompilerABI.o]
+        ignore line: [Apple clang version 15.0.0 (clang-1500.3.9.4)]
+        ignore line: [Target: arm64-apple-macos14.5]
+        ignore line: [Thread model: posix]
+        ignore line: [InstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin]
+        ignore line: [clang: warning: -Wl -v: 'linker' input unused [-Wunused-command-line-argument]]
+        ignore line: [ "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang" -cc1 -triple arm64-apple-macosx14.5.0 -Wundef-prefix=TARGET_OS_ -Wdeprecated-objc-isa-usage -Werror=deprecated-objc-isa-usage -Werror=implicit-function-declaration -emit-obj -mrelax-all --mrelax-relocations -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name CMakeCXXCompilerABI.cpp -mrelocation-model pic -pic-level 2 -mframe-pointer=non-leaf -fno-strict-return -ffp-contract=on -fno-rounding-math -funwind-tables=1 -fobjc-msgsend-selector-stubs -target-sdk-version=14.5 -fvisibility-inlines-hidden-static-local-var -target-cpu apple-m1 -target-feature +v8.5a -target-feature +crc -target-feature +lse -target-feature +rdm -target-feature +crypto -target-feature +dotprod -target-feature +fp-armv8 -target-feature +neon -target-feature +fp16fml -target-feature +ras -target-feature +rcpc -target-feature +zcm -target-feature +zcz -target-feature +fullfp16 -target-feature +sm4 -target-feature +sha3 -target-feature +sha2 -target-feature +aes -target-abi darwinpcs -debug-info-kind=standalone -dwarf-version=4 -debugger-tuning=lldb -target-linker-version 1053.12 -v -fcoverage-compilation-dir=/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F -resource-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0 -dependency-file /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/CMakeCXXCompilerABI.d -skip-unused-modulemap-deps -MT dependencies -ivfsstatcache /var/folders/pj/39ntzx3s2zg1gpwh_t6kg9gw0000gn/C/com.apple.DeveloperTools/15.4-15F31d/Xcode/SDKStatCaches.noindex/macosx14.5-23F73-7e3fd6dc4171e65dbd154ba8db3956d2.sdkstatcache -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -D "CMAKE_INTDIR=\\"Debug\\"" -I /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug/include -I /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/DerivedSources-normal/arm64 -I /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/DerivedSources/arm64 -I /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/DerivedSources -F/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug -internal-isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/include/c++/v1 -internal-isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/local/include -internal-isystem /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include -internal-externc-isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/include -internal-externc-isystem /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -O0 -Wno-trigraphs -Wno-missing-field-initializers -Wno-missing-prototypes -Wno-return-type -Wno-non-virtual-dtor -Wno-overloaded-virtual -Wno-exit-time-destructors -Wno-missing-braces -Wparentheses -Wswitch -Wno-unused-function -Wno-unused-label -Wno-unused-parameter -Wno-unused-variable -Wunused-value -Wno-empty-body -Wno-uninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wno-constant-conversion -Wno-int-conversion -Wno-bool-conversion -Wno-enum-conversion -Wno-float-conversion -Wno-non-literal-null-conversion -Wno-objc-literal-conversion -Wshorten-64-to-32 -Wno-newline-eof -Wno-c++11-extensions -Wno-implicit-fallthrough -Wdeprecated-declarations -Winvalid-offsetof -Wno-sign-conversion -Wno-infinite-recursion -Wno-move -Wno-comma -Wno-block-capture-autoreleasing -Wno-strict-prototypes -Wno-range-loop-analysis -Wno-semicolon-before-method-body -Wno-reorder-init-list -Wno-implicit-int-float-conversion -Wno-c99-designator -Wno-final-dtor-non-final-class -Wno-extra-semi-stmt -Wno-misleading-indentation -Wno-quoted-include-in-framework-header -Wno-implicit-fallthrough -Wno-enum-enum-conversion -Wno-enum-float-conversion -Wno-elaborated-enum-base -Wno-reserved-identifier -Wno-gnu-folding-constant -fdeprecated-macro -fdebug-compilation-dir=/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F -ferror-limit 19 -fmacro-backtrace-limit 0 -stack-protector 1 -fstack-check -mdarwin-stkchk-strong-link -fblocks -fencode-extended-block-signature -fregister-global-dtors-with-atexit -fgnuc-version=4.2.1 -fno-cxx-modules -fcxx-exceptions -fexceptions -fpascal-strings -fmax-type-align=16 -fcommon -fdiagnostics-show-note-include-stack -serialize-diagnostic-file /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/CMakeCXXCompilerABI.dia -clang-vendor-feature=+disableNonDependentMemberExprInCurrentInstantiation -fno-odr-hash-protocols -clang-vendor-feature=+enableAggressiveVLAFolding -clang-vendor-feature=+revert09abecef7bbf -clang-vendor-feature=+thisNoAlignAttr -clang-vendor-feature=+thisNoNullAttr -mllvm -disable-aligned-alloc-awareness=1 -D__GCC_HAVE_DWARF2_CFI_ASM=1 -o /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/CMakeCXXCompilerABI.o -x c++ /opt/homebrew/lib/python3.11/site-packages/cmake/data/share/cmake-3.27/Modules/CMakeCXXCompilerABI.cpp]
+        ignore line: [clang -cc1 version 15.0.0 (clang-1500.3.9.4) default target arm64-apple-darwin23.5.0]
+        ignore line: [ignoring nonexistent directory "/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug/include"]
+        ignore line: [ignoring nonexistent directory "/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/DerivedSources-normal/arm64"]
+        ignore line: [ignoring nonexistent directory "/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/DerivedSources/arm64"]
+        ignore line: [ignoring nonexistent directory "/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/DerivedSources"]
+        ignore line: [ignoring nonexistent directory "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/local/include"]
+        ignore line: [ignoring nonexistent directory "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/Library/Frameworks"]
+        ignore line: [#include "..." search starts here:]
+        ignore line: [#include <...> search starts here:]
+        ignore line: [ /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug (framework directory)]
+        ignore line: [ /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/include/c++/v1]
+        ignore line: [ /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include]
+        ignore line: [ /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/include]
+        ignore line: [ /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include]
+        ignore line: [ /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/System/Library/Frameworks (framework directory)]
+        ignore line: [End of search list.]
+        ignore line: []
+        ignore line: [Ld /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug/cmTC_a35c0 normal (in target 'cmTC_a35c0' from project 'CMAKE_TRY_COMPILE')]
+        ignore line: [    cd /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F]
+        ignore line: [    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++ -Xlinker -reproducible -target arm64-apple-macos14.5 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -O0 -L/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/EagerLinkingTBDs/Debug -L/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug -F/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/EagerLinkingTBDs/Debug -F/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug -filelist /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/cmTC_a35c0.LinkFileList -Xlinker -object_path_lto -Xlinker /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/cmTC_a35c0_lto.o -Xlinker -no_deduplicate -v -Wl -v -Wl -search_paths_first -Wl -headerpad_max_install_names -Xlinker -dependency_info -Xlinker /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/cmTC_a35c0_dependency_info.dat -o /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug/cmTC_a35c0]
+        ignore line: [Apple clang version 15.0.0 (clang-1500.3.9.4)]
+        ignore line: [Target: arm64-apple-macos14.5]
+        ignore line: [Thread model: posix]
+        ignore line: [InstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin]
+        reduced line: [ "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld" -demangle -lto_library /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libLTO.dylib -no_deduplicate -dynamic -arch arm64 -platform_version macos 14.5.0 14.5 -syslibroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -O0 -o /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug/cmTC_a35c0 -L/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/EagerLinkingTBDs/Debug -L/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug -reproducible -filelist /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/cmTC_a35c0.LinkFileList -object_path_lto /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/cmTC_a35c0_lto.o -no_deduplicate -v -search_paths_first -headerpad_max_install_names -dependency_info /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/cmTC_a35c0_dependency_info.dat -lc++ -lSystem /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/lib/darwin/libclang_rt.osx.a -F/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/EagerLinkingTBDs/Debug -F/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug]
+                  to: [ "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld" -demangle -lto_library /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libLTO.dylib -no_deduplicate -dynamic -arch arm64 -platform_version macos 14.5.0 14.5 -syslibroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -O0 -o /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug/cmTC_a35c0 -L/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug -reproducible -filelist /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/cmTC_a35c0.LinkFileList -object_path_lto /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/cmTC_a35c0_lto.o -no_deduplicate -v -search_paths_first -headerpad_max_install_names -dependency_info /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/cmTC_a35c0_dependency_info.dat -lc++ -lSystem /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/lib/darwin/libclang_rt.osx.a -F/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug]
+        link line: [ "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld" -demangle -lto_library /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libLTO.dylib -no_deduplicate -dynamic -arch arm64 -platform_version macos 14.5.0 14.5 -syslibroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -O0 -o /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug/cmTC_a35c0 -L/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug -reproducible -filelist /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/cmTC_a35c0.LinkFileList -object_path_lto /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/cmTC_a35c0_lto.o -no_deduplicate -v -search_paths_first -headerpad_max_install_names -dependency_info /Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/cmTC_a35c0_dependency_info.dat -lc++ -lSystem /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/lib/darwin/libclang_rt.osx.a -F/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug]
+          arg [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld] ==> ignore
+          arg [-demangle] ==> ignore
+          arg [-lto_library] ==> ignore, skip following value
+          arg [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libLTO.dylib] ==> skip value of -lto_library
+          arg [-no_deduplicate] ==> ignore
+          arg [-dynamic] ==> ignore
+          arg [-arch] ==> ignore
+          arg [arm64] ==> ignore
+          arg [-platform_version] ==> ignore
+          arg [macos] ==> ignore
+          arg [14.5.0] ==> ignore
+          arg [14.5] ==> ignore
+          arg [-syslibroot] ==> ignore
+          arg [/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk] ==> ignore
+          arg [-O0] ==> ignore
+          arg [-o] ==> ignore
+          arg [/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug/cmTC_a35c0] ==> ignore
+          arg [-L/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug] ==> dir [/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug]
+          arg [-reproducible] ==> ignore
+          arg [-filelist] ==> ignore
+          arg [/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/cmTC_a35c0.LinkFileList] ==> ignore
+          arg [-object_path_lto] ==> ignore
+          arg [/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/cmTC_a35c0_lto.o] ==> obj [/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/cmTC_a35c0_lto.o]
+          arg [-no_deduplicate] ==> ignore
+          arg [-v] ==> ignore
+          arg [-search_paths_first] ==> ignore
+          arg [-headerpad_max_install_names] ==> ignore
+          arg [-dependency_info] ==> ignore
+          arg [/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/cmTC_a35c0_dependency_info.dat] ==> ignore
+          arg [-lc++] ==> lib [c++]
+          arg [-lSystem] ==> lib [System]
+          arg [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/lib/darwin/libclang_rt.osx.a] ==> lib [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/lib/darwin/libclang_rt.osx.a]
+          arg [-F/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug] ==> ignore
+        Library search paths: [;/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/EagerLinkingTBDs/Debug;/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug;/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/lib;/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/lib/swift]
+        Framework search paths: [;/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/EagerLinkingTBDs/Debug;/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug;/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/System/Library/Frameworks]
+        remove lib [System]
+        remove lib [/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/lib/darwin/libclang_rt.osx.a]
+        collapse library dir [/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug] ==> [/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug], skipping non-system directory
+        collapse library dir [/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/EagerLinkingTBDs/Debug] ==> [/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/EagerLinkingTBDs/Debug], skipping non-system directory
+        collapse library dir [/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug] ==> [/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug], skipping non-system directory
+        collapse library dir [/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/lib] ==> [/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/lib]
+        collapse library dir [/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/lib/swift] ==> [/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/lib/swift]
+        collapse framework dir [/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/EagerLinkingTBDs/Debug] ==> [/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/EagerLinkingTBDs/Debug], skipping non-system directory
+        collapse framework dir [/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug] ==> [/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/Debug], skipping non-system directory
+        collapse framework dir [/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/System/Library/Frameworks] ==> [/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/System/Library/Frameworks]
+        implicit libs: [c++]
+        implicit objs: [/Users/xss/xnuimagetools/Jackalope/xcode_build/CMakeFiles/CMakeScratch/TryCompile-aT744F/build/cmTC_a35c0.build/Debug/Objects-normal/arm64/cmTC_a35c0_lto.o]
+        implicit dirs: [/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/lib;/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/usr/lib/swift]
+        implicit fwks: [/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk/System/Library/Frameworks]
+      
+      
+...

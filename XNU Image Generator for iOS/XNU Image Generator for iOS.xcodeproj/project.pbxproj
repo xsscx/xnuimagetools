@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1DC635182C041C7600AC9F74 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1DC635172C041C7600AC9F74 /* Assets.xcassets */; };
 		1DF14AD52C03C0810053E897 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DF14ACC2C03C0810053E897 /* ContentView.swift */; };
 		1DF14AD62C03C0810053E897 /* cx_srd_imagegenerator_xnu_demoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DF14ACE2C03C0810053E897 /* cx_srd_imagegenerator_xnu_demoApp.swift */; };
 		1DF14AD72C03C0810053E897 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1DF14ACF2C03C0810053E897 /* LaunchScreen.storyboard */; };
@@ -137,7 +136,6 @@
 				1DF14AE42C03C2420053E897 /* 2225.jpg in Resources */,
 				1DFF90392C03CD3D00011940 /* cx-srd-imagegenerator-xnu-demo-Info.plist in Resources */,
 				1DF14AD72C03C0810053E897 /* LaunchScreen.storyboard in Resources */,
-				1DC635182C041C7600AC9F74 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -301,7 +299,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = 7KJ5XYCA8X;
@@ -330,7 +328,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = No;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = 7KJ5XYCA8X;

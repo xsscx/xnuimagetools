@@ -1,6 +1,6 @@
 # XNU Image Fuzzer 
 
-Last Updated: SUN 26 MAY 2024, 0800 EDT
+Last Updated: SUN 02 JUN 2024, 0800 EDT
 
 ## Project Summary
 
@@ -29,6 +29,9 @@ The XNU Image Fuzzer Source Code contains a proof of concept implementation of a
   - https://xss.cx
   - https://srd.cx
   - https://hoyt.net
+
+## Project Documentation
+https://xss.cx/public/docs/xnuimagefuzzer/
 
 ## Quick Start
 - Open as Xcode Project or Clone

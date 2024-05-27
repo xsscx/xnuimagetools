@@ -1,9 +1,9 @@
-/**
+/*!
  *  @file ViewController.m
- *  @brief XNU Image Fuzzer.
- *  @author @h02332 | David Hoyt
- *  @date 10 MAR 2024
- *  @version 1.0.6
+ *  @brief XNU Image Fuzzer
+ *  @author David Hoyt
+ *  @date 01 JUN 2024
+ *  @version 1.8.2
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,11 +18,19 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- *  @section CHANGES
- *  - 29/02/2024, h02332: Initial commit.
  *
  */
 
+#pragma mark - Headers
+
+/*!
+* @brief Core and external libraries necessary for the fuzzer functionality.
+*
+* @details This section includes the necessary headers for the Foundation framework, UIKit, Core Graphics,
+* standard input/output, standard library, memory management, mathematical functions,
+* Boolean type, floating-point limits, and string functions. These libraries support
+* image processing, UI interaction, and basic C operations essential for the application.
+*/
 #import "ViewController.h"
 #import <UIKit/UIKit.h>
 
@@ -42,7 +50,7 @@
 @implementation ViewController
 
 /**
- * @discussion Called after the controller's view is loaded into memory. Initializes the view controller's properties, collection view, and loads fuzzed images.
+ * Called after the controller's view is loaded into memory. Initializes the view controller's properties, collection view, and loads fuzzed images.
  */
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -74,7 +82,7 @@
 }
 
 /**
- * @discussion Loads fuzzed images from the documents directory into the collection view.
+ * Loads fuzzed images from the documents directory into the collection view.
  */
 - (void)loadFuzzedImagesFromDocumentsDirectory {
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -112,7 +120,7 @@
 #pragma mark - UICollectionViewDataSource
 
 /**
- * @discussion Asks the data source for the number of items in the specified section. Returns the number of fuzzed images.
+ * Asks the data source for the number of items in the specified section. Returns the number of fuzzed images.
  * @param collectionView The collection view requesting this information.
  * @param section The index number of the section.
  * @return The number of rows in section.
@@ -122,7 +130,7 @@
 }
 
 /**
- * @discussion Asks the data source for the cell that corresponds to the specified item in the collection view.
+ * Asks the data source for the cell that corresponds to the specified item in the collection view.
  * @param collectionView The collection view requesting this cell.
  * @param indexPath The index path that specifies the location of the item.
  * @return A configured cell object.
@@ -146,7 +154,7 @@
 #pragma mark - UICollectionViewDelegateFlowLayout
 
 /**
- * @discussion Asks the delegate for the size of the specified item’s cell.
+ * Asks the delegate for the size of the specified item’s cell.
  * @param collectionView The collection view object displaying the flow layout.
  * @param collectionViewLayout The layout object requesting the information.
  * @param indexPath The index path of the item.
