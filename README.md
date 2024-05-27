@@ -142,3 +142,10 @@ Embedding fault mechanisms into a generic image and further processing it throug
 3. **Monitor and Analyze:**
    - Monitor for crashes, hangs, and other signs of vulnerabilities.
    - Collect and analyze the results to identify and understand the bugs found.
+
+### 3. VideoToolbox Interposer Fuzzer
+
+This project focuses on interposing and fuzzing VideoToolbox functionalities on iOS and macOS platforms. The project includes multiple build targets and tests for iOS and macOS with Interposing dylibs.
+
+## Project Technical Summary
+This project focuses on interposing VideoToolbox functionalities to facilitate fuzzing and security testing on iOS and macOS platforms. The main components include the interposing code in videotoolbox-interposer.c and the test runner in videotoolbox-runner.m. The build process is managed through multiple makefiles, providing a structured and automated way to build and test the project.
