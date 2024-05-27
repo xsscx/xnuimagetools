@@ -1,17 +1,5 @@
 #!/bin/zsh
 
-# Function to check if an image file can be opened
-function check_image {
-  local file=$1
-  if sips -g all "$file" >/dev/null 2>&1; then
-    echo "Image file $file is valid and can be opened."
-    return 0
-  else
-    echo "Image file $file is invalid or cannot be opened."
-    return 1
-  fi
-}
-
 # Function to reset Finder thumbnail cache
 function reset_thumbnail_cache {
   echo "Resetting Finder thumbnail cache..."
@@ -22,6 +10,15 @@ function reset_thumbnail_cache {
   echo "Thumbnail cache reset."
 }
 
+# Function to reset and reindex Quick Look cache
+function reset_quicklook_cache {
+  echo "Resetting Quick Look server..."
+  qlmanage -r
+  echo "Reindexing Quick Look cache..."
+  qlmanage -r cache
+  echo "Quick Look cache reindexed."
+}
+
 # Main script execution
 if [ "$#" -ne 1 ]; then
   echo "Usage: $0 <path_to_image_file>"
@@ -30,11 +27,10 @@ fi
 
 image_file=$1
 
-# Check if the image file can be opened
-if check_image "$image_file"; then
-  # If image is valid, reset thumbnail cache
-  reset_thumbnail_cache
-else
-  echo "Skipping thumbnail cache reset due to invalid image file."
-fi
+# Reset thumbnail and Quick Look caches
+reset_thumbnail_cache
+reset_quicklook_cache
 
+# Test Quick Look preview generation for the specified file
+echo "Testing Quick Look preview for $image_file..."
+qlmanage -p "$image_file"
