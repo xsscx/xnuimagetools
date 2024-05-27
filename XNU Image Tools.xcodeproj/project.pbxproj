@@ -80,6 +80,11 @@
 		1D4FF9C12C04E79A006BD698 /* Readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Readme.md; sourceTree = "<group>"; };
 		1D4FF9C22C04E79A006BD698 /* video-fuzzer.zsh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "video-fuzzer.zsh"; sourceTree = "<group>"; };
 		1D4FF9C32C04E79A006BD698 /* vtdecode1.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = vtdecode1.m; sourceTree = "<group>"; };
+		1D531C2A2C04FC7600628DDB /* code_statistics_report.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = code_statistics_report.py; sourceTree = "<group>"; };
+		1D531C2B2C04FC7600628DDB /* compare_image_directories.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = compare_image_directories.py; sourceTree = "<group>"; };
+		1D531C2C2C04FC7600628DDB /* reset_thumbnail_cache.zsh */ = {isa = PBXFileReference; lastKnownFileType = text; path = reset_thumbnail_cache.zsh; sourceTree = "<group>"; };
+		1D531C2D2C04FC7600628DDB /* test_image_thumbnail.zsh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = test_image_thumbnail.zsh; sourceTree = "<group>"; };
+		1D531C2F2C04FC7600628DDB /* readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = readme.md; sourceTree = "<group>"; };
 		1D5B00A42C04D65A00AA2069 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		1D5CD3F22C03A68500D3BACE /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		1D5CD3F32C03A68500D3BACE /* cx-srd-imagegenerator-xnu-demo-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "cx-srd-imagegenerator-xnu-demo-Info.plist"; sourceTree = "<group>"; };
@@ -145,6 +150,26 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		1D531C2E2C04FC7600628DDB /* scripts */ = {
+			isa = PBXGroup;
+			children = (
+				1D531C2A2C04FC7600628DDB /* code_statistics_report.py */,
+				1D531C2B2C04FC7600628DDB /* compare_image_directories.py */,
+				1D531C2C2C04FC7600628DDB /* reset_thumbnail_cache.zsh */,
+				1D531C2D2C04FC7600628DDB /* test_image_thumbnail.zsh */,
+			);
+			path = scripts;
+			sourceTree = "<group>";
+		};
+		1D531C302C04FC7600628DDB /* contrib */ = {
+			isa = PBXGroup;
+			children = (
+				1D531C2E2C04FC7600628DDB /* scripts */,
+				1D531C2F2C04FC7600628DDB /* readme.md */,
+			);
+			path = contrib;
+			sourceTree = "<group>";
+		};
 		1D5CD3F72C03A68500D3BACE /* XNU Image Generator for iOS */ = {
 			isa = PBXGroup;
 			children = (
@@ -199,6 +224,7 @@
 		1DF39BC02C0282E400F720B3 = {
 			isa = PBXGroup;
 			children = (
+				1D531C302C04FC7600628DDB /* contrib */,
 				1D4FF9C42C04E79A006BD698 /* VideoToolbox */,
 				1D5B00A42C04D65A00AA2069 /* README.md */,
 				1D5CD3F72C03A68500D3BACE /* XNU Image Generator for iOS */,
