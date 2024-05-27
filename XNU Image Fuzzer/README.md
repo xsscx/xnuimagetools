@@ -16,7 +16,6 @@ The XNU Image Fuzzer Source Code contains a proof of concept implementation of a
 | iPadOS 17.5            | ✅     | ✅       |
 | iPhoneOS 17.5         | ✅     | ✅       |
 | VisionPro 1.2          | ✅     | ✅       |
-| watchOS 10.5           | ✅     | ✅       |
 
 ## XNU Image Tools
 - https://github.com/xsscx/xnuimagetools
