@@ -39,6 +39,7 @@
 
 /* Begin PBXFileReference section */
 		1D04C27B2C028F0300A948A8 /* .gitnore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitnore; sourceTree = "<group>"; };
+		1D5B00A42C04D65A00AA2069 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		1D5CD3F22C03A68500D3BACE /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		1D5CD3F32C03A68500D3BACE /* cx-srd-imagegenerator-xnu-demo-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "cx-srd-imagegenerator-xnu-demo-Info.plist"; sourceTree = "<group>"; };
 		1D5CD3F42C03A68500D3BACE /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
@@ -112,6 +113,7 @@
 		1DF39BC02C0282E400F720B3 = {
 			isa = PBXGroup;
 			children = (
+				1D5B00A42C04D65A00AA2069 /* README.md */,
 				1D5CD3F72C03A68500D3BACE /* XNU Image Generator for iOS */,
 				1D9710A22C029A0100BDF03F /* XNU Image Fuzzer */,
 				1D750C5D2C028FF40027E2D3 /* LICENSE */,
@@ -340,7 +342,7 @@
 				1DF39BDC2C0282E500F720B3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};
