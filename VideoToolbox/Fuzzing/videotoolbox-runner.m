@@ -109,7 +109,7 @@ DebugLog(@"An informative debug message with context.");
 
 #define page_align(addr) (vm_address_t)((uintptr_t)(addr) & (~(vm_page_size - 1)))
 
-#pragma mark - Memory Loggin
+#pragma mark - Memory Logging
 
 /**
 @brief Logs detailed memory zone information using the default malloc zone.
@@ -198,10 +198,6 @@ void log_gpu_memory_info(const char *description, const char *file, const char *
     printf("GPU Info: %s, File: %s, Function: %s, Line: %d\n", description, file, function, line);
     malloc_zone_print(NULL, 1); // Log detailed memory zone information
 }
-// void log_gpu_memory_info(const char *message, const char *filename, const char *funcname, int line) {
-//    printf("GPU Info: %s, File: %s, Function: %s, Line: %d\n", message, filename, funcname, line);
-//    malloc_zone_print(NULL, 1); // Log detailed memory zone information
-// }
 
 #pragma mark - Signal Logging
 
