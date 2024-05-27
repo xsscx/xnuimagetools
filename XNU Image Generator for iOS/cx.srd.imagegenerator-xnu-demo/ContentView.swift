@@ -1,9 +1,9 @@
 /**
  *  @file ContentView.swift
- *  @brief XNU Image Generator
+ *  @brief XNU Image Generator for iOS
  *  @author @h02332 | David Hoyt | @xsscx
- *  @date 21 MAY 2024
- *  @version 1.2.5
+ *  @date 27 MAY 2024
+ *  @version 1.7.5
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
  *
  *  @section CHANGES
  *  - 21/05/2024, h02332: Initial commit.
+ *  - 27/05/2024, h02332: Add Random Image Generator for iOS + Watch
  *
  */
 
@@ -94,7 +95,7 @@ struct ContentView: View {
         })
     }
     
-    // MARK: - ImageGenerator Class
+// MARK: - ImageGenerator Class
     /// The ImageGenerator class provides methods to create and save images with various bitmap contexts.
     func generateImages() {
         let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
@@ -105,7 +106,7 @@ struct ContentView: View {
         }
     }
 
-    // MARK: - loadImage
+// MARK: - loadImage
     func loadImage(from url: URL) -> UIImage? {
         #if os(iOS)
         do {
@@ -178,11 +179,20 @@ struct ActivityViewController: NSViewControllerRepresentable {
 
 // MARK: - Image Generation
 
+/**
+ @brief Function to generate an image with a specific context type.
+ 
+ @discussion This function creates a CGContext with the specified context type and draws a gradient on it.
+ 
+ @param contextType The type of context to create.
+ @return An optional CGImage if the image is successfully generated, otherwise nil.
+ */
 func generateImage(contextType: String) -> CGImage? {
     let width = 300
     let height = 300
     let context: CGContext?
     
+    // Switch case to handle different context types
     switch contextType {
     case "StandardRGB":
         context = createBitmapContextStandardRGB(width: width, height: height)
@@ -210,18 +220,16 @@ func generateImage(contextType: String) -> CGImage? {
         context = nil
     }
     
+    // Ensure context creation was successful
     guard let ctx = context else {
         print("Failed to create CGContext for \(contextType)")
         return nil
     }
     
-    // Drawing logic
-    #if os(iOS)
-    // Drawing logic
-    let colors = [
-        CGColor(red: 1, green: 0, blue: 0, alpha: 1),
-        CGColor(red: 0, green: 0, blue: 1, alpha: 1)
-    ]
+    // Generate random colors for the gradient
+    let color1 = CGColor(red: CGFloat.random(in: 0...1), green: CGFloat.random(in: 0...1), blue: CGFloat.random(in: 0...1), alpha: 1)
+    let color2 = CGColor(red: CGFloat.random(in: 0...1), green: CGFloat.random(in: 0...1), blue: CGFloat.random(in: 0...1), alpha: 1)
+    let colors = [color1, color2]
     let locations: [CGFloat] = [0.0, 1.0]
 
     guard let gradient = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(), colors: colors as CFArray, locations: locations) else {
@@ -229,14 +237,64 @@ func generateImage(contextType: String) -> CGImage? {
         return nil
     }
 
-    ctx.drawLinearGradient(gradient, start: CGPoint(x: 0, y: 0), end: CGPoint(x: width, y: height), options: [])
-    #endif
-    
+    // Randomize gradient direction
+    let startX = CGFloat.random(in: 0...CGFloat(width))
+    let startY = CGFloat.random(in: 0...CGFloat(height))
+    let endX = CGFloat.random(in: 0...CGFloat(width))
+    let endY = CGFloat.random(in: 0...CGFloat(height))
+
+    ctx.drawLinearGradient(gradient, start: CGPoint(x: startX, y: startY), end: CGPoint(x: endX, y: endY), options: [])
+
+    // Add random elements (circles, lines, etc.)
+    for _ in 0..<10 {
+        let elementType = Int.random(in: 0...2)
+        switch elementType {
+        case 0:
+            // Draw a random circle
+            let centerX = CGFloat.random(in: 0...CGFloat(width))
+            let centerY = CGFloat.random(in: 0...CGFloat(height))
+            let radius = CGFloat.random(in: 10...50)
+            ctx.setFillColor(CGColor(red: CGFloat.random(in: 0...1), green: CGFloat.random(in: 0...1), blue: CGFloat.random(in: 0...1), alpha: 1))
+            ctx.fillEllipse(in: CGRect(x: centerX - radius, y: centerY - radius, width: radius * 2, height: radius * 2))
+        case 1:
+            // Draw a random rectangle
+            let rectX = CGFloat.random(in: 0...CGFloat(width))
+            let rectY = CGFloat.random(in: 0...CGFloat(height))
+            let rectWidth = CGFloat.random(in: 20...100)
+            let rectHeight = CGFloat.random(in: 20...100)
+            ctx.setFillColor(CGColor(red: CGFloat.random(in: 0...1), green: CGFloat.random(in: 0...1), blue: CGFloat.random(in: 0...1), alpha: 1))
+            ctx.fill(CGRect(x: rectX, y: rectY, width: rectWidth, height: rectHeight))
+        case 2:
+            // Draw a random line
+            let lineStartX = CGFloat.random(in: 0...CGFloat(width))
+            let lineStartY = CGFloat.random(in: 0...CGFloat(height))
+            let lineEndX = CGFloat.random(in: 0...CGFloat(width))
+            let lineEndY = CGFloat.random(in: 0...CGFloat(height))
+            ctx.setStrokeColor(CGColor(red: CGFloat.random(in: 0...1), green: CGFloat.random(in: 0...1), blue: CGFloat.random(in: 0...1), alpha: 1))
+            ctx.setLineWidth(CGFloat.random(in: 1...5))
+            ctx.move(to: CGPoint(x: lineStartX, y: lineStartY))
+            ctx.addLine(to: CGPoint(x: lineEndX, y: lineEndY))
+            ctx.strokePath()
+        default:
+            break
+        }
+    }
+
     return ctx.makeImage()
 }
 
 // MARK: - Image Saving
 
+/**
+ @brief Function to save an image to a URL.
+ 
+ @discussion This function saves the given CGImage to the specified URL with the provided UTType.
+ 
+ @param image The CGImage to save.
+ @param url The URL to save the image to.
+ @param uti The UTType of the image format.
+ @return A Boolean value indicating whether the image was successfully saved.
+ */
 func saveImage(_ image: CGImage, to url: URL, uti: UTType) -> Bool {
     guard let destination = CGImageDestinationCreateWithURL(url as CFURL, uti.identifier as CFString, 1, nil) else {
         print("Failed to create CGImageDestination for \(url.path)")
@@ -314,6 +372,13 @@ func generateAndSaveImages(basePath: String) -> [URL] {
 
 // MARK: - CGContext Creation Functions
 
+/**
+ @brief Function to create a CGContext with Standard RGB.
+ 
+ @param width The width of the context.
+ @param height The height of the context.
+ @return An optional CGContext.
+ */
 func createBitmapContextStandardRGB(width: Int, height: Int) -> CGContext? {
     let colorSpace = CGColorSpaceCreateDeviceRGB()
     let bitmapInfo = CGImageAlphaInfo.premultipliedLast.rawValue
@@ -328,6 +393,13 @@ func createBitmapContextStandardRGB(width: Int, height: Int) -> CGContext? {
     )
 }
 
+/**
+ @brief Function to create a CGContext with Premultiplied First Alpha.
+ 
+ @param width The width of the context.
+ @param height The height of the context.
+ @return An optional CGContext.
+ */
 func createBitmapContextPremultipliedFirstAlpha(width: Int, height: Int) -> CGContext? {
     let colorSpace = CGColorSpaceCreateDeviceRGB()
     let bitmapInfo = CGImageAlphaInfo.premultipliedFirst.rawValue
@@ -342,6 +414,13 @@ func createBitmapContextPremultipliedFirstAlpha(width: Int, height: Int) -> CGCo
     )
 }
 
+/**
+ @brief Function to create a CGContext with Non-Premultiplied Alpha.
+ 
+ @param width The width of the context.
+ @param height The height of the context.
+ @return An optional CGContext.
+ */
 func createBitmapContextNonPremultipliedAlpha(width: Int, height: Int) -> CGContext? {
     let colorSpace = CGColorSpaceCreateDeviceRGB()
     let bitmapInfo = CGImageAlphaInfo.noneSkipLast.rawValue
@@ -356,6 +435,13 @@ func createBitmapContextNonPremultipliedAlpha(width: Int, height: Int) -> CGCont
     )
 }
 
+/**
+ @brief Function to create a CGContext with 16-bit Depth.
+ 
+ @param width The width of the context.
+ @param height The height of the context.
+ @return An optional CGContext.
+ */
 func createBitmapContext16BitDepth(width: Int, height: Int) -> CGContext? {
     let colorSpace = CGColorSpaceCreateDeviceRGB()
     let bitmapInfo = CGImageAlphaInfo.premultipliedLast.rawValue
@@ -370,6 +456,13 @@ func createBitmapContext16BitDepth(width: Int, height: Int) -> CGContext? {
     )
 }
 
+/**
+ @brief Function to create a CGContext with Grayscale.
+ 
+ @param width The width of the context.
+ @param height The height of the context.
+ @return An optional CGContext.
+ */
 func createBitmapContextGrayscale(width: Int, height: Int) -> CGContext? {
     let colorSpace = CGColorSpaceCreateDeviceGray()
     let bitmapInfo = CGImageAlphaInfo.none.rawValue
@@ -384,6 +477,13 @@ func createBitmapContextGrayscale(width: Int, height: Int) -> CGContext? {
     )
 }
 
+/**
+ @brief Function to create a CGContext with HDR Float Components.
+ 
+ @param width The width of the context.
+ @param height The height of the context.
+ @return An optional CGContext.
+ */
 func createBitmapContextHDRFloatComponents(width: Int, height: Int) -> CGContext? {
     let colorSpace = CGColorSpaceCreateDeviceRGB()
     let bitmapInfo = CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.floatComponents.rawValue
@@ -398,11 +498,25 @@ func createBitmapContextHDRFloatComponents(width: Int, height: Int) -> CGContext
     )
 }
 
+/**
+ @brief Function to create a CGContext with Alpha Only.
+ 
+ @param width The width of the context.
+ @param height The height of the context.
+ @return An optional CGContext.
+ */
 func createBitmapContextAlphaOnly(width: Int, height: Int) -> CGContext? {
     print("Alpha-only context is not supported")
     return nil
 }
 
+/**
+ @brief Function to create a CGContext with 1-bit Monochrome.
+ 
+ @param width The width of the context.
+ @param height The height of the context.
+ @return An optional CGContext.
+ */
 func createBitmapContext1BitMonochrome(width: Int, height: Int) -> CGContext? {
     let colorSpace = CGColorSpaceCreateDeviceGray()
     let bitmapInfo = CGImageAlphaInfo.none.rawValue | CGBitmapInfo.byteOrderDefault.rawValue
@@ -417,6 +531,13 @@ func createBitmapContext1BitMonochrome(width: Int, height: Int) -> CGContext? {
     )
 }
 
+/**
+ @brief Function to create a CGContext with Big Endian.
+ 
+ @param width The width of the context.
+ @param height The height of the context.
+ @return An optional CGContext.
+ */
 func createBitmapContextBigEndian(width: Int, height: Int) -> CGContext? {
     let colorSpace = CGColorSpaceCreateDeviceRGB()
     let bitmapInfo = CGImageAlphaInfo.noneSkipLast.rawValue | CGBitmapInfo.byteOrder32Big.rawValue
@@ -431,6 +552,13 @@ func createBitmapContextBigEndian(width: Int, height: Int) -> CGContext? {
     )
 }
 
+/**
+ @brief Function to create a CGContext with Little Endian.
+ 
+ @param width The width of the context.
+ @param height The height of the context.
+ @return An optional CGContext.
+ */
 func createBitmapContextLittleEndian(width: Int, height: Int) -> CGContext? {
     let colorSpace = CGColorSpaceCreateDeviceRGB()
     let bitmapInfo = CGImageAlphaInfo.noneSkipLast.rawValue | CGBitmapInfo.byteOrder32Little.rawValue
@@ -445,6 +573,13 @@ func createBitmapContextLittleEndian(width: Int, height: Int) -> CGContext? {
     )
 }
 
+/**
+ @brief Function to create a CGContext with 32-bit Float 4-Component.
+ 
+ @param width The width of the context.
+ @param height The height of the context.
+ @return An optional CGContext.
+ */
 func createBitmapContext32BitFloat4Component(width: Int, height: Int) -> CGContext? {
     let colorSpace = CGColorSpaceCreateDeviceRGB()
     let bitmapInfo = CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.floatComponents.rawValue

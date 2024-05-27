@@ -1,8 +1,8 @@
 /**
  *  @file ContentView.swift
  *  @brief XNU Image Generator for watchOS
- *  @date 21 MAY 2024
- *  @version 1.7.0
+ *  @date 27 MAY 2024
+ *  @version 1.7.5
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,6 +17,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
+ *  - 27/05/2024, h02332: Add Random Image Generator for iOS + Watch
  *
  */
 
@@ -154,70 +155,112 @@ struct ContentView: View {
 }
 
 // MARK: - Image Generation
-  
-  /**
-   @brief Function to generate an image with a specific context type.
-   
-   @discussion This function creates a CGContext with the specified context type and draws a gradient on it.
-   
-   @param contextType The type of context to create.
-   @return An optional CGImage if the image is successfully generated, otherwise nil.
-   */
-  func generateImage(contextType: String) -> CGImage? {
-      let width = 300
-      let height = 300
-      let context: CGContext?
-      
-      switch contextType {
-      case "StandardRGB":
-          context = createBitmapContextStandardRGB(width: width, height: height)
-      case "PremultipliedFirstAlpha":
-          context = createBitmapContextPremultipliedFirstAlpha(width: width, height: height)
-      case "NonPremultipliedAlpha":
-          context = createBitmapContextNonPremultipliedAlpha(width: width, height: height)
-      case "16BitDepth":
-          context = createBitmapContext16BitDepth(width: width, height: height)
-      case "Grayscale":
-          context = createBitmapContextGrayscale(width: width, height: height)
-      case "HDRFloatComponents":
-          context = createBitmapContextHDRFloatComponents(width: width, height: height)
-      case "AlphaOnly":
-          context = createBitmapContextAlphaOnly(width: width, height: height)
-      case "1BitMonochrome":
-          context = createBitmapContext1BitMonochrome(width: width, height: height)
-      case "BigEndian":
-          context = createBitmapContextBigEndian(width: width, height: height)
-      case "LittleEndian":
-          context = createBitmapContextLittleEndian(width: width, height: height)
-      case "32BitFloat4Component":
-          context = createBitmapContext32BitFloat4Component(width: width, height: height)
-      default:
-          context = nil
-      }
-      
-      guard let ctx = context else {
-          print("Failed to create CGContext for \(contextType)")
-          return nil
-      }
-      
-      // Drawing logic
-      let colors = [
-          CGColor(red: 1, green: 0, blue: 0, alpha: 1),
-          CGColor(red: 0, green: 0, blue: 1, alpha: 1)
-      ]
-      let locations: [CGFloat] = [0.0, 1.0]
 
-      guard let gradient = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(), colors: colors as CFArray, locations: locations) else {
-          print("Failed to create gradient")
-          return nil
-      }
+/**
+ @brief Function to generate an image with a specific context type.
+ 
+ @discussion This function creates a CGContext with the specified context type and draws a gradient on it.
+ 
+ @param contextType The type of context to create.
+ @return An optional CGImage if the image is successfully generated, otherwise nil.
+ */
+func generateImage(contextType: String) -> CGImage? {
+    let width = 300
+    let height = 300
+    let context: CGContext?
+    
+    // Switch case to handle different context types
+    switch contextType {
+    case "StandardRGB":
+        context = createBitmapContextStandardRGB(width: width, height: height)
+    case "PremultipliedFirstAlpha":
+        context = createBitmapContextPremultipliedFirstAlpha(width: width, height: height)
+    case "NonPremultipliedAlpha":
+        context = createBitmapContextNonPremultipliedAlpha(width: width, height: height)
+    case "16BitDepth":
+        context = createBitmapContext16BitDepth(width: width, height: height)
+    case "Grayscale":
+        context = createBitmapContextGrayscale(width: width, height: height)
+    case "HDRFloatComponents":
+        context = createBitmapContextHDRFloatComponents(width: width, height: height)
+    case "AlphaOnly":
+        context = createBitmapContextAlphaOnly(width: width, height: height)
+    case "1BitMonochrome":
+        context = createBitmapContext1BitMonochrome(width: width, height: height)
+    case "BigEndian":
+        context = createBitmapContextBigEndian(width: width, height: height)
+    case "LittleEndian":
+        context = createBitmapContextLittleEndian(width: width, height: height)
+    case "32BitFloat4Component":
+        context = createBitmapContext32BitFloat4Component(width: width, height: height)
+    default:
+        context = nil
+    }
+    
+    // Ensure context creation was successful
+    guard let ctx = context else {
+        print("Failed to create CGContext for \(contextType)")
+        return nil
+    }
+    
+    // Generate random colors for the gradient
+    let color1 = CGColor(red: CGFloat.random(in: 0...1), green: CGFloat.random(in: 0...1), blue: CGFloat.random(in: 0...1), alpha: 1)
+    let color2 = CGColor(red: CGFloat.random(in: 0...1), green: CGFloat.random(in: 0...1), blue: CGFloat.random(in: 0...1), alpha: 1)
+    let colors = [color1, color2]
+    let locations: [CGFloat] = [0.0, 1.0]
 
-      ctx.drawLinearGradient(gradient, start: CGPoint(x: 0, y: 0), end: CGPoint(x: width, y: height), options: [])
-      
-      return ctx.makeImage()
-  }
+    guard let gradient = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(), colors: colors as CFArray, locations: locations) else {
+        print("Failed to create gradient")
+        return nil
+    }
 
-  // MARK: - Image Saving
+    // Randomize gradient direction
+    let startX = CGFloat.random(in: 0...CGFloat(width))
+    let startY = CGFloat.random(in: 0...CGFloat(height))
+    let endX = CGFloat.random(in: 0...CGFloat(width))
+    let endY = CGFloat.random(in: 0...CGFloat(height))
+
+    ctx.drawLinearGradient(gradient, start: CGPoint(x: startX, y: startY), end: CGPoint(x: endX, y: endY), options: [])
+
+    // Add random elements (circles, lines, etc.)
+    for _ in 0..<10 {
+        let elementType = Int.random(in: 0...2)
+        switch elementType {
+        case 0:
+            // Draw a random circle
+            let centerX = CGFloat.random(in: 0...CGFloat(width))
+            let centerY = CGFloat.random(in: 0...CGFloat(height))
+            let radius = CGFloat.random(in: 10...50)
+            ctx.setFillColor(CGColor(red: CGFloat.random(in: 0...1), green: CGFloat.random(in: 0...1), blue: CGFloat.random(in: 0...1), alpha: 1))
+            ctx.fillEllipse(in: CGRect(x: centerX - radius, y: centerY - radius, width: radius * 2, height: radius * 2))
+        case 1:
+            // Draw a random rectangle
+            let rectX = CGFloat.random(in: 0...CGFloat(width))
+            let rectY = CGFloat.random(in: 0...CGFloat(height))
+            let rectWidth = CGFloat.random(in: 20...100)
+            let rectHeight = CGFloat.random(in: 20...100)
+            ctx.setFillColor(CGColor(red: CGFloat.random(in: 0...1), green: CGFloat.random(in: 0...1), blue: CGFloat.random(in: 0...1), alpha: 1))
+            ctx.fill(CGRect(x: rectX, y: rectY, width: rectWidth, height: rectHeight))
+        case 2:
+            // Draw a random line
+            let lineStartX = CGFloat.random(in: 0...CGFloat(width))
+            let lineStartY = CGFloat.random(in: 0...CGFloat(height))
+            let lineEndX = CGFloat.random(in: 0...CGFloat(width))
+            let lineEndY = CGFloat.random(in: 0...CGFloat(height))
+            ctx.setStrokeColor(CGColor(red: CGFloat.random(in: 0...1), green: CGFloat.random(in: 0...1), blue: CGFloat.random(in: 0...1), alpha: 1))
+            ctx.setLineWidth(CGFloat.random(in: 1...5))
+            ctx.move(to: CGPoint(x: lineStartX, y: lineStartY))
+            ctx.addLine(to: CGPoint(x: lineEndX, y: lineEndY))
+            ctx.strokePath()
+        default:
+            break
+        }
+    }
+
+    return ctx.makeImage()
+}
+
+// MARK: - Image Saving
 
   /**
    @brief Function to save an image to a URL.
@@ -245,6 +288,9 @@ struct ContentView: View {
           return false
       }
   }
+
+
+// MARK: - generateAndSaveImages
 
   /**
    @brief Function to generate and save images with different context types and formats.
