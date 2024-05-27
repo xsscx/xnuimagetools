@@ -3,4 +3,15 @@
 - Helper Scripts
 - PoC Reproduction
 - Patch Unit Tests
-- Goodies.. 
+- Other Stuff
+
+## Requirements
+```
+pip install -r requirements.txt
+```
+
+or
+
+```
+pip install numpy opencv-python Pillow scikit-image imagehash pillow-heif
+```
