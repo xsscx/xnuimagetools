@@ -4,6 +4,16 @@
 .LSOverride
 .xcuserstate
 
+# CMake Files
+*.cmake
+*.check_cache
+*.make
+*1.ts
+*.marks
+
+# Binary Files or Libs
+*.d
+
 # Icon must end with two \r
 Icon
 

@@ -13,6 +13,8 @@ Fuzzing with pre-processed images that contain fine-grained, user-controllable i
 XNU Image Tools provides custom image generation and fuzz testing within XNU environments. The Workspace currently comprises two main components:
 1. **XNU Image Generation Apps**: This includes iOS and Apple Watch apps for generating and sharing unique images in various formats.
 2. **XNU Image Fuzzer**: A proof of concept implementation of an image fuzzer aimed at uncovering potential vulnerabilities in image processing routines.
+3. **VideoToolbox Interposer with Fuzzing**: This project focuses on interposing and fuzzing VideoToolbox functionalities on iOS and macOS platforms.
+4. **Jackalope**: Jackalope is a customizable, distributed, coverage-guided fuzzer that is able to work with black-box binaries.
 
 ### Reproduction for iPhone, Mac and Vision Pro
 
@@ -32,6 +34,10 @@ XNU Image Tools provides custom image generation and fuzz testing within XNU env
 | iPhoneOS 17.5         | ✅     | ✅       |
 | VisionPro 1.2          | ✅     | ✅       |
 | watchOS 10.5           | ✅     | ✅       |
+
+## Project Support
+
+- Open an Issue
 
 ## Components
 
@@ -86,10 +92,6 @@ The XNU Image Fuzzer demonstrates basic fuzzing techniques on image data to unco
 
 [https://srd.cx/xnu-image-fuzzer/](https://srd.cx/xnu-image-fuzzer/)
 
-#### Project Support
-
-- Open an Issue
-
 #### Quick Start
 
 1. **Open as Xcode Project**
@@ -103,6 +105,38 @@ The XNU Image Fuzzer demonstrates basic fuzzing techniques on image data to unco
    - Select all files to AirDrop to your desktop.
 
 <img src="https://xss.cx/2024/02/26/img/xnuimagefuzzer-arm64e-sample-output-files_app-sample-file-render-iphone14promax-001.png" alt="XNU Image Fuzzer iPhone 14 Pro Max Render #1" style="height:550px; width:330px;"/> <img src="https://xss.cx/2024/02/26/img/xnuimagefuzzer-arm64e-sample-output-files_app-sample-file-render-iphone14promax-002.png" alt="XNU Image Fuzzer iPhone 14 Pro Max Render #2" style="height:550px; width:330px;"/> 
+
+### 3. VideoToolbox Interposer Fuzzer
+
+This project focuses on interposing and fuzzing VideoToolbox functionalities on iOS and macOS platforms. The project includes multiple build targets and tests for iOS and macOS with Interposing dylibs.
+
+### 4. Jackalope
+
+The Jackalope Fuzzer is included, and a reminder that TinyInst needs to be installed on the command line to Build.
+
+Open Terminal, execute the following commands:
+
+#### TinyInst Instructions
+```
+cd Jackalope
+git clone --recurse-submodules https://github.com/googleprojectzero/TinyInst.git
+mkdir build
+cd build
+cmake ..
+cmake --build . --config Debug
+```
+- No errors are expected, the project will build, happy fuzzing.
+
+### Xcode Instructions
+```
+cd Jackalope
+git clone --recurse-submodules https://github.com/googleprojectzero/TinyInst.git
+mkdir xcode_build
+cd xcode_build
+cmake -G Xcode ..
+open fuzzer.xcodeproj
+```
+- No errors are expected, the project will build, happy fuzzing.
 
 ## Purpose of Using Fuzzed Images in Fuzzing
 
@@ -142,10 +176,3 @@ Embedding fault mechanisms into a generic image and further processing it throug
 3. **Monitor and Analyze:**
    - Monitor for crashes, hangs, and other signs of vulnerabilities.
    - Collect and analyze the results to identify and understand the bugs found.
-
-### 3. VideoToolbox Interposer Fuzzer
-
-This project focuses on interposing and fuzzing VideoToolbox functionalities on iOS and macOS platforms. The project includes multiple build targets and tests for iOS and macOS with Interposing dylibs.
-
-## Project Technical Summary
-This project focuses on interposing VideoToolbox functionalities to facilitate fuzzing and security testing on iOS and macOS platforms. The main components include the interposing code in videotoolbox-interposer.c and the test runner in videotoolbox-runner.m. The build process is managed through multiple makefiles, providing a structured and automated way to build and test the project.
