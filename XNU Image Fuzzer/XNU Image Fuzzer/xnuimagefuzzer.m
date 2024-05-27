@@ -1356,47 +1356,53 @@ void saveFuzzedImage(UIImage *image, NSString *contextDescription) {
         return;
     }
 
-    // Determine the image format and file extension from contextDescription
-    NSString *fileExtension = @"png"; // Default to PNG
-    NSData *imageData;
-    
-    if ([contextDescription containsString:@"jpeg"] || [contextDescription containsString:@"jpg"]) {
-        fileExtension = @"jpg";
-        imageData = UIImageJPEGRepresentation(image, 0.9); // Using a JPEG quality factor of 0.9
-        NSLog(@"Saving image as JPEG");
-    } else if ([contextDescription containsString:@"gif"]) {
-        fileExtension = @"gif";
-        imageData = UIImageGIFRepresentation(image);
-        if (imageData) {
-            NSLog(@"Successfully created GIF data");
+    // Perform the I/O operations asynchronously
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        // Determine the image format and file extension from contextDescription
+        NSString *fileExtension = @"png"; // Default to PNG
+        NSData *imageData;
+        
+        if ([contextDescription containsString:@"jpeg"] || [contextDescription containsString:@"jpg"]) {
+            fileExtension = @"jpg";
+            imageData = UIImageJPEGRepresentation(image, 0.9); // Using a JPEG quality factor of 0.9
+            NSLog(@"Saving image as JPEG");
+        } else if ([contextDescription containsString:@"gif"]) {
+            fileExtension = @"gif";
+            imageData = UIImageGIFRepresentation(image);
+            if (imageData) {
+                NSLog(@"Successfully created GIF data");
+            } else {
+                NSLog(@"Failed to create GIF data");
+            }
+        } else if ([contextDescription containsString:@"premultipliedfirstalpha"]) {
+            // Handle PremultipliedFirstAlpha specific logic here
+            imageData = UIImagePNGRepresentation(image);
+            NSLog(@"Saving image as PNG with premultipliedfirstalpha");
         } else {
-            NSLog(@"Failed to create GIF data");
+            // Default case handles PNG and other unspecified formats as PNG
+            imageData = UIImagePNGRepresentation(image);
+            NSLog(@"Saving image as PNG");
         }
-    } else if ([contextDescription containsString:@"premultipliedfirstalpha"]) {
-        // Handle PremultipliedFirstAlpha specific logic here
-        imageData = UIImagePNGRepresentation(image);
-        NSLog(@"Saving image as PNG with premultipliedfirstalpha");
-    } else {
-        // Default case handles PNG and other unspecified formats as PNG
-        imageData = UIImagePNGRepresentation(image);
-        NSLog(@"Saving image as PNG");
-    }
 
-    // Generate file name based on the context description
-    NSString *fileName = [NSString stringWithFormat:@"fuzzed_image_%@.%@", contextDescription, fileExtension];
-    
-    // Fetch the documents directory path
-    NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
-    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:fileName];
-    
-    // Save the image data to the file
-    BOOL success = [imageData writeToFile:filePath atomically:YES];
-    
-    if (success) {
-        NSLog(@"Fuzzed image for '%@' context saved to %@", contextDescription, filePath);
-    } else {
-        NSLog(@"Failed to save fuzzed image for '%@' context", contextDescription);
-    }
+        // Generate file name based on the context description
+        NSString *fileName = [NSString stringWithFormat:@"fuzzed_image_%@.%@", contextDescription, fileExtension];
+        
+        // Fetch the documents directory path
+        NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+        NSString *filePath = [documentsDirectory stringByAppendingPathComponent:fileName];
+        
+        // Save the image data to the file
+        BOOL success = [imageData writeToFile:filePath atomically:YES];
+        
+        // Perform any UI updates on the main thread
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (success) {
+                NSLog(@"Fuzzed image for '%@' context saved to %@", contextDescription, filePath);
+            } else {
+                NSLog(@"Failed to save fuzzed image for '%@' context", contextDescription);
+            }
+        });
+    });
 }
 
 /**

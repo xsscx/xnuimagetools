@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1DC635182C041C7600AC9F74 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1DC635172C041C7600AC9F74 /* Assets.xcassets */; };
 		1DF14AD52C03C0810053E897 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DF14ACC2C03C0810053E897 /* ContentView.swift */; };
 		1DF14AD62C03C0810053E897 /* cx_srd_imagegenerator_xnu_demoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DF14ACE2C03C0810053E897 /* cx_srd_imagegenerator_xnu_demoApp.swift */; };
 		1DF14AD72C03C0810053E897 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1DF14ACF2C03C0810053E897 /* LaunchScreen.storyboard */; };
@@ -18,6 +19,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1DC635172C041C7600AC9F74 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = ../../../../../Pictures/asset_collection/Assets.xcassets; sourceTree = "<group>"; };
 		1DE208FF2B867C4700A3C0D5 /* XNU Image Generator for iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "XNU Image Generator for iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF14ACC2C03C0810053E897 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		1DF14ACD2C03C0810053E897 /* cx_srd_imagegenerator_xnu_demo.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = cx_srd_imagegenerator_xnu_demo.entitlements; sourceTree = "<group>"; };
@@ -60,6 +62,7 @@
 		1DF14AD22C03C0810053E897 /* cx.srd.imagegenerator-xnu-demo */ = {
 			isa = PBXGroup;
 			children = (
+				1DC635172C041C7600AC9F74 /* Assets.xcassets */,
 				1DFF90382C03CD3D00011940 /* cx-srd-imagegenerator-xnu-demo-Info.plist */,
 				1DF14ACC2C03C0810053E897 /* ContentView.swift */,
 				1DF14ADA2C03C0AA0053E897 /* 2225.jpg */,
@@ -134,6 +137,7 @@
 				1DF14AE42C03C2420053E897 /* 2225.jpg in Resources */,
 				1DFF90392C03CD3D00011940 /* cx-srd-imagegenerator-xnu-demo-Info.plist in Resources */,
 				1DF14AD72C03C0810053E897 /* LaunchScreen.storyboard in Resources */,
+				1DC635182C041C7600AC9F74 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -214,6 +218,7 @@
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSDocumentsFolderUsageDescription = "Doc Folder Desc in Privacy";
 				INFOPLIST_KEY_NSStickerSharingLevel = OS;
+				INFOPLIST_KEY_UISupportsDocumentBrowser = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
@@ -276,6 +281,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				GENERATE_PROFILING_CODE = YES;
+				INFOPLIST_KEY_UISupportsDocumentBrowser = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -302,9 +308,11 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_UISupportsDocumentBrowser = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -329,9 +337,11 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_UISupportsDocumentBrowser = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
