@@ -1,0 +1,100 @@
+Analysis of xnuimagefuzzer.m:
+{'total_lines': 2851, 'code_lines': 1396, 'comment_lines': 950, 'functions': 81, 'documented_functions': 32, 'avg_function_length': 4.293706293706293, 'longest_function': 51, 'inline_comments': 153, 'block_comments': 130, 'comment_density': 33.32164152928797, 'blank_lines': 505, 'todo_comments': 0, 'fixme_comments': 0, 'class_definitions': 0, 'variable_declarations': 226, 'loops': 35, 'conditionals': 118, 'all_function_names': {'dump_comm_page', 'processImage', 'dumpDeviceInfo', 'performAllImagePermutations', 'createBitmapContextHDRFloatComponents', 'createBitmapContextLittleEndian', 'applyEnhancedFuzzingToBitmapContextWithFloats', 'createBitmapContextBigEndian', 'logPixelData', 'printColored', 'dumpMacDeviceInfo', 'applyColorShift', 'createBitmapContext16BitDepth', 'createBitmapContextPremultipliedFirstAlpha', 'debugMemoryHandling', 'hashString', 'createBitmapContextStandardRGB', 'createBitmapContext1BitMonochrome', 'isValidImagePath', 'createBitmapContext32BitFloat4Component', 'saveFuzzedImage', 'saveMonochromeImage', 'createBitmapContextNonPremultipliedAlpha', 'LogRandomPixelData', 'applyEnhancedFuzzingToBitmapContextAlphaOnly', 'createBitmapContextGrayscale', 'applyEnhancedFuzzingToBitmapContext', 'convertTo1BitMonochrome', 'createBitmapContextAlphaOnly', 'applyFuzzingToBitmapContext', 'createBitmapContext8BitInvertedColors', 'main', 'applyPixelScramble'}, 'documented_function_names': {'dump_comm_page', 'processImage', 'dumpDeviceInfo', 'performAllImagePermutations', 'createBitmapContextHDRFloatComponents', 'createBitmapContextLittleEndian', 'applyEnhancedFuzzingToBitmapContextWithFloats', 'createBitmapContextBigEndian', 'logPixelData', 'printColored', 'dumpMacDeviceInfo', 'applyColorShift', 'createBitmapContext16BitDepth', 'createBitmapContextPremultipliedFirstAlpha', 'debugMemoryHandling', 'hashString', 'createBitmapContextStandardRGB', 'createBitmapContext1BitMonochrome', 'isValidImagePath', 'createBitmapContext32BitFloat4Component', 'saveFuzzedImage', 'saveMonochromeImage', 'createBitmapContextNonPremultipliedAlpha', 'LogRandomPixelData', 'applyEnhancedFuzzingToBitmapContextAlphaOnly', 'applyEnhancedFuzzingToBitmapContext', 'convertTo1BitMonochrome', 'createBitmapContextAlphaOnly', 'applyFuzzingToBitmapContext', 'createBitmapContext8BitInvertedColors', 'main', 'applyPixelScramble'}, 'undocumented_function_names': {'createBitmapContextGrayscale'}, 'function_lengths': [2, 11, 3, 4, 2, 3, 16, 20, 6, 2, 4, 2, 7, 2, 3, 3, 4, 2, 3, 2, 4, 6, 3, 2, 2, 8, 2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 2, 4, 2, 2, 2, 3, 2, 2, 2, 2, 2, 4, 2, 2, 3, 2, 2, 4, 2, 5, 2, 3, 2, 3, 3, 2, 2, 3, 2, 6, 2, 2, 4, 4, 2, 4, 2, 3, 3, 3, 4, 3, 51, 50, 3, 4, 5, 5, 2, 2, 7, 3, 3, 4, 4, 2, 2, 10, 3, 3, 4, 4, 2, 2, 9, 3, 4, 5, 5, 2, 2, 9, 3, 3, 3, 4, 4, 3, 2, 7, 3, 4, 5, 3, 3, 3, 7, 3, 3, 3, 3, 8, 3, 3, 3, 3, 8, 3, 3, 3, 5, 8, 2, 3, 3, 3, 7], 'pragma_marks': ['Headers', 'Constants', 'Color Definitions', 'Injection Strings Configuration', 'Debugging Macros', 'Global Variables', 'Date and Time Utilities', 'Signature', 'Device Information', 'macOS System Information', 'cpu_cap_strings', 'dump_comm_page', 'Print Color Function', 'Utility Function Prototypes', 'Image Processing Prototypes', 'Conversion and Saving Functions', 'Directory Management', 'Pixel Logging Data', 'LogRandomPixelData', 'Fuzzing Functions', 'applyEnhancedFuzzingToBitmapContext', 'applyEnhancedFuzzingToBitmapContextWithFloats', 'applyEnhancedFuzzingToBitmapContextAlphaOnly', 'applyFuzzingToBitmapContext', 'debugMemoryHandling', 'saveFuzzedImage', 'Hash Function', 'performAllImagePermutations', 'generateFuzzedImageData', 'Application Entry Point', 'isImagePathValid', 'loadImageFromFile', 'Process Image', 'createBitmapContextStandardRBG', 'createBitmapContextPremultipliedFirstAlpha', 'createBitmapContextNonPremultipliedAlpha', 'createBitmapContext16BitDepth', 'createBitmapContextGrayscale', 'createBitmapContextHDRFloatComponents', 'createBitmapContextAlphaOnly', 'createBitmapContext1BitMonochrome', 'createBitmapContextBigEndian', 'createBitmapContextLittleEndian', 'createBitmapContext8BitInvertedColors', 'Bitmap Context Creation with os_signpost Logging']}
+
+Functions Analysis:
+  - LogRandomPixelData (D)
+  - applyColorShift (D)
+  - applyEnhancedFuzzingToBitmapContext (D)
+  - applyEnhancedFuzzingToBitmapContextAlphaOnly (D)
+  - applyEnhancedFuzzingToBitmapContextWithFloats (D)
+  - applyFuzzingToBitmapContext (D)
+  - applyPixelScramble (D)
+  - convertTo1BitMonochrome (D)
+  - createBitmapContext16BitDepth (D)
+  - createBitmapContext1BitMonochrome (D)
+  - createBitmapContext32BitFloat4Component (D)
+  - createBitmapContext8BitInvertedColors (D)
+  - createBitmapContextAlphaOnly (D)
+  - createBitmapContextBigEndian (D)
+  - createBitmapContextGrayscale (U)
+  - createBitmapContextHDRFloatComponents (D)
+  - createBitmapContextLittleEndian (D)
+  - createBitmapContextNonPremultipliedAlpha (D)
+  - createBitmapContextPremultipliedFirstAlpha (D)
+  - createBitmapContextStandardRGB (D)
+  - debugMemoryHandling (D)
+  - dumpDeviceInfo (D)
+  - dumpMacDeviceInfo (D)
+  - dump_comm_page (D)
+  - hashString (D)
+  - isValidImagePath (D)
+  - logPixelData (D)
+  - main (D)
+  - performAllImagePermutations (D)
+  - printColored (D)
+  - processImage (D)
+  - saveFuzzedImage (D)
+  - saveMonochromeImage (D)
+
+Pragma Marks:
+  - Application Entry Point
+  - Bitmap Context Creation with os_signpost Logging
+  - Color Definitions
+  - Constants
+  - Conversion and Saving Functions
+  - Date and Time Utilities
+  - Debugging Macros
+  - Device Information
+  - Directory Management
+  - Fuzzing Functions
+  - Global Variables
+  - Hash Function
+  - Headers
+  - Image Processing Prototypes
+  - Injection Strings Configuration
+  - LogRandomPixelData
+  - Pixel Logging Data
+  - Print Color Function
+  - Process Image
+  - Signature
+  - Utility Function Prototypes
+  - applyEnhancedFuzzingToBitmapContext
+  - applyEnhancedFuzzingToBitmapContextAlphaOnly
+  - applyEnhancedFuzzingToBitmapContextWithFloats
+  - applyFuzzingToBitmapContext
+  - cpu_cap_strings
+  - createBitmapContext16BitDepth
+  - createBitmapContext1BitMonochrome
+  - createBitmapContext8BitInvertedColors
+  - createBitmapContextAlphaOnly
+  - createBitmapContextBigEndian
+  - createBitmapContextGrayscale
+  - createBitmapContextHDRFloatComponents
+  - createBitmapContextLittleEndian
+  - createBitmapContextNonPremultipliedAlpha
+  - createBitmapContextPremultipliedFirstAlpha
+  - createBitmapContextStandardRBG
+  - debugMemoryHandling
+  - dump_comm_page
+  - generateFuzzedImageData
+  - isImagePathValid
+  - loadImageFromFile
+  - macOS System Information
+  - performAllImagePermutations
+  - saveFuzzedImage
+               Metric  Count
+          Total Lines   2851
+           Code Lines   1396
+        Comment Lines    950
+            Functions     81
+ Documented Functions     32
+      Inline Comments    153
+       Block Comments    130
+          Blank Lines    505
+        TODO Comments      0
+       FIXME Comments      0
+    Class Definitions      0
+Variable Declarations    226
+                Loops     35
+         Conditionals    118
+
