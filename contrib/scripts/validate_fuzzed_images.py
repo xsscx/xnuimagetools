@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageOps
 import os
 
 # Injection strings
@@ -50,7 +50,7 @@ def check_injection_strings(binary_data):
 	return None, -1
 
 # Visualize encoded data in the image
-def visualize_encoded_data(image, start_bit, bit_length, bit_position='LSB', output_size=(128, 128)):
+def visualize_encoded_data(image, start_bit, bit_length, bit_position='LSB'):
 	draw = ImageDraw.Draw(image)
 	pixels = list(image.getdata())
 	
@@ -69,26 +69,48 @@ def visualize_encoded_data(image, start_bit, bit_length, bit_position='LSB', out
 		elif channel_index == 2:
 			draw.point((x, y), fill=highlight_color)
 			
-	image = image.resize(output_size, Image.Resampling.LANCZOS)
 	return image
 
+# Create filmstrip comparison
+def create_filmstrip(original_image, highlighted_image, bit_position, image_name):
+	width, height = original_image.size
+	filmstrip = Image.new('RGB', (width * 2, height))
+	
+	# Paste the original and highlighted images side by side
+	filmstrip.paste(original_image, (0, 0))
+	filmstrip.paste(highlighted_image, (width, 0))
+	
+	# Add labels
+	draw = ImageDraw.Draw(filmstrip)
+	draw.text((10, 10), "Original", fill=(255, 255, 255))
+	draw.text((width + 10, 10), f"Highlighted ({bit_position})", fill=(255, 255, 255))
+	
+	filmstrip.save(f"filmstrip_{bit_position}_{image_name}")
+	return filmstrip
+
 # Main function to verify and visualize images
-def verify_and_visualize_images(image_dir, output_dir, bit_position='LSB', output_size=(128, 128)):
+def verify_and_visualize_images(image_dir, output_dir, bit_position='LSB'):
 	if not os.path.exists(output_dir):
 		os.makedirs(output_dir)
 		
 	for filename in os.listdir(image_dir):
 		if filename.lower().endswith(('.png', '.jpg', '.jpeg')):
 			image_path = os.path.join(image_dir, filename)
-			extracted_bits, image = extract_bits_from_image(image_path, bit_position)
+			extracted_bits, original_image = extract_bits_from_image(image_path, bit_position)
 			found_string, start_bit = check_injection_strings(extracted_bits)
 			if found_string:
 				bit_length = len(str_to_bin(found_string))
-				highlighted_image = visualize_encoded_data(image, start_bit, bit_length, bit_position, output_size)
+				highlighted_image = visualize_encoded_data(Image.new('RGB', original_image.size), start_bit, bit_length, bit_position)
 				output_path = os.path.join(output_dir, f"highlighted_{filename}")
 				highlighted_image.save(output_path)
 				print(f"Injection string found in {filename}: {found_string}. Highlighted image saved to {output_path}")
 				
+				# Create filmstrip
+				filmstrip = create_filmstrip(original_image, highlighted_image, bit_position, filename)
+				filmstrip_path = os.path.join(output_dir, f"filmstrip_{bit_position}_{filename}")
+				filmstrip.save(filmstrip_path)
+				print(f"Filmstrip saved to {filmstrip_path}")
+								
 # Example usage
 image_directory = "/mnt/xnuimagefuzzer/fuzzed/images/"
 output_directory = "/mnt/xnuimagefuzzer/fuzzed/images/compare/"
