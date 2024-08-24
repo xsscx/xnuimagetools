@@ -2,7 +2,7 @@
 
 Project last validated Saturday, August 24, 2024
 
-** Quick Start: Open in Xcode, Run **
+** Quick Start: Open in Xcode, Change Developer Id, Click Run **
 
 ## Workspace Summary
 
