@@ -18,7 +18,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1DC635172C041C7600AC9F74 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = ../../../../../Pictures/asset_collection/Assets.xcassets; sourceTree = "<group>"; };
 		1DE208FF2B867C4700A3C0D5 /* XNU Image Generator for iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "XNU Image Generator for iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF14ACC2C03C0810053E897 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		1DF14ACD2C03C0810053E897 /* cx_srd_imagegenerator_xnu_demo.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = cx_srd_imagegenerator_xnu_demo.entitlements; sourceTree = "<group>"; };
