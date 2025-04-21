@@ -1,6 +1,6 @@
 # XNU Image Tools
 
-Project last validated Saturday, August 24, 2024
+Project last validated Monday, April 21, 2025 at 1200 EDT.
 
 ** Quick Start: Open in Xcode, Change Developer Id, Click Run **
 
