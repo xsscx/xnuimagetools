@@ -1,6 +1,6 @@
 # XNU Image Tools
 
-Project last validated Monday, April 21, 2025 at 1200 EDT.
+Project last validated 2026-02-04 17:33:47 UTC
 
 ** Quick Start: Open in Xcode, Change Developer Id, Click Run **
 
@@ -11,6 +11,20 @@ XNU Image Tools is a multi-platform image output tool designed to ensure consist
 When these baseline images are subsequently input into fuzzing tools like XNU Image Fuzzer, Jackalope, or AFL, it is possible to identify platform-specific vulnerabilities, bugs, and other unpredictable behaviors. 
 
 Fuzzing with pre-processed images that contain fine-grained, user-controllable inputs significantly increases the effective coverage envelope for a fault injection campaign.
+
+## Workflow
+
+- Create Images with https://github.com/xsscx/xnuimagetools
+- Fuzz Images with https://github.com/xsscx/xnuimagefuzzer
+- Create ICC Profiles with [ColorBleed Tools](https://github.com/xsscx/research/tree/main/colorbleed_tools)
+- Join the ICC Profile & Image
+    - `convert input.png -profile input.icc output.png`
+- Interact with:
+   - iMessage
+   - Outlook
+   - Phone
+   - Desktops
+   - TVs
 
 ## Overview
 
