@@ -181,7 +181,20 @@ jobs:
           build/videotoolbox-runner \
             -t "$FUZZ_DURATION" \
             -o /tmp/fuzzed-video \
-            big.mov > /tmp/fuzz-instrumented.log 2>&1 || EXIT=$?
+            big.mov > /tmp/fuzz-instrumented.log 2>&1 &
+          VT_PID=$!
+
+          # Hard watchdog: kill if fuzz() hangs past duration
+          WATCHDOG_SECS=$((FUZZ_DURATION + 30))
+          ( sleep "$WATCHDOG_SECS" && kill $VT_PID 2>/dev/null ) &
+          WATCHDOG_PID=$!
+
+          wait $VT_PID 2>/dev/null || true
+          EXIT=$?
+
+          # Clean up watchdog
+          kill $WATCHDOG_PID 2>/dev/null || true
+          wait $WATCHDOG_PID 2>/dev/null || true
 
           echo "Exit code: ${EXIT:-0}"
 

@@ -297,7 +297,6 @@ int fuzz(const char *filename, int flip_intensity, int inject_intensity, int ove
                     if (sampleBuffer == nil) break;
 
                     NSLog(@"Processing frame %d with flip intensity %d, inject intensity %d, overflow intensity %d", frame, flip_intensity, inject_intensity, overflow_intensity);
-                    log_gpu_memory_info("Processing frame", __FILE__, __FUNCTION__, __LINE__);
 
                     // Extract pixel buffer and apply fuzzing mutations
                     CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
