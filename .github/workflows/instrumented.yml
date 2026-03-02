@@ -213,6 +213,59 @@ jobs:
           FILE_COUNT=$(find /tmp/fuzzed-video -name "*.png" -type f 2>/dev/null | wc -l | tr -d ' ')
           echo "Generated $FILE_COUNT fuzzed frames"
 
+      - name: Validate VideoToolbox output quality
+        if: always()
+        run: |
+          set -euo pipefail
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "## VideoToolbox Output Quality" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+
+          TOTAL=0
+          VALID=0
+          INVALID=0
+          ZERO_SIZE=0
+
+          echo "| File | Size | Format | Dimensions | Status |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|------|------|--------|------------|--------|" >> "$GITHUB_STEP_SUMMARY"
+
+          for f in /tmp/fuzzed-video/*.png; do
+            [ -f "$f" ] || continue
+            TOTAL=$((TOTAL + 1))
+            NAME=$(basename "$f")
+            SIZE=$(stat -f%z "$f" 2>/dev/null || stat --printf="%s" "$f" 2>/dev/null || echo "0")
+
+            if [ "$SIZE" -eq 0 ]; then
+              ZERO_SIZE=$((ZERO_SIZE + 1))
+              INVALID=$((INVALID + 1))
+              echo "| $NAME | 0 B | — | — | ❌ Empty |" >> "$GITHUB_STEP_SUMMARY"
+              continue
+            fi
+
+            FORMAT=$(sips -g format "$f" 2>/dev/null | tail -1 | awk '{print $2}' || echo "unknown")
+            WIDTH=$(sips -g pixelWidth "$f" 2>/dev/null | tail -1 | awk '{print $2}' || echo "?")
+            HEIGHT=$(sips -g pixelHeight "$f" 2>/dev/null | tail -1 | awk '{print $2}' || echo "?")
+
+            if [ "$FORMAT" != "unknown" ] && [ "$WIDTH" != "?" ] && [ "$HEIGHT" != "?" ]; then
+              VALID=$((VALID + 1))
+              STATUS="✅ Valid"
+            else
+              INVALID=$((INVALID + 1))
+              STATUS="⚠️ $(file -b "$f" | head -c 40)"
+            fi
+
+            SIZE_H=$(numfmt --to=iec "$SIZE" 2>/dev/null || echo "${SIZE} B")
+            echo "| $NAME | $SIZE_H | $FORMAT | ${WIDTH}×${HEIGHT} | $STATUS |" >> "$GITHUB_STEP_SUMMARY"
+          done
+
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Metric | Count |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|--------|-------|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Total frames | $TOTAL |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Valid images | $VALID |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Invalid/unknown | $INVALID |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Zero-size files | $ZERO_SIZE |" >> "$GITHUB_STEP_SUMMARY"
+
       - name: Generate coverage report
         working-directory: VideoToolbox/Fuzzing
         run: |
@@ -412,6 +465,59 @@ jobs:
           echo "| ASAN findings | ${ASAN_COUNT} |" >> "$GITHUB_STEP_SUMMARY"
           echo "| UBSAN findings | ${UBSAN_COUNT} |" >> "$GITHUB_STEP_SUMMARY"
           echo "| Fuzzed images | ${FILE_COUNT} |" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Validate iOS fuzzer output quality
+        if: always()
+        run: |
+          set -euo pipefail
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "## iOS Fuzzer Output Quality" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+
+          TOTAL=0
+          VALID=0
+          INVALID=0
+          ZERO_SIZE=0
+
+          echo "| File | Size | Format | Dimensions | Status |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|------|------|--------|------------|--------|" >> "$GITHUB_STEP_SUMMARY"
+
+          for f in /tmp/fuzzed-output-ios/*; do
+            [ -f "$f" ] || continue
+            TOTAL=$((TOTAL + 1))
+            NAME=$(basename "$f")
+            SIZE=$(stat -f%z "$f" 2>/dev/null || stat --printf="%s" "$f" 2>/dev/null || echo "0")
+
+            if [ "$SIZE" -eq 0 ]; then
+              ZERO_SIZE=$((ZERO_SIZE + 1))
+              INVALID=$((INVALID + 1))
+              echo "| $NAME | 0 B | — | — | ❌ Empty |" >> "$GITHUB_STEP_SUMMARY"
+              continue
+            fi
+
+            FORMAT=$(sips -g format "$f" 2>/dev/null | tail -1 | awk '{print $2}' || echo "unknown")
+            WIDTH=$(sips -g pixelWidth "$f" 2>/dev/null | tail -1 | awk '{print $2}' || echo "?")
+            HEIGHT=$(sips -g pixelHeight "$f" 2>/dev/null | tail -1 | awk '{print $2}' || echo "?")
+
+            if [ "$FORMAT" != "unknown" ] && [ "$WIDTH" != "?" ] && [ "$HEIGHT" != "?" ]; then
+              VALID=$((VALID + 1))
+              STATUS="✅ Valid"
+            else
+              INVALID=$((INVALID + 1))
+              STATUS="⚠️ $(file -b "$f" | head -c 40)"
+            fi
+
+            SIZE_H=$(numfmt --to=iec "$SIZE" 2>/dev/null || echo "${SIZE} B")
+            echo "| $NAME | $SIZE_H | $FORMAT | ${WIDTH}×${HEIGHT} | $STATUS |" >> "$GITHUB_STEP_SUMMARY"
+          done
+
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Metric | Count |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|--------|-------|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Total files | $TOTAL |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Valid images | $VALID |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Invalid/unknown | $INVALID |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Zero-size files | $ZERO_SIZE |" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Generate iOS coverage report
         run: |
