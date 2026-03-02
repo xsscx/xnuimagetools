@@ -47,10 +47,15 @@ jobs:
       - name: Check for duplicate #defines
         run: |
           set -euo pipefail
-          DUPES=0
+          rm -f /tmp/dupes_flag
           find . \( -name '*.m' -o -name '*.h' -o -name '*.c' \) -not -path './.git/*' -print0 | while IFS= read -r -d '' f; do
-            dups=$(grep -E '^\s*#define\s+' "$f" 2>/dev/null \
-              | awk '{print $2}' | sort | uniq -d) || true
+            # Only flag defines that appear identically outside #if/#else guards
+            # Use awk to track preprocessor depth; only emit defines at depth 0
+            dups=$(awk '
+              /^[[:space:]]*#[[:space:]]*(if|ifdef|ifndef|elif|else)/ { depth++ }
+              /^[[:space:]]*#[[:space:]]*endif/ { if (depth>0) depth-- }
+              /^[[:space:]]*#define[[:space:]]+/ && depth==0 { print $2 }
+            ' "$f" 2>/dev/null | sort | uniq -d) || true
             if [ -n "$dups" ]; then
               echo "❌ Duplicate #defines in $f: $dups"
               echo "FOUND_DUPES=1" >> /tmp/dupes_flag
