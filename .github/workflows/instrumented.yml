@@ -619,13 +619,6 @@ jobs:
     if: always()
     timeout-minutes: 5
     steps:
-      - name: Download coverage report
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
-        with:
-          name: videotoolbox-coverage-report
-          path: /tmp/coverage
-        continue-on-error: true
-
       - name: Summary
         run: |
           set -euo pipefail
@@ -642,26 +635,16 @@ jobs:
           echo "| Code Coverage | ⏭️ See native-coverage job |" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
 
-          if [ -f /tmp/coverage/summary.txt ]; then
-            echo "### VideoToolbox Coverage" >> "$GITHUB_STEP_SUMMARY"
-            echo '```' >> "$GITHUB_STEP_SUMMARY"
-            cat /tmp/coverage/summary.txt >> "$GITHUB_STEP_SUMMARY"
-            echo '```' >> "$GITHUB_STEP_SUMMARY"
-          fi
-
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "### Artifacts" >> "$GITHUB_STEP_SUMMARY"
-          echo "- **videotoolbox-instrumented-binaries** — ASAN+UBSAN binaries for local testing" >> "$GITHUB_STEP_SUMMARY"
-          echo "- **videotoolbox-sanitizer-logs** — ASAN/UBSAN findings" >> "$GITHUB_STEP_SUMMARY"
-          echo "- **ios-fuzzer-sanitizer-logs** — iOS runtime sanitizer output" >> "$GITHUB_STEP_SUMMARY"
+          echo "- **ios-fuzzer-sanitizer-logs** — iOS runtime ASAN/UBSAN output" >> "$GITHUB_STEP_SUMMARY"
           echo "- Coverage reports are generated in the **native-coverage** job" >> "$GITHUB_STEP_SUMMARY"
+          echo "- VideoToolbox coverage is in the **videotoolbox.yml** workflow" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "### Improving Coverage" >> "$GITHUB_STEP_SUMMARY"
-          echo "1. Download \`videotoolbox-coverage-report\` artifact" >> "$GITHUB_STEP_SUMMARY"
-          echo "2. Open \`html/index.html\` for interactive line-by-line coverage" >> "$GITHUB_STEP_SUMMARY"
-          echo "3. Review \`annotated-source.txt\` for uncovered code paths" >> "$GITHUB_STEP_SUMMARY"
-          echo "4. Check functions with 0% coverage in the summary above" >> "$GITHUB_STEP_SUMMARY"
-          echo "5. Add test inputs that exercise uncovered branches" >> "$GITHUB_STEP_SUMMARY"
+          echo "1. Check the **native-coverage** job for iOS fuzzer coverage" >> "$GITHUB_STEP_SUMMARY"
+          echo "2. Check the **videotoolbox.yml** workflow for VideoToolbox coverage" >> "$GITHUB_STEP_SUMMARY"
+          echo "3. Review uncovered functions and add test inputs" >> "$GITHUB_STEP_SUMMARY"
 
   # ── Job 4: Native clang Build + Run + Coverage ─────────────
   # Xcode's CLANG_ENABLE_CODE_COVERAGE=YES does NOT inject
