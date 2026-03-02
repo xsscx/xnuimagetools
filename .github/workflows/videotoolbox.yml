@@ -22,7 +22,7 @@
 name: xnuimagetools-videotoolbox
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: videotoolbox-${{ github.ref }}
@@ -47,6 +47,12 @@ on:
       - 'VideoToolbox/**'
       - '.github/workflows/videotoolbox.yml'
   workflow_dispatch:
+    inputs:
+      fuzz_duration:
+        description: 'Fuzzing duration in seconds'
+        required: false
+        default: '60'
+        type: string
 
 jobs:
   build-macos:
@@ -131,6 +137,7 @@ jobs:
             -framework CoreFoundation \
             -framework CoreMedia \
             -framework CoreVideo \
+            -framework CoreImage \
             -lz
           codesign -s "-" --force build/videotoolbox-runner
           file build/videotoolbox-runner
@@ -182,9 +189,8 @@ jobs:
         working-directory: VideoToolbox/Fuzzing
         run: |
           set -euo pipefail
-          # Run with no args to verify it loads frameworks and prints usage
-          timeout 10 build/videotoolbox-runner 2>&1 || EXIT=$?
-          echo "videotoolbox-runner exit code: ${EXIT:-0}"
+          # Run with -h to verify it loads frameworks and prints usage
+          build/videotoolbox-runner -h 2>&1
           echo "✅ videotoolbox-runner loads and executes"
 
       - name: Package artifacts
@@ -292,3 +298,135 @@ jobs:
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "**Total warnings: $WARNINGS**" >> "$GITHUB_STEP_SUMMARY"
           echo "📊 Static analysis: $WARNINGS total warnings"
+
+  fuzz-and-commit:
+    name: Fuzz and Commit Results
+    runs-on: macos-latest
+    needs: build-macos
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'push'
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: true
+
+      - name: Credential hardening
+        run: |
+          set -euo pipefail
+          git config --global credential.helper ""
+
+      - name: Build videotoolbox-runner
+        working-directory: VideoToolbox/Fuzzing
+        run: |
+          set -euo pipefail
+          mkdir -p build
+
+          # Build interposer first (dependency)
+          xcrun -sdk macosx clang \
+            -arch arm64 -g -O1 -Wall -Wextra \
+            -dynamiclib \
+            -framework IOKit \
+            -framework CoreFoundation \
+            -framework CoreMedia \
+            -framework CoreVideo \
+            -framework VideoToolbox \
+            -lz \
+            -o build/videotoolbox-interposer.dylib \
+            videotoolbox-interposer.c
+          codesign -s "-" --force build/videotoolbox-interposer.dylib
+
+          # Build runner
+          xcrun -sdk macosx clang \
+            -arch arm64 -g -O1 -Wall -Wextra \
+            -o build/videotoolbox-runner \
+            videotoolbox-runner.m \
+            build/videotoolbox-interposer.dylib \
+            -framework VideoToolbox \
+            -framework Foundation \
+            -framework AVFoundation \
+            -framework CoreFoundation \
+            -framework CoreMedia \
+            -framework CoreVideo \
+            -framework CoreImage \
+            -lz
+          codesign -s "-" --force build/videotoolbox-runner
+          echo "✅ videotoolbox-runner built for fuzzing"
+
+      - name: Run VideoToolbox fuzzer
+        working-directory: VideoToolbox/Fuzzing
+        env:
+          FUZZ_DURATION: ${{ inputs.fuzz_duration || '60' }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/fuzzed-video
+
+          echo "🔨 Fuzzing for ${FUZZ_DURATION}s..."
+          timeout $((FUZZ_DURATION + 30)) \
+            build/videotoolbox-runner \
+              -t "$FUZZ_DURATION" \
+              -o /tmp/fuzzed-video \
+              big.mov 2>&1 | tee /tmp/fuzz-output.log || EXIT=$?
+
+          echo "Exit code: ${EXIT:-0}"
+          FILE_COUNT=$(find /tmp/fuzzed-video -name "*.png" -type f 2>/dev/null | wc -l | tr -d ' ')
+          echo "fuzz_file_count=$FILE_COUNT" >> "$GITHUB_ENV"
+
+          echo "## VideoToolbox Fuzzing Results" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Metric | Value |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|--------|-------|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Duration | ${FUZZ_DURATION}s |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Output files | ${FILE_COUNT} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Exit code | ${EXIT:-0} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "$FILE_COUNT" -eq 0 ]; then
+            echo "⚠️  No fuzzed frames generated"
+          else
+            echo "✅ Generated $FILE_COUNT fuzzed frames"
+            ls -lh /tmp/fuzzed-video/ | head -20
+          fi
+
+      - name: Upload fuzzed video artifacts
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: fuzzed-video-frames
+          path: /tmp/fuzzed-video/
+          retention-days: 30
+          if-no-files-found: warn
+
+      - name: Commit fuzzed video frames
+        if: env.fuzz_file_count != '0'
+        run: |
+          set -euo pipefail
+
+          TIMESTAMP=$(date -u '+%Y-%m-%d-%H%M%S')
+          DEST_DIR="fuzzed-video/${TIMESTAMP}"
+          mkdir -p "$DEST_DIR"
+
+          FILE_COUNT=$(find /tmp/fuzzed-video -name "*.png" -type f 2>/dev/null | wc -l | tr -d ' ')
+          if [ "$FILE_COUNT" -eq 0 ]; then
+            echo "⚠️  No fuzzed frames to commit"
+            exit 0
+          fi
+
+          cp /tmp/fuzzed-video/*.png "$DEST_DIR/"
+          echo "Copied $FILE_COUNT files to $DEST_DIR"
+          ls -la "$DEST_DIR/" | head -20
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "fuzzed-video/"
+          git commit -m "fuzzed-video: ${TIMESTAMP} — ${FILE_COUNT} frames
+
+          Generated by xnuimagetools-videotoolbox workflow
+          Duration: ${{ inputs.fuzz_duration || '60' }}s
+          Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+          Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>"
+          git pull --rebase origin main
+          git push
+          echo "✅ Committed $FILE_COUNT fuzzed video frames to $DEST_DIR"

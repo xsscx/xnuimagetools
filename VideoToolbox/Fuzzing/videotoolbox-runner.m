@@ -54,6 +54,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreMedia/CoreMedia.h>
 #import <CoreVideo/CoreVideo.h>
+#import <CoreImage/CoreImage.h>
 #import <stdio.h>
 
 #pragma mark - Debugging Macros
@@ -359,32 +360,172 @@ This function sets up the environment, initializes signal handlers, and performs
 @param argv The array of command-line arguments.
 @return 0 if the program executes successfully, or a non-zero value if there was an error.
 */
+static void print_usage(const char *prog) {
+    printf("Usage: %s [options] <filename>\n", prog);
+    printf("Options:\n");
+    printf("  -t <seconds>  Fuzzing duration in seconds (default: 60, 0 = unlimited)\n");
+    printf("  -o <dir>      Output directory for fuzzed frames (default: none)\n");
+    printf("  -h            Show this help\n");
+}
+
+/**
+@brief Saves a fuzzed frame as a PNG file in the output directory.
+
+@param imageBuffer The pixel buffer to save.
+@param outputDir   The directory to write the file into.
+@param iteration   The fuzzing iteration number.
+@param frame       The frame number within the iteration.
+*/
+static void save_fuzzed_frame(CVImageBufferRef imageBuffer, const char *outputDir, int iteration, int frame) {
+    @autoreleasepool {
+        CIImage *ciImage = [CIImage imageWithCVPixelBuffer:imageBuffer];
+        if (!ciImage) return;
+
+        CIContext *ctx = [CIContext context];
+        NSString *path = [NSString stringWithFormat:@"%s/fuzzed_iter%03d_frame%03d.png",
+                          outputDir, iteration, frame];
+        NSURL *url = [NSURL fileURLWithPath:path];
+        CGColorSpaceRef cs = CGColorSpaceCreateDeviceRGB();
+        [ctx writePNGRepresentationOfImage:ciImage
+                                     toURL:url
+                                    format:kCIFormatRGBA8
+                                colorSpace:cs
+                                   options:@{}
+                                     error:nil];
+        CGColorSpaceRelease(cs);
+        NSLog(@"Saved fuzzed frame: %@", path);
+    }
+}
+
 int main(int argc, const char *argv[]) {
-    showme_environment();
     setup_signal_handlers();
 
-    if (argc < 2) {
-        printf("Usage: %s <filename>\n", argv[0]);
-        return 0;
+    int duration = 60;        // default 60 seconds
+    const char *outputDir = NULL;
+    const char *filename = NULL;
+
+    // Parse arguments
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "-t") == 0 && i + 1 < argc) {
+            duration = atoi(argv[++i]);
+            if (duration < 0) duration = 0;
+        } else if (strcmp(argv[i], "-o") == 0 && i + 1 < argc) {
+            outputDir = argv[++i];
+        } else if (strcmp(argv[i], "-h") == 0) {
+            print_usage(argv[0]);
+            return 0;
+        } else if (argv[i][0] != '-') {
+            filename = argv[i];
+        } else {
+            fprintf(stderr, "Unknown option: %s\n", argv[i]);
+            print_usage(argv[0]);
+            return 1;
+        }
+    }
+
+    if (!filename) {
+        print_usage(argv[0]);
+        return 1;
     }
 
     void *toolbox = dlopen("/System/Library/Frameworks/VideoToolbox.framework/Versions/A/VideoToolbox", RTLD_NOW);
     if (!toolbox) {
-        printf("Error loading library\n");
-        return 0;
+        fprintf(stderr, "Error loading VideoToolbox framework\n");
+        return 1;
     }
 
-    for (int i = 1; i <= 50; i++) {
-        NSLog(@"Fuzzing iteration %d with flip intensity %d, inject intensity %d, overflow intensity %d", i, i, i, i);
-        int result = fuzz(argv[1], i, i, i);
+    // Create output directory if specified
+    if (outputDir) {
+        NSFileManager *fm = [NSFileManager defaultManager];
+        NSString *dir = [NSString stringWithCString:outputDir encoding:NSUTF8StringEncoding];
+        if (![fm fileExistsAtPath:dir]) {
+            [fm createDirectoryAtPath:dir withIntermediateDirectories:YES attributes:nil error:nil];
+        }
+        NSLog(@"Output directory: %s", outputDir);
+    }
+
+    time_t startTime = time(NULL);
+    int iteration = 0;
+    int totalFrames = 0;
+
+    NSLog(@"Starting fuzzing: file=%s, duration=%ds, output=%s",
+          filename, duration, outputDir ? outputDir : "(none)");
+
+    while (1) {
+        // Check time limit (0 = unlimited)
+        if (duration > 0) {
+            time_t elapsed = time(NULL) - startTime;
+            if (elapsed >= duration) {
+                NSLog(@"Time limit reached (%ds). Stopping.", duration);
+                break;
+            }
+        }
+
+        iteration++;
+        int intensity = ((iteration - 1) % 50) + 1;
+
+        NSLog(@"Fuzzing iteration %d (intensity %d)", iteration, intensity);
+        int result = fuzz(argv[1], intensity, intensity, intensity);
+
         if (result == 1) {
-            NSLog(@"Fuzzing iteration %d completed successfully with flip intensity %d, inject intensity %d, overflow intensity %d", i, i, i, i);
+            totalFrames++;
+            // Save a representative frame if output directory is set
+            if (outputDir) {
+                // Re-read first frame and save it fuzzed
+                @autoreleasepool {
+                    NSError *error = nil;
+                    NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithCString:filename encoding:NSUTF8StringEncoding]];
+                    AVAsset *asset = [AVAsset assetWithURL:fileURL];
+                    if (asset) {
+                        AVAssetReader *reader = [[AVAssetReader alloc] initWithAsset:asset error:&error];
+                        NSArray *tracks = [asset tracksWithMediaType:AVMediaTypeVideo];
+                        if (reader && tracks.count > 0) {
+                            NSDictionary *settings = @{(id)kCVPixelBufferPixelFormatTypeKey: @(kCMPixelFormat_32BGRA)};
+                            AVAssetReaderTrackOutput *out = [AVAssetReaderTrackOutput assetReaderTrackOutputWithTrack:tracks[0] outputSettings:settings];
+                            [reader addOutput:out];
+                            if ([reader startReading]) {
+                                CMSampleBufferRef sb = [out copyNextSampleBuffer];
+                                if (sb) {
+                                    CVImageBufferRef ib = CMSampleBufferGetImageBuffer(sb);
+                                    if (ib) {
+                                        CVPixelBufferLockBaseAddress(ib, 0);
+                                        // Apply fuzzing to this frame before saving
+                                        uint8_t *base = (uint8_t *)CVPixelBufferGetBaseAddress(ib);
+                                        size_t total = CVPixelBufferGetBytesPerRow(ib) * CVPixelBufferGetHeight(ib);
+                                        if (base && total > 0) {
+                                            for (int f = 0; f < intensity * 10; f++) {
+                                                size_t pos = arc4random_uniform((uint32_t)total);
+                                                base[pos] ^= (1 << arc4random_uniform(8));
+                                            }
+                                        }
+                                        CVPixelBufferUnlockBaseAddress(ib, 0);
+                                        save_fuzzed_frame(ib, outputDir, iteration, 0);
+                                    }
+                                    CMSampleBufferInvalidate(sb);
+                                    CFRelease(sb);
+                                }
+                            }
+                            [reader cancelReading];
+                        }
+                    }
+                }
+            }
             log_gpu_memory_info("Fuzzing completed successfully", __FILE__, __FUNCTION__, __LINE__);
         } else {
-            NSLog(@"Fuzzing iteration %d failed with flip intensity %d, inject intensity %d, overflow intensity %d", i, i, i, i);
+            NSLog(@"Fuzzing iteration %d failed", iteration);
             log_gpu_memory_info("Fuzzing failed", __FILE__, __FUNCTION__, __LINE__);
-            break; // Exit loop on failure
+            break;
         }
+    }
+
+    time_t elapsed = time(NULL) - startTime;
+    NSLog(@"Fuzzing complete: %d iterations, %ld seconds elapsed", iteration, (long)elapsed);
+    printf("## VideoToolbox Fuzzer Summary\n");
+    printf("- Input: %s\n", filename);
+    printf("- Duration: %lds / %ds target\n", (long)elapsed, duration);
+    printf("- Iterations: %d\n", iteration);
+    if (outputDir) {
+        printf("- Output: %s\n", outputDir);
     }
 
     return 0;
