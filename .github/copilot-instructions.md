@@ -263,16 +263,26 @@ open --env FUZZ_OUTPUT_DIR=/tmp/fuzzed-output \
 ```
 
 ### Coverage report empty (no profraw)
-The app includes explicit `__llvm_profile_write_file()` and
-`__llvm_profile_set_filename()` calls (weak-linked, no-op without instrumentation).
+The app uses `dlsym(RTLD_DEFAULT, "__llvm_profile_write_file")` to resolve
+coverage runtime symbols at runtime — this avoids linker errors on non-instrumented
+builds (iOS Simulator without `-fprofile-instr-generate`). Do NOT use
+`__attribute__((weak)) extern` for these symbols — it works on Mac Catalyst
+but fails on the iOS Simulator linker.
+
 If profraw is still missing:
 1. Verify `LLVM_PROFILE_FILE` env var reaches the process (`open --env`)
 2. Ensure the output directory exists and is writable
 3. The app must exit cleanly (`return 0`) — not be killed by SIGTERM
 
 ### SIGPIPE crash in CI
-Never pipe `xcodebuild`, `xcrun`, or Apple CLI tools through `| head`.
-Use `| sed -n '1p'` or `| sed -n '1,Np'` instead.
+Never pipe `xcodebuild`, `xcrun`, `ls`, `file`, `find`, or any Apple/BSD CLI
+tools through `| head`. They use NSFileHandle for stdout and crash with
+`NSFileHandleOperationException` (SIGABRT exit 134) or `stdout: Undefined error: 0`
+when the reader closes early. Use these alternatives:
+- `| head -N` → `| sed -n '1,Np'`
+- `| head -1` → `| sed -n '1p'`
+- `| head -cN` → `| cut -c1-N`
+- `| head -2 | tail -1` → `| sed -n '2p'`
 
 ### No images generated in CI
 Mac Catalyst build uses `open --env` to launch the app. The CI polls for
@@ -337,3 +347,28 @@ BINARY=$(find /tmp/DerivedData -name "XNU Image Fuzzer" -type f -perm +111 \
 xcrun llvm-profdata merge -sparse /tmp/profraw/*.profraw -o /tmp/merged.profdata
 xcrun llvm-cov report "$BINARY" -instr-profile=/tmp/merged.profdata
 ```
+
+### VideoToolbox Fuzzer (local macOS only)
+The VideoToolbox fuzzer runs **10-50x slower under ASAN** due to GPU memory
+tracking overhead. The CI instrumented job is disabled (`if: false`). Run
+VideoToolbox ASAN testing on local macOS hardware with extended timeouts:
+```bash
+cd VideoToolbox/Fuzzing
+
+# Build instrumented
+clang -fsanitize=address,undefined -fprofile-instr-generate -fcoverage-mapping \
+  -fno-omit-frame-pointer -g -O0 \
+  -framework Foundation -framework AVFoundation -framework CoreMedia \
+  -framework CoreVideo -framework VideoToolbox -framework ImageIO \
+  -framework UniformTypeIdentifiers \
+  -o build/videotoolbox-runner videotoolbox-runner.m
+
+# Run with extended timeout (10+ minutes for ASAN)
+mkdir -p /tmp/fuzzed-video
+ASAN_OPTIONS="detect_leaks=0:halt_on_error=0" \
+LLVM_PROFILE_FILE="/tmp/profraw/vt-%m_%p.profraw" \
+  timeout 600 build/videotoolbox-runner -t 300 -o /tmp/fuzzed-video
+```
+
+**Important**: Never call `malloc_zone_print()` in hot loops under ASAN — it
+dumps entire memory zone info per call, causing 5+ minute hangs.

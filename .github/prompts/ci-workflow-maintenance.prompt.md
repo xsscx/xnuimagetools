@@ -3,9 +3,9 @@ name: CI Workflow Maintenance
 description: Guidelines for creating and maintaining secure GitHub Actions workflows
 ---
 
-# CI Workflow Maintenance — XNU Image Tools
+# CI Workflow Maintenance
 
-Standards for all GitHub Actions workflows in this multi-project repository.
+Standards for all GitHub Actions workflows in this repository.
 
 ## Security Requirements (Non-Negotiable)
 
@@ -27,14 +27,16 @@ uses: actions/checkout@v4
 | cache | `5a3ec84eff668545956fd18022155c47e93e2684` | v4.2.3 |
 | download-artifact | `d3f86a106a0bac45b974a628896c90dbdf5c8093` | v4.3.0 |
 
-### Permissions & Shell Hardening
+### Permissions
 ```yaml
 permissions:
-  contents: read
+  contents: read  # Least privilege — only escalate when needed
+```
 
+### Shell Hardening
+```yaml
 env:
   BASH_ENV: /dev/null
-
 defaults:
   run:
     shell: bash --noprofile --norc {0}
@@ -53,102 +55,107 @@ defaults:
 ```
 
 ### Input Sanitization
-NEVER inject user-controllable values into `run:` blocks:
+NEVER use user-controllable inputs directly in `run:` blocks:
 ```yaml
-# ❌ DANGEROUS
-run: echo "${{ github.event.pull_request.title }}"
+# ❌ DANGEROUS — command injection
+run: echo "Branch: ${{ github.event.pull_request.head.ref }}"
 
-# ✅ SAFE
+# ✅ SAFE — pass through env
 env:
-  TITLE: ${{ github.event.pull_request.title }}
-run: echo "$TITLE" | LC_ALL=C sed 's/[^A-Za-z0-9._/ -]//g'
+  BRANCH: ${{ github.event.pull_request.head.ref }}
+run: |
+  SAFE_BRANCH=$(echo "$BRANCH" | LC_ALL=C sed 's/[^A-Za-z0-9._/-]//g')
+  echo "Branch: $SAFE_BRANCH"
 ```
 
-## Build Configurations by Sub-Project
-
-### iOS Fuzzer (Mac Catalyst)
+### Concurrency Control
 ```yaml
-xcodebuild build \
-  -project "XNU Image Fuzzer/XNU Image Fuzzer.xcodeproj" \
-  -scheme "XNU Image Fuzzer" \
-  -destination 'platform=macOS,variant=Mac Catalyst' \
-  -configuration Debug \
-  -derivedDataPath /tmp/DerivedData \
-  CODE_SIGN_IDENTITY="-" \
-  CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO \
-  ONLY_ACTIVE_ARCH=YES \
-  GCC_TREAT_WARNINGS_AS_ERRORS=YES
+concurrency:
+  group: workflow-name-${{ github.ref }}
+  cancel-in-progress: true
 ```
 
-### VideoToolbox (clang)
+## Build Configuration
+
+### Mac Catalyst Build
 ```yaml
-xcrun -sdk macosx clang \
-  -arch arm64 -g -O1 -Wall -Wextra \
-  -o build/videotoolbox-runner \
-  videotoolbox-runner.m \
-  build/videotoolbox-interposer.dylib \
-  -framework VideoToolbox -framework Foundation \
-  -framework AVFoundation -framework CoreFoundation \
-  -framework CoreMedia -framework CoreVideo \
-  -framework CoreImage -framework CoreGraphics -lz
-codesign -s "-" --force build/videotoolbox-runner
+- name: Build
+  run: |
+    xcodebuild build \
+      -project "XNU Image Fuzzer.xcodeproj" \
+      -scheme "XNU Image Fuzzer" \
+      -destination 'platform=macOS,variant=Mac Catalyst' \
+      -configuration Debug \
+      -derivedDataPath /tmp/DerivedData \
+      CODE_SIGN_IDENTITY="-" \
+      CODE_SIGNING_REQUIRED=NO \
+      CODE_SIGNING_ALLOWED=NO \
+      ONLY_ACTIVE_ARCH=YES \
+      GCC_TREAT_WARNINGS_AS_ERRORS=YES
 ```
 
-### VideoToolbox (instrumented)
-Add these flags to the above:
-```
--fsanitize=address,undefined
--fno-omit-frame-pointer
--fno-optimize-sibling-calls
--fprofile-instr-generate
--fcoverage-mapping
-```
-
-## Coverage Pipeline
-```bash
-# 1. Set profraw output BEFORE running
-export LLVM_PROFILE_FILE="/tmp/profraw/name-%m_%p.profraw"
-
-# 2. Run the binary
-./build/videotoolbox-runner -t 60 big.mov
-
-# 3. Merge profraw files
-xcrun llvm-profdata merge -sparse /tmp/profraw/*.profraw -o merged.profdata
-
-# 4. Generate reports
-xcrun llvm-cov report build/videotoolbox-runner -instr-profile=merged.profdata
-xcrun llvm-cov show build/videotoolbox-runner -instr-profile=merged.profdata \
-  -format=html -output-dir=html/
-xcrun llvm-cov export build/videotoolbox-runner -instr-profile=merged.profdata \
-  -format=lcov > coverage.lcov
+### DerivedData Caching
+```yaml
+- uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684
+  with:
+    path: /tmp/DerivedData
+    key: derived-${{ runner.os }}-${{ hashFiles('**/*.m', '**/*.h', '**/*.swift') }}
+    restore-keys: derived-${{ runner.os }}-
 ```
 
 ## Git Identity for CI Commits
 ```yaml
-git config user.name 'github-actions[bot]'
-git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+- name: Configure git
+  run: |
+    git config user.name 'github-actions[bot]'
+    git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
 ```
 
-## Workflow-Specific Notes
+## Coverage Pipeline
+```yaml
+# 1. Build with coverage
+CLANG_ENABLE_CODE_COVERAGE=YES
 
-### videotoolbox.yml
-- Has `workflow_dispatch` input `fuzz_duration` (default: 60)
-- `fuzz-and-commit` job commits fuzzed frames to repo
-- Needs `permissions: contents: write` for commit job
-- Static analysis step must include all frameworks
+# 2. Set profraw output
+LLVM_PROFILE_FILE="/tmp/profraw/fuzzer-%m_%p.profraw"
 
-### instrumented.yml
-- Two parallel jobs: VideoToolbox + iOS (Mac Catalyst)
-- Summary job on `ubuntu-latest` downloads and combines coverage
-- Quality validation step validates all output images
+# 3. Merge
+xcrun llvm-profdata merge -sparse /tmp/profraw/*.profraw -o merged.profdata
 
-### release.yml
-- Triggered by `v*` tags only
-- Builds all sub-projects
-- Creates GitHub release with binary artifacts
-- Multi-project release notes in body
+# 4. Report
+xcrun llvm-cov report "$BINARY" -instr-profile=merged.profdata
+xcrun llvm-cov show "$BINARY" -instr-profile=merged.profdata -format=html -output-dir=html/
+xcrun llvm-cov export "$BINARY" -instr-profile=merged.profdata -format=lcov > coverage.lcov
+```
 
-### build-and-test.yml
-- Scheduled cron: every 12 hours
-- Generates images and commits to repo
-- Must use `GITHUB_TOKEN` for push (needs `contents: write`)
+## macOS CI Pitfalls
+
+### SIGPIPE Prevention
+NEVER pipe macOS/BSD tools (`ls`, `file`, `find`, `xcodebuild`, `xcrun`)
+through `| head`. Use `| sed -n` or `| cut -c` instead:
+```bash
+# ❌ Crashes on macOS — ls: stdout: Undefined error: 0
+ls -la /tmp/output/ | head -20
+
+# ✅ Safe — sed reads all input
+ls -la /tmp/output/ | sed -n '1,20p'
+
+# ❌ Crashes with NSFileHandleOperationException
+xcodebuild -version | head -1
+
+# ✅ Safe
+xcodebuild -version | sed -n '1p'
+```
+
+### LLVM Profile Symbols
+Use `dlsym()` to resolve `__llvm_profile_write_file` and
+`__llvm_profile_set_filename` at runtime. Do NOT use `__attribute__((weak))`
+extern declarations — they cause linker failures on iOS Simulator builds
+without `-fprofile-instr-generate`.
+
+### Mac Catalyst App Launch
+- Must use `open "$APP_BUNDLE"` — bare binary exits immediately
+- `open` blocks until app exits — use `open ... & ; disown $!`
+- Pass env vars via `open --env KEY=VALUE` (macOS 13+)
+- Mac Catalyst ignores `osascript quit` — use `pgrep`/`kill`
+- SIGTERM does NOT trigger `atexit()` — send SIGINT first
