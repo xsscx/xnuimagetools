@@ -195,6 +195,8 @@ jobs:
         run: |
           set -euo pipefail
           SIM_UDID="${{ steps.sim.outputs.sim_udid }}"
+          FUZZ_DIR="/tmp/fuzzed-output"
+          mkdir -p "$FUZZ_DIR"
 
           xcrun simctl boot "$SIM_UDID" 2>/dev/null || true
 
@@ -218,26 +220,43 @@ jobs:
           xcrun simctl install "$SIM_UDID" "$APP_PATH"
           echo "✅ App installed"
 
-          # Create output directory inside the simulator's app container
-          CONTAINER=$(xcrun simctl get_app_container "$SIM_UDID" cx.srd.xnuimagefuzzer data 2>/dev/null || true)
-          FUZZ_DIR="/tmp/fuzzed-output"
-          mkdir -p "$FUZZ_DIR"
+          # Launch with FUZZ_OUTPUT_DIR via SIMCTL_CHILD_ prefix
+          # Use tail (reads all input) instead of head (causes SIGPIPE)
+          SIMCTL_CHILD_FUZZ_OUTPUT_DIR="$FUZZ_DIR" \
+            xcrun simctl launch --console-pty "$SIM_UDID" cx.srd.xnuimagefuzzer \
+            2>&1 | tail -40 || true
 
-          # Set env var so the app writes to our output dir
-          xcrun simctl launch --console-pty "$SIM_UDID" cx.srd.xnuimagefuzzer 2>&1 | head -20 || true
-          sleep 10
-
-          # Grab images from Documents directory
-          if [ -n "$CONTAINER" ] && [ -d "$CONTAINER/Documents" ]; then
-            cp "$CONTAINER/Documents/"*.{png,jpg,gif,tiff} "$FUZZ_DIR/" 2>/dev/null || true
-          fi
+          # Give app time to finish writing all 14 images
+          sleep 5
 
           FILE_COUNT=$(find "$FUZZ_DIR" -type f 2>/dev/null | wc -l | tr -d ' ')
-          echo "Generated $FILE_COUNT fuzzed images"
+          echo "Generated $FILE_COUNT files from FUZZ_OUTPUT_DIR"
+
+          if [ "$FILE_COUNT" -eq 0 ]; then
+            # Fallback: check app container Documents directory
+            echo "⚠️  No files in $FUZZ_DIR, checking app container..."
+            CONTAINER=$(xcrun simctl get_app_container "$SIM_UDID" cx.srd.xnuimagefuzzer data 2>/dev/null || true)
+            if [ -n "$CONTAINER" ]; then
+              echo "App data container: $CONTAINER"
+              find "$CONTAINER" -name "*.png" -o -name "*.jpg" -o -name "*.gif" 2>/dev/null | head -20
+              find "$CONTAINER" -name "fuzzed_*" -exec cp {} "$FUZZ_DIR/" \; 2>/dev/null || true
+              find "$CONTAINER" -name "1Bit_*" -exec cp {} "$FUZZ_DIR/" \; 2>/dev/null || true
+            fi
+            # Also check simulator's /tmp/ for seed images
+            SIM_TMP="$HOME/Library/Developer/CoreSimulator/Devices/$SIM_UDID/data/tmp"
+            if [ -d "$SIM_TMP" ]; then
+              find "$SIM_TMP" -maxdepth 1 \( -name "fuzzed_image_*.png" -o -name "corrupted_image_*.png" \) \
+                -exec cp {} "$FUZZ_DIR/" \; 2>/dev/null || true
+            fi
+            FILE_COUNT=$(find "$FUZZ_DIR" -type f 2>/dev/null | wc -l | tr -d ' ')
+            echo "Files after fallback scan: $FILE_COUNT"
+          fi
+
           ls -la "$FUZZ_DIR/" 2>/dev/null || true
 
           xcrun simctl terminate "$SIM_UDID" cx.srd.xnuimagefuzzer 2>/dev/null || true
           xcrun simctl shutdown "$SIM_UDID" 2>/dev/null || true
+          echo "✅ Image generation complete ($FILE_COUNT files)"
 
       - name: Create seed images (fallback)
         run: |
