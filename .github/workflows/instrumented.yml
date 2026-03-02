@@ -302,6 +302,7 @@ jobs:
           if [ "$PROFRAW_COUNT" -eq 0 ]; then
             echo "⚠️  No profraw files found — coverage data not generated"
             echo "This can happen if the fuzzer crashed before writing profile data."
+            echo "No profraw files collected." > /tmp/coverage-report/summary.txt
             exit 0
           fi
 
@@ -461,21 +462,27 @@ jobs:
           APP_BUNDLE=$(echo "$BINARY" | sed 's|/Contents/MacOS/.*||')
           mkdir -p /tmp/profraw-ios /tmp/sanitizer-logs-ios /tmp/fuzzed-output-ios
 
-          # Mac Catalyst apps launched via 'open' inherit env from launchd session
-          launchctl setenv FUZZ_OUTPUT_DIR "/tmp/fuzzed-output-ios"
-          launchctl setenv LLVM_PROFILE_FILE "/tmp/profraw-ios/fuzzer-%m_%p.profraw"
-          launchctl setenv ASAN_OPTIONS "detect_leaks=0:halt_on_error=0:print_stats=1:log_path=/tmp/sanitizer-logs-ios/asan"
-          launchctl setenv UBSAN_OPTIONS "print_stacktrace=1:halt_on_error=0:log_path=/tmp/sanitizer-logs-ios/ubsan"
+          # Set env vars via export AND launchctl (belt-and-suspenders)
+          export FUZZ_OUTPUT_DIR="/tmp/fuzzed-output-ios"
+          export LLVM_PROFILE_FILE="/tmp/profraw-ios/fuzzer-%m_%p.profraw"
+          export ASAN_OPTIONS="detect_leaks=0:halt_on_error=0:print_stats=1:log_path=/tmp/sanitizer-logs-ios/asan"
+          export UBSAN_OPTIONS="print_stacktrace=1:halt_on_error=0:log_path=/tmp/sanitizer-logs-ios/ubsan"
 
-          # Wait for launchd to propagate env vars before launching
+          launchctl setenv FUZZ_OUTPUT_DIR "$FUZZ_OUTPUT_DIR"
+          launchctl setenv LLVM_PROFILE_FILE "$LLVM_PROFILE_FILE"
+          launchctl setenv ASAN_OPTIONS "$ASAN_OPTIONS"
+          launchctl setenv UBSAN_OPTIONS "$UBSAN_OPTIONS"
           sleep 1
 
           echo "🔨 Launching Mac Catalyst fuzzer: $APP_BUNDLE"
-          echo "   LLVM_PROFILE_FILE=$(launchctl getenv LLVM_PROFILE_FILE 2>/dev/null || echo 'not set')"
+          echo "   LLVM_PROFILE_FILE=$LLVM_PROFILE_FILE"
 
-          # Launch via 'open' — running bare binary exits immediately
-          # 'open' blocks until the app exits; background + disown so script continues
-          open "$APP_BUNDLE" &
+          # Launch via 'open --env' (macOS 13+) — passes env vars directly to process
+          open --env FUZZ_OUTPUT_DIR="$FUZZ_OUTPUT_DIR" \
+               --env LLVM_PROFILE_FILE="$LLVM_PROFILE_FILE" \
+               --env ASAN_OPTIONS="$ASAN_OPTIONS" \
+               --env UBSAN_OPTIONS="$UBSAN_OPTIONS" \
+               "$APP_BUNDLE" &
           OPEN_PID=$!
           disown $OPEN_PID
           echo "✅ App launched (open PID $OPEN_PID), waiting for fuzzing to complete..."
@@ -540,6 +547,10 @@ jobs:
           echo "| Fuzzed images | ${FILE_COUNT} |" >> "$GITHUB_STEP_SUMMARY"
           echo "| Profraw files | ${PROFRAW_COUNT} |" >> "$GITHUB_STEP_SUMMARY"
 
+          # Ensure artifact directories have at least a summary file
+          echo "ASAN: ${ASAN_COUNT}, UBSAN: ${UBSAN_COUNT}, Images: ${FILE_COUNT}" \
+            > /tmp/sanitizer-logs-ios/summary.txt
+
       - name: Validate iOS fuzzer output quality
         if: always()
         run: |
@@ -602,6 +613,7 @@ jobs:
           PROFRAW_COUNT=$(find /tmp/profraw-ios -name "*.profraw" -type f 2>/dev/null | wc -l | tr -d ' ')
           if [ "$PROFRAW_COUNT" -eq 0 ]; then
             echo "⚠️  No profraw files — coverage not generated"
+            echo "No profraw files collected." > /tmp/coverage-report-ios/summary.txt
             exit 0
           fi
 
