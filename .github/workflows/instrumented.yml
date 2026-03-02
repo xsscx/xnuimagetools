@@ -432,20 +432,42 @@ jobs:
         run: |
           set -euo pipefail
           BINARY="${{ steps.locate.outputs.binary }}"
+          APP_BUNDLE=$(echo "$BINARY" | sed 's|/Contents/MacOS/.*||')
           mkdir -p /tmp/profraw-ios /tmp/sanitizer-logs-ios /tmp/fuzzed-output-ios
 
-          export FUZZ_OUTPUT_DIR="/tmp/fuzzed-output-ios"
-          export ASAN_OPTIONS="detect_leaks=0:halt_on_error=0:print_stats=1:log_path=/tmp/sanitizer-logs-ios/asan"
-          export UBSAN_OPTIONS="print_stacktrace=1:halt_on_error=0:log_path=/tmp/sanitizer-logs-ios/ubsan"
-          export LLVM_PROFILE_FILE="/tmp/profraw-ios/fuzzer-%m_%p.profraw"
+          # Mac Catalyst apps launched via 'open' inherit env from launchd session
+          launchctl setenv FUZZ_OUTPUT_DIR "/tmp/fuzzed-output-ios"
+          launchctl setenv LLVM_PROFILE_FILE "/tmp/profraw-ios/fuzzer-%m_%p.profraw"
+          launchctl setenv ASAN_OPTIONS "detect_leaks=0:halt_on_error=0:print_stats=1:log_path=/tmp/sanitizer-logs-ios/asan"
+          launchctl setenv UBSAN_OPTIONS "print_stacktrace=1:halt_on_error=0:log_path=/tmp/sanitizer-logs-ios/ubsan"
 
-          echo "🔨 Running iOS fuzzer natively on macOS (Mac Catalyst)..."
-          timeout 120 "$BINARY" 2>&1 | tee /tmp/ios-fuzzer-output.log || EXIT=$?
-          echo "Exit code: ${EXIT:-0}"
+          echo "🔨 Launching Mac Catalyst fuzzer: $APP_BUNDLE"
+
+          # Launch via 'open' — running bare binary exits immediately
+          open "$APP_BUNDLE" &
+          echo "✅ App launched, waiting for fuzzing to complete..."
+
+          # Poll for output files (fuzzing runs in viewDidLoad)
+          for i in $(seq 1 60); do
+            FILE_COUNT=$(find /tmp/fuzzed-output-ios -type f 2>/dev/null | wc -l | tr -d ' ')
+            if [ "$FILE_COUNT" -ge 14 ]; then
+              echo "✅ Found $FILE_COUNT files after ${i}s"
+              break
+            fi
+            sleep 1
+          done
+
+          # Extra time for last files to flush
+          sleep 3
+
+          # Gracefully quit to flush profraw coverage data
+          osascript -e 'tell application "XNU Image Fuzzer" to quit' 2>/dev/null || true
+          sleep 2
 
           FILE_COUNT=$(find /tmp/fuzzed-output-ios -type f 2>/dev/null | wc -l | tr -d ' ')
           PROFRAW_COUNT=$(find /tmp/profraw-ios -name "*.profraw" -type f 2>/dev/null | wc -l | tr -d ' ')
           echo "Generated $FILE_COUNT fuzzed images, $PROFRAW_COUNT profraw files"
+          ls -la /tmp/fuzzed-output-ios/ 2>/dev/null || true
 
           # Sanitizer findings
           echo "## iOS Fuzzer Sanitizer Findings" >> "$GITHUB_STEP_SUMMARY"
@@ -465,6 +487,7 @@ jobs:
           echo "| ASAN findings | ${ASAN_COUNT} |" >> "$GITHUB_STEP_SUMMARY"
           echo "| UBSAN findings | ${UBSAN_COUNT} |" >> "$GITHUB_STEP_SUMMARY"
           echo "| Fuzzed images | ${FILE_COUNT} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Profraw files | ${PROFRAW_COUNT} |" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Validate iOS fuzzer output quality
         if: always()
