@@ -445,7 +445,11 @@ jobs:
           launchctl setenv ASAN_OPTIONS "detect_leaks=0:halt_on_error=0:print_stats=1:log_path=/tmp/sanitizer-logs-ios/asan"
           launchctl setenv UBSAN_OPTIONS "print_stacktrace=1:halt_on_error=0:log_path=/tmp/sanitizer-logs-ios/ubsan"
 
+          # Wait for launchd to propagate env vars before launching
+          sleep 1
+
           echo "🔨 Launching Mac Catalyst fuzzer: $APP_BUNDLE"
+          echo "   LLVM_PROFILE_FILE=$(launchctl getenv LLVM_PROFILE_FILE 2>/dev/null || echo 'not set')"
 
           # Launch via 'open' — running bare binary exits immediately
           # 'open' blocks until the app exits; background + disown so script continues
@@ -467,13 +471,23 @@ jobs:
           # Extra time for last files to flush
           sleep 3
 
-          # Kill the app directly — Mac Catalyst apps don't respond to AppleScript quit
+          # Terminate app gracefully for profraw flush:
+          # SIGINT triggers atexit() handlers (including llvm profraw writer)
           APP_PID=$(pgrep -f "XNU Image Fuzzer" 2>/dev/null || true)
           if [ -n "$APP_PID" ]; then
-            echo "Terminating app (PID $APP_PID)..."
-            kill "$APP_PID" 2>/dev/null || true
-            sleep 2
+            echo "Sending SIGINT to app (PID $APP_PID) for profraw flush..."
+            kill -INT "$APP_PID" 2>/dev/null || true
+            sleep 3
+
+            if kill -0 "$APP_PID" 2>/dev/null; then
+              echo "App still running, sending SIGTERM..."
+              kill "$APP_PID" 2>/dev/null || true
+              sleep 2
+            fi
           fi
+
+          echo "Profraw files in /tmp/profraw-ios/:"
+          ls -la /tmp/profraw-ios/ 2>/dev/null || echo "  (none)"
 
           FILE_COUNT=$(find /tmp/fuzzed-output-ios -type f 2>/dev/null | wc -l | tr -d ' ')
           PROFRAW_COUNT=$(find /tmp/profraw-ios -name "*.profraw" -type f 2>/dev/null | wc -l | tr -d ' ')
