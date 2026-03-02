@@ -139,6 +139,8 @@ jobs:
             -framework CoreVideo \
             -framework CoreImage \
             -framework CoreGraphics \
+            -framework ImageIO \
+            -framework UniformTypeIdentifiers \
             -lz
           codesign -s "-" --force build/videotoolbox-runner
           file build/videotoolbox-runner
@@ -289,6 +291,8 @@ jobs:
             -framework CoreVideo \
             -framework CoreImage \
             -framework CoreGraphics \
+            -framework ImageIO \
+            -framework UniformTypeIdentifiers \
             videotoolbox-runner.m 2>&1 | tee "/tmp/analyzer-runner.m.log" || true
           W=$(grep -c "warning:" "/tmp/analyzer-runner.m.log" 2>/dev/null || echo "0")
           WARNINGS=$((WARNINGS + W))
@@ -355,6 +359,8 @@ jobs:
             -framework CoreVideo \
             -framework CoreImage \
             -framework CoreGraphics \
+            -framework ImageIO \
+            -framework UniformTypeIdentifiers \
             -lz
           codesign -s "-" --force build/videotoolbox-runner
           echo "✅ videotoolbox-runner built for fuzzing"

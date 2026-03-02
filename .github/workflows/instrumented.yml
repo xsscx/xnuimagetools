@@ -137,6 +137,8 @@ jobs:
             -framework CoreVideo \
             -framework CoreImage \
             -framework CoreGraphics \
+            -framework ImageIO \
+            -framework UniformTypeIdentifiers \
             -lz
           codesign -s "-" --force build/videotoolbox-runner
           echo "✅ Instrumented videotoolbox-runner built"

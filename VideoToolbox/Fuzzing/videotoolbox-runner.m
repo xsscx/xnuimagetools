@@ -56,6 +56,8 @@
 #import <CoreVideo/CoreVideo.h>
 #import <CoreImage/CoreImage.h>
 #import <CoreGraphics/CoreGraphics.h>
+#import <ImageIO/ImageIO.h>
+#import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
 #import <stdio.h>
 
 #pragma mark - Debugging Macros
@@ -382,21 +384,39 @@ static void print_usage(const char *prog) {
 */
 static void save_fuzzed_frame(CVImageBufferRef imageBuffer, const char *outputDir, int iteration, int frame) {
     @autoreleasepool {
-        CIImage *ciImage = [CIImage imageWithCVPixelBuffer:imageBuffer];
-        if (!ciImage) return;
+        CVPixelBufferLockBaseAddress(imageBuffer, kCVPixelBufferLock_ReadOnly);
+        size_t w = CVPixelBufferGetWidth(imageBuffer);
+        size_t h = CVPixelBufferGetHeight(imageBuffer);
+        size_t bpr = CVPixelBufferGetBytesPerRow(imageBuffer);
+        void *base = CVPixelBufferGetBaseAddress(imageBuffer);
+        if (!base || w == 0 || h == 0) {
+            CVPixelBufferUnlockBaseAddress(imageBuffer, kCVPixelBufferLock_ReadOnly);
+            return;
+        }
 
-        CIContext *ctx = [CIContext context];
+        CGColorSpaceRef cs = CGColorSpaceCreateDeviceRGB();
+        // BGRA pixel format: premultiplied first + little-endian 32-bit
+        CGContextRef cgCtx = CGBitmapContextCreate(base, w, h, 8, bpr,
+            cs, kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little);
+        CVPixelBufferUnlockBaseAddress(imageBuffer, kCVPixelBufferLock_ReadOnly);
+        if (!cgCtx) { CGColorSpaceRelease(cs); return; }
+
+        CGImageRef cgImg = CGBitmapContextCreateImage(cgCtx);
+        CGContextRelease(cgCtx);
+        CGColorSpaceRelease(cs);
+        if (!cgImg) return;
+
         NSString *path = [NSString stringWithFormat:@"%s/fuzzed_iter%03d_frame%03d.png",
                           outputDir, iteration, frame];
         NSURL *url = [NSURL fileURLWithPath:path];
-        CGColorSpaceRef cs = CGColorSpaceCreateDeviceRGB();
-        [ctx writePNGRepresentationOfImage:ciImage
-                                     toURL:url
-                                    format:kCIFormatRGBA8
-                                colorSpace:cs
-                                   options:@{}
-                                     error:nil];
-        CGColorSpaceRelease(cs);
+        CGImageDestinationRef dest = CGImageDestinationCreateWithURL(
+            (__bridge CFURLRef)url, (__bridge CFStringRef)UTTypePNG.identifier, 1, NULL);
+        if (dest) {
+            CGImageDestinationAddImage(dest, cgImg, NULL);
+            CGImageDestinationFinalize(dest);
+            CFRelease(dest);
+        }
+        CGImageRelease(cgImg);
         NSLog(@"Saved fuzzed frame: %@", path);
     }
 }
@@ -543,7 +563,10 @@ int main(int argc, const char *argv[]) {
                             base[pos] ^= (1 << arc4random_uniform(8));
                         }
                         CVPixelBufferUnlockBaseAddress(pb, 0);
-                        save_fuzzed_frame(pb, outputDir, iteration, 0);
+                        // Save every 100th synthetic frame to avoid excessive disk I/O
+                        if (iteration % 100 == 0) {
+                            save_fuzzed_frame(pb, outputDir, iteration, 0);
+                        }
                         CVPixelBufferRelease(pb);
                     }
                 }
