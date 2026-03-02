@@ -15,7 +15,7 @@ structural integrity, and potential security findings.
 for f in /path/to/images/*; do
   echo "=== $(basename "$f") ==="
   sips -g format -g pixelWidth -g pixelHeight -g space -g bitsPerSample "$f" 2>/dev/null
-  file -b "$f" | head -c 80
+  file -b "$f" | cut -c1-80
   echo ""
 done
 ```
@@ -23,13 +23,13 @@ done
 ### Validate file sizes
 ```bash
 find /path/to/images -type f -size 0 -print  # Find empty files
-find /path/to/images -type f -printf '%s %p\n' | sort -n | head  # Smallest files
+find /path/to/images -type f -printf '%s %p\n' | sort -n | sed -n '1,10p'  # Smallest files
 ```
 
 ### Magic byte verification
 ```bash
 for f in /path/to/images/*; do
-  xxd -l 16 "$f" | head -1
+  xxd -l 16 "$f" | sed -n '1p'
 done
 ```
 
