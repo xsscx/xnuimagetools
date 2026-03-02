@@ -170,7 +170,7 @@ jobs:
                           sys.exit(0)
           sys.exit(1)
           ")
-          SIM_UDID=$(echo "$SIM_INFO" | head -1)
+          SIM_UDID=$(echo "$SIM_INFO" | sed -n '1p')
           SIM_NAME=$(echo "$SIM_INFO" | tail -1)
           echo "sim_udid=$SIM_UDID" >> "$GITHUB_OUTPUT"
           echo "✅ Found simulator: $SIM_NAME ($SIM_UDID)"
@@ -238,7 +238,7 @@ jobs:
             CONTAINER=$(xcrun simctl get_app_container "$SIM_UDID" cx.srd.xnuimagefuzzer data 2>/dev/null || true)
             if [ -n "$CONTAINER" ]; then
               echo "App data container: $CONTAINER"
-              find "$CONTAINER" -name "*.png" -o -name "*.jpg" -o -name "*.gif" 2>/dev/null | head -20
+              find "$CONTAINER" -name "*.png" -o -name "*.jpg" -o -name "*.gif" 2>/dev/null | sed -n '1,20p'
               find "$CONTAINER" -name "fuzzed_*" -exec cp {} "$FUZZ_DIR/" \; 2>/dev/null || true
               find "$CONTAINER" -name "1Bit_*" -exec cp {} "$FUZZ_DIR/" \; 2>/dev/null || true
             fi

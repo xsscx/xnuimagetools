@@ -171,7 +171,7 @@ jobs:
             2>/dev/null | grep -m1 'BUILT_PRODUCTS_DIR' | awk '{print $3}')
 
           # Find the .app — scheme name may differ from product name
-          APP=$(find "$BUILD_DIR" -maxdepth 1 -name '*.app' -type d | head -1) || true
+          APP=$(find "$BUILD_DIR" -maxdepth 1 -name '*.app' -type d | sed -n '1p') || true
           if [ -n "$APP" ] && [ -d "$APP" ]; then
             APP_NAME=$(basename "$APP")
             cd "$(dirname "$APP")"
@@ -380,7 +380,7 @@ jobs:
         run: |
           set -euo pipefail
           VERSION="${{ needs.build-release.outputs.version }}"
-          PREV_TAG=$(git tag --sort=-creatordate | grep '^v' | head -2 | tail -1) || true
+          PREV_TAG=$(git tag --sort=-creatordate | grep '^v' | sed -n '2p') || true
 
           cat > /tmp/release-notes.md <<'NOTES_EOF'
           ## XNU Image Tools ${VERSION}
@@ -431,7 +431,7 @@ jobs:
             echo "" >> /tmp/release-notes.md
             echo "### 📝 Changes since ${PREV_TAG}" >> /tmp/release-notes.md
             echo "" >> /tmp/release-notes.md
-            git log "${PREV_TAG}..HEAD" --oneline --no-merges | head -30 >> /tmp/release-notes.md
+            git log "${PREV_TAG}..HEAD" --oneline --no-merges | sed -n '1,30p' >> /tmp/release-notes.md
           fi
 
       - name: Prepare release assets

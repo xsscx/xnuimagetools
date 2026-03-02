@@ -180,7 +180,7 @@ jobs:
             echo "| XNU Image Fuzzer | ✅ $SIZE bytes |" >> "$GITHUB_STEP_SUMMARY"
           else
             echo "❌ XNU Image Fuzzer app not found"
-            find "$DERIVED_DATA" -name "*.app" -maxdepth 5 2>/dev/null | head -5
+            find "$DERIVED_DATA" -name "*.app" -maxdepth 5 2>/dev/null | sed -n '1,5p'
             exit 1
           fi
 

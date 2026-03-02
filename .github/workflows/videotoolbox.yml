@@ -160,7 +160,7 @@ jobs:
           FAIL=0
           for bin in build/runner build/runner_dist build/videotoolbox-runner build/videotoolbox-interposer.dylib; do
             if [ -f "$bin" ]; then
-              TYPE=$(file -b "$bin" | head -c60)
+              TYPE=$(file -b "$bin" | cut -c1-60)
               SIZE=$(stat -f%z "$bin" 2>/dev/null || stat -c%s "$bin")
               echo "✅ $(basename $bin): $TYPE ($SIZE bytes)"
               echo "| $(basename $bin) | $TYPE | $SIZE bytes |" >> "$GITHUB_STEP_SUMMARY"
@@ -426,7 +426,7 @@ jobs:
 
           cp /tmp/fuzzed-video/*.png "$DEST_DIR/"
           echo "Copied $FILE_COUNT files to $DEST_DIR"
-          ls -la "$DEST_DIR/" | head -20
+          ls -la "$DEST_DIR/" | sed -n '1,20p'
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
