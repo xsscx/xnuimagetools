@@ -89,7 +89,7 @@ jobs:
             -o -name '*.c' -o -name '*.plist' -o -name '*.pbxproj' \
             -o -name '*.storyboard' -o -name '*.xcscheme' \) \
             -not -path './.git/*' -exec shasum {} \; | sort | shasum | cut -d' ' -f1)
-          XCODE_VERSION=$(xcodebuild -version | head -1 | tr ' ' '-')
+          XCODE_VERSION=$(xcodebuild -version 2>&1 | sed -n '1p' | tr ' ' '-')
           echo "source_hash=${SOURCE_HASH}" >> "$GITHUB_OUTPUT"
           echo "xcode_version=${XCODE_VERSION}" >> "$GITHUB_OUTPUT"
           echo "Cache key: Xcode=${XCODE_VERSION} Source=${SOURCE_HASH}"
@@ -218,7 +218,7 @@ jobs:
           echo "| Metric | Value |" >> "$GITHUB_STEP_SUMMARY"
           echo "|--------|-------|" >> "$GITHUB_STEP_SUMMARY"
           echo "| Cache hit | ${{ steps.cache-restore.outputs.cache-hit || 'false' }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Xcode | $(xcodebuild -version | head -1) |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Xcode | $(xcodebuild -version 2>&1 | sed -n '1p') |" >> "$GITHUB_STEP_SUMMARY"
 
           if [ -d "$DERIVED_DATA" ]; then
             DD_SIZE=$(du -sh "$DERIVED_DATA" 2>/dev/null | cut -f1)
