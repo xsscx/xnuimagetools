@@ -48,7 +48,7 @@ jobs:
         run: |
           set -euo pipefail
           DUPES=0
-          for f in $(find . -name '*.m' -o -name '*.h' -o -name '*.c' | grep -v '.git'); do
+          for f in $(find . \( -name '*.m' -o -name '*.h' -o -name '*.c' \) -not -path './.git/*'); do
             dups=$(grep -E '^\s*#define\s+' "$f" 2>/dev/null \
               | awk '{print $2}' | sort | uniq -d)
             if [ -n "$dups" ]; then

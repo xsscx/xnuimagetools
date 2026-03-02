@@ -1,5 +1,4 @@
-from PIL import Image, ImageOps
-import os
+from PIL import Image
 
 def create_filmstrip(image_paths, output_path, target_height=256, spacer_width=10, border_width=5):
 	images = [Image.open(image_path) for image_path in image_paths]

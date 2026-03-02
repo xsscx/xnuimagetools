@@ -31,7 +31,6 @@ import logging
 import base64
 from PIL import Image, UnidentifiedImageError
 import io
-from packaging import version
 import magic
 import urllib.parse
 
@@ -56,7 +55,7 @@ def get_file_type(magic_bytes, file_content=None):
         b'GIF87a': 'GIF Image (87a format)',
         b'GIF89a': 'GIF Image (89a format)',
         b'BM': 'BMP Image',
-        b'II*\x00': 'TIFF Image (little endian)',
+        b'II*\x00': 'TIFF Image (little endian / TIFF-LE)',
         b'MM\x00*': 'TIFF Image (big endian)',
         b'\x00\x00\x01\x00': 'Windows Icon',
         b'\x00\x00\x02\x00': 'Windows Cursor',
@@ -79,7 +78,7 @@ def get_file_type(magic_bytes, file_content=None):
         b'\x52\x49\x46\x25': 'HOYT xIFF Fuzzed Format',
         b'\x52\xab\x2a\x46': 'HOYT xIFF Fuzzed Format',
         # Additional common image formats (duplicates and similar entries merged)
-        b'\x52\x49\x46\x46': 'RIFF Container (Potential WebP/AVI/WAV)',
+        b'\x52\x49\x46\x46': 'RIFF Container (WebP/AVI/WAV)',
         # HEIF and HEIC, based on the 'ftyp' box
         b'\x00\x00\x00\x18\x66\x74\x79\x70\x68\x65\x69\x63': 'HEIC Image Format',
         b'\x00\x00\x00\x18\x66\x74\x79\x70\x6D\x69\x66\x31': 'HEIF Image Format',
@@ -101,9 +100,7 @@ def get_file_type(magic_bytes, file_content=None):
         b'\x76\x2f\x31\x01': 'DDS Image',
         b'\x69\x63\x6e\x73': 'ICNS Icon',
         b'\x00\x00\x00\x00': 'TGA Image',
-        b'\x52\x49\x46\x46': 'WEBP Image',
         b'\x47\x49\x46\x38': 'GIF-89a',
-        b'\x49\x49\x2a\x00': 'TIFF-LE',
     }
     
     # Check binary signatures

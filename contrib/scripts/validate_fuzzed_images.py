@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from PIL import Image, ImageDraw, ImageOps
+from PIL import Image, ImageDraw
 import os
 
 # Injection strings
@@ -52,7 +52,6 @@ def check_injection_strings(binary_data):
 # Visualize encoded data in the image
 def visualize_encoded_data(image, start_bit, bit_length, bit_position='LSB'):
 	draw = ImageDraw.Draw(image)
-	pixels = list(image.getdata())
 	
 	highlight_color = (255, 0, 0)  # Red color for highlighting
 	
