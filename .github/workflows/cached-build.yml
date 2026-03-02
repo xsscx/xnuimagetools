@@ -1,0 +1,238 @@
+###############################################################
+#
+# Intent: xnuimagetools-cached-build
+#
+# Fast build workflow with DerivedData caching for all
+# xnuimagetools sub-projects (Image Fuzzer, iOS Generator,
+# Watch Generator). Caches Xcode DerivedData to skip
+# redundant compilation on incremental changes.
+#
+# Security hardening (iccDEV patterns):
+#   - Pinned action SHAs
+#   - Explicit least-privilege permissions
+#   - Credential hardening (BASH_ENV, persist-credentials)
+#   - No user-controllable inputs in run: blocks
+#   - Concurrency control with cancel-in-progress
+#
+###############################################################
+
+name: xnuimagetools-cached-build
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cached-build-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  BASH_ENV: /dev/null
+  DERIVED_DATA: /tmp/DerivedData
+
+defaults:
+  run:
+    shell: bash --noprofile --norc {0}
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - '**/*.m'
+      - '**/*.h'
+      - '**/*.swift'
+      - '**/*.c'
+      - '**/*.plist'
+      - '**/*.storyboard'
+      - '**/*.pbxproj'
+      - '**/*.xcscheme'
+  pull_request:
+    branches: [main, master]
+    paths:
+      - '**/*.m'
+      - '**/*.h'
+      - '**/*.swift'
+      - '**/*.c'
+      - '**/*.plist'
+      - '**/*.storyboard'
+      - '**/*.pbxproj'
+      - '**/*.xcscheme'
+  workflow_dispatch:
+
+jobs:
+  cached-build:
+    name: Cached Build & Analyze
+    runs-on: macos-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Credential hardening
+        run: |
+          set -euo pipefail
+          git config --global credential.helper ""
+          unset GITHUB_TOKEN || true
+
+      - name: Show Xcode version
+        run: |
+          set -euo pipefail
+          xcodebuild -version
+          echo "DerivedData path: $DERIVED_DATA"
+
+      - name: Compute cache key
+        id: cache-key
+        run: |
+          set -euo pipefail
+          SOURCE_HASH=$(find . \( -name '*.m' -o -name '*.h' -o -name '*.swift' \
+            -o -name '*.c' -o -name '*.plist' -o -name '*.pbxproj' \
+            -o -name '*.storyboard' -o -name '*.xcscheme' \) \
+            -not -path './.git/*' -exec shasum {} \; | sort | shasum | cut -d' ' -f1)
+          XCODE_VERSION=$(xcodebuild -version | head -1 | tr ' ' '-')
+          echo "source_hash=${SOURCE_HASH}" >> "$GITHUB_OUTPUT"
+          echo "xcode_version=${XCODE_VERSION}" >> "$GITHUB_OUTPUT"
+          echo "Cache key: Xcode=${XCODE_VERSION} Source=${SOURCE_HASH}"
+
+      - name: Restore DerivedData cache
+        id: cache-restore
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: |
+            /tmp/DerivedData/Build/Intermediates.noindex
+            /tmp/DerivedData/Build/Products
+            /tmp/DerivedData/Index.noindex
+          key: xnuimagetools-deriveddata-${{ steps.cache-key.outputs.xcode_version }}-${{ steps.cache-key.outputs.source_hash }}
+          restore-keys: |
+            xnuimagetools-deriveddata-${{ steps.cache-key.outputs.xcode_version }}-
+
+      - name: Build XNU Image Fuzzer (Debug)
+        run: |
+          set -euo pipefail
+          START=$(date +%s)
+          xcodebuild build \
+            -project "XNU Image Fuzzer/XNU Image Fuzzer.xcodeproj" \
+            -scheme "XNU Image Fuzzer" \
+            -destination "generic/platform=iOS Simulator" \
+            -derivedDataPath "$DERIVED_DATA" \
+            -configuration Debug \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            ONLY_ACTIVE_ARCH=YES \
+            GCC_TREAT_WARNINGS_AS_ERRORS=YES \
+            2>&1 | tee /tmp/xcodebuild-fuzzer-debug.log
+          ELAPSED=$(( $(date +%s) - START ))
+          echo "✅ XNU Image Fuzzer Debug build: ${ELAPSED}s"
+
+      - name: Build XNU Image Fuzzer (Release)
+        run: |
+          set -euo pipefail
+          START=$(date +%s)
+          xcodebuild build \
+            -project "XNU Image Fuzzer/XNU Image Fuzzer.xcodeproj" \
+            -scheme "XNU Image Fuzzer" \
+            -destination "generic/platform=iOS Simulator" \
+            -derivedDataPath "$DERIVED_DATA" \
+            -configuration Release \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            ONLY_ACTIVE_ARCH=YES \
+            GCC_TREAT_WARNINGS_AS_ERRORS=YES \
+            2>&1 | tee /tmp/xcodebuild-fuzzer-release.log
+          ELAPSED=$(( $(date +%s) - START ))
+          echo "✅ XNU Image Fuzzer Release build: ${ELAPSED}s"
+
+      - name: Build iOS Image Generator
+        run: |
+          set -euo pipefail
+          START=$(date +%s)
+          xcodebuild build \
+            -project "XNU Image Generator for iOS/XNU Image Generator for iOS.xcodeproj" \
+            -scheme "XNU Image Generator for iOS" \
+            -destination "generic/platform=iOS Simulator" \
+            -derivedDataPath "$DERIVED_DATA" \
+            -configuration Debug \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            ONLY_ACTIVE_ARCH=YES \
+            GCC_TREAT_WARNINGS_AS_ERRORS=YES \
+            2>&1 | tee /tmp/xcodebuild-ios-gen.log
+          ELAPSED=$(( $(date +%s) - START ))
+          echo "✅ iOS Image Generator build: ${ELAPSED}s"
+
+      - name: Verify build artifacts
+        id: verify
+        run: |
+          set -euo pipefail
+          echo "## Build Artifacts" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+
+          FUZZER_APP="$DERIVED_DATA/Build/Products/Debug-iphonesimulator/XNU Image Fuzzer.app"
+          if [ -d "$FUZZER_APP" ]; then
+            BINARY="$FUZZER_APP/XNU Image Fuzzer"
+            file "$BINARY"
+            SIZE=$(stat -f%z "$BINARY" 2>/dev/null || stat -c%s "$BINARY")
+            echo "✅ XNU Image Fuzzer binary: $SIZE bytes"
+            echo "app_path=$FUZZER_APP" >> "$GITHUB_OUTPUT"
+            echo "| XNU Image Fuzzer | ✅ $SIZE bytes |" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "❌ XNU Image Fuzzer app not found"
+            find "$DERIVED_DATA" -name "*.app" -maxdepth 5 2>/dev/null | head -5
+            exit 1
+          fi
+
+          # List all built products
+          find "$DERIVED_DATA/Build/Products" -name "*.app" -maxdepth 3 2>/dev/null | while read -r app; do
+            echo "  Found: $app"
+          done
+
+      - name: Static analysis (XNU Image Fuzzer)
+        run: |
+          set -euo pipefail
+          xcodebuild analyze \
+            -project "XNU Image Fuzzer/XNU Image Fuzzer.xcodeproj" \
+            -scheme "XNU Image Fuzzer" \
+            -destination "generic/platform=iOS Simulator" \
+            -derivedDataPath "$DERIVED_DATA" \
+            -configuration Debug \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            ONLY_ACTIVE_ARCH=YES \
+            CLANG_ANALYZER_OUTPUT=text \
+            RUN_CLANG_STATIC_ANALYZER=YES \
+            2>&1 | tee /tmp/xcodebuild-analyze.log
+          WARNINGS=$(grep -c "warning:" /tmp/xcodebuild-analyze.log 2>/dev/null || echo "0")
+          echo "Compiler warnings: $WARNINGS"
+          echo "✅ Static analysis completed"
+
+      - name: Build summary
+        if: always()
+        run: |
+          set -euo pipefail
+          echo "## Build Summary" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Metric | Value |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|--------|-------|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Cache hit | ${{ steps.cache-restore.outputs.cache-hit || 'false' }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Xcode | $(xcodebuild -version | head -1) |" >> "$GITHUB_STEP_SUMMARY"
+
+          if [ -d "$DERIVED_DATA" ]; then
+            DD_SIZE=$(du -sh "$DERIVED_DATA" 2>/dev/null | cut -f1)
+            echo "| DerivedData | $DD_SIZE |" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "✅ Workflow complete"
+
+      - name: Upload binary artifact
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: xnuimagetools-cached-build
+          path: ${{ steps.verify.outputs.app_path }}
+          retention-days: 7
+          if-no-files-found: error

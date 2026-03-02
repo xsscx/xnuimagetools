@@ -304,7 +304,7 @@ func saveImage(_ image: CGImage, to url: URL, uti: UTType) -> Bool {
     CGImageDestinationAddImage(destination, image, nil)
     
     if CGImageDestinationFinalize(destination) {
-        print("Failed to create CGImageDestination for URL: \(url)")
+        print("Successfully saved image to URL: \(url)")
         return true
     } else {
         print("Failed to finalize the image destination for URL: \(url.path)")

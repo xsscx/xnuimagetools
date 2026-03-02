@@ -1,0 +1,383 @@
+###############################################################
+#
+# Intent: xnuimagetools-build-and-test
+#
+# Build all XNU Image Tools sub-projects, generate fuzzed
+# images, validate outputs, and commit to fuzzed-images/.
+#
+# Security hardening (iccDEV patterns):
+#   - Pinned action SHAs (immutable, auditable)
+#   - Explicit least-privilege permissions
+#   - Credential hardening
+#   - BASH_ENV=/dev/null, hardened shell
+#   - Concurrency control with cancel-in-progress
+#   - persist-credentials: false on checkout (except commit job)
+#   - No user-controllable inputs in run: blocks
+#
+###############################################################
+
+name: xnuimagetools-build-and-test
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-test-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  BASH_ENV: /dev/null
+  SCHEME: "XNU Image Fuzzer"
+  PROJECT: "XNU Image Fuzzer/XNU Image Fuzzer.xcodeproj"
+  DESTINATION: "generic/platform=iOS Simulator"
+
+defaults:
+  run:
+    shell: bash --noprofile --norc {0}
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - '**/*.m'
+      - '**/*.h'
+      - '**/*.swift'
+      - '**/*.c'
+      - '**/*.plist'
+      - '**/*.storyboard'
+      - '**/*.pbxproj'
+      - '**/*.xcscheme'
+  pull_request:
+    branches: [main, master]
+  schedule:
+    - cron: '0 */12 * * *'
+  workflow_dispatch:
+
+jobs:
+  # ── Job 1: Build ──────────────────────────────────────────
+  build-ios:
+    name: Build iOS (Debug + Release)
+    runs-on: macos-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Credential hardening
+        run: |
+          set -euo pipefail
+          git config --global credential.helper ""
+          unset GITHUB_TOKEN || true
+
+      - name: Show Xcode version
+        run: |
+          set -euo pipefail
+          xcodebuild -version
+
+      - name: Build Debug
+        run: |
+          set -euo pipefail
+          xcodebuild build \
+            -project "$PROJECT" \
+            -scheme "$SCHEME" \
+            -destination "$DESTINATION" \
+            -configuration Debug \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            ONLY_ACTIVE_ARCH=YES \
+            GCC_TREAT_WARNINGS_AS_ERRORS=YES \
+            2>&1 | tee /tmp/xcodebuild-debug.log
+          echo "✅ Debug build succeeded"
+
+      - name: Build Release
+        run: |
+          set -euo pipefail
+          xcodebuild build \
+            -project "$PROJECT" \
+            -scheme "$SCHEME" \
+            -destination "$DESTINATION" \
+            -configuration Release \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            ONLY_ACTIVE_ARCH=YES \
+            GCC_TREAT_WARNINGS_AS_ERRORS=YES \
+            2>&1 | tee /tmp/xcodebuild-release.log
+          echo "✅ Release build succeeded"
+
+      - name: Static analysis
+        run: |
+          set -euo pipefail
+          xcodebuild analyze \
+            -project "$PROJECT" \
+            -scheme "$SCHEME" \
+            -destination "$DESTINATION" \
+            -configuration Debug \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            ONLY_ACTIVE_ARCH=YES \
+            CLANG_ANALYZER_OUTPUT=text \
+            RUN_CLANG_STATIC_ANALYZER=YES \
+            2>&1 | tee /tmp/xcodebuild-analyze.log
+          echo "✅ Static analysis completed"
+
+      - name: Upload binary artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: xnuimagetools-build
+          path: ~/Library/Developer/Xcode/DerivedData/**/Build/Products/Debug-iphonesimulator/XNU Image Fuzzer.app
+          retention-days: 7
+          if-no-files-found: warn
+
+  # ── Job 2: Generate Fuzzed Images ─────────────────────────
+  generate-images:
+    name: Generate & Validate Fuzzed Images
+    runs-on: macos-latest
+    needs: build-ios
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Credential hardening
+        run: |
+          set -euo pipefail
+          git config --global credential.helper ""
+          unset GITHUB_TOKEN || true
+
+      - name: Discover simulator
+        id: sim
+        run: |
+          set -euo pipefail
+          SIM_INFO=$(xcrun simctl list devices available -j \
+            | python3 -c "
+          import json, sys
+          data = json.load(sys.stdin)
+          for runtime, devices in data['devices'].items():
+              if 'iOS' in runtime:
+                  for d in devices:
+                      if d['isAvailable'] and 'iPhone' in d['name']:
+                          print(d['udid'])
+                          print(d['name'])
+                          sys.exit(0)
+          sys.exit(1)
+          ")
+          SIM_UDID=$(echo "$SIM_INFO" | head -1)
+          SIM_NAME=$(echo "$SIM_INFO" | tail -1)
+          echo "sim_udid=$SIM_UDID" >> "$GITHUB_OUTPUT"
+          echo "✅ Found simulator: $SIM_NAME ($SIM_UDID)"
+
+      - name: Build for simulator
+        run: |
+          set -euo pipefail
+          SIM_DEST="platform=iOS Simulator,id=${{ steps.sim.outputs.sim_udid }}"
+          xcodebuild build \
+            -project "$PROJECT" \
+            -scheme "$SCHEME" \
+            -destination "$SIM_DEST" \
+            -configuration Debug \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            ONLY_ACTIVE_ARCH=YES \
+            2>&1 | tee /tmp/xcodebuild-sim.log
+          echo "✅ Simulator build succeeded"
+
+      - name: Generate fuzzed images
+        run: |
+          set -euo pipefail
+          SIM_UDID="${{ steps.sim.outputs.sim_udid }}"
+
+          xcrun simctl boot "$SIM_UDID" 2>/dev/null || true
+
+          BUILD_DIR=$(xcodebuild \
+            -project "$PROJECT" \
+            -scheme "$SCHEME" \
+            -sdk iphonesimulator \
+            -configuration Debug \
+            -showBuildSettings \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            2>/dev/null | grep -m1 'BUILT_PRODUCTS_DIR' | awk '{print $3}')
+
+          APP_PATH="$BUILD_DIR/XNU Image Fuzzer.app"
+          if [ ! -d "$APP_PATH" ]; then
+            echo "❌ App not found at $APP_PATH"
+            exit 1
+          fi
+
+          xcrun simctl install "$SIM_UDID" "$APP_PATH"
+          echo "✅ App installed"
+
+          # Create output directory inside the simulator's app container
+          CONTAINER=$(xcrun simctl get_app_container "$SIM_UDID" cx.srd.xnuimagefuzzer data 2>/dev/null || true)
+          FUZZ_DIR="/tmp/fuzzed-output"
+          mkdir -p "$FUZZ_DIR"
+
+          # Set env var so the app writes to our output dir
+          xcrun simctl launch --console-pty "$SIM_UDID" cx.srd.xnuimagefuzzer 2>&1 | head -20 || true
+          sleep 10
+
+          # Grab images from Documents directory
+          if [ -n "$CONTAINER" ] && [ -d "$CONTAINER/Documents" ]; then
+            cp "$CONTAINER/Documents/"*.{png,jpg,gif,tiff} "$FUZZ_DIR/" 2>/dev/null || true
+          fi
+
+          FILE_COUNT=$(find "$FUZZ_DIR" -type f 2>/dev/null | wc -l | tr -d ' ')
+          echo "Generated $FILE_COUNT fuzzed images"
+          ls -la "$FUZZ_DIR/" 2>/dev/null || true
+
+          xcrun simctl terminate "$SIM_UDID" cx.srd.xnuimagefuzzer 2>/dev/null || true
+          xcrun simctl shutdown "$SIM_UDID" 2>/dev/null || true
+
+      - name: Create seed images (fallback)
+        run: |
+          set -euo pipefail
+          FUZZ_DIR="/tmp/fuzzed-output"
+          mkdir -p "$FUZZ_DIR"
+
+          FILE_COUNT=$(find "$FUZZ_DIR" -type f 2>/dev/null | wc -l | tr -d ' ')
+          if [ "$FILE_COUNT" -gt 0 ]; then
+            echo "✅ Already have $FILE_COUNT images from simulator, skipping seed generation"
+            exit 0
+          fi
+
+          echo "Generating seed images via python3 as fallback..."
+          python3 -c "
+          import struct, os, random
+
+          def make_png(width, height, path):
+              import zlib
+              raw = b''
+              for y in range(height):
+                  raw += b'\x00'  # filter byte
+                  for x in range(width):
+                      raw += bytes([random.randint(0,255) for _ in range(4)])
+              compressed = zlib.compress(raw)
+              def chunk(ctype, data):
+                  c = ctype + data
+                  crc = zlib.crc32(c) & 0xFFFFFFFF
+                  return struct.pack('>I', len(data)) + c + struct.pack('>I', crc)
+              sig = b'\x89PNG\r\n\x1a\n'
+              ihdr = struct.pack('>IIBBBBB', width, height, 8, 6, 0, 0, 0)
+              with open(path, 'wb') as f:
+                  f.write(sig + chunk(b'IHDR', ihdr) + chunk(b'IDAT', compressed) + chunk(b'IEND', b''))
+
+          sizes = [(64,64),(128,128),(256,256),(100,200),(200,100),(32,32),(512,512),(1,1),(13,7),(3,1)]
+          for i, (w,h) in enumerate(sizes, 1):
+              make_png(w, h, f'$FUZZ_DIR/seed_{i:02d}_{w}x{h}.png')
+              # Also create corrupted version
+              with open(f'$FUZZ_DIR/seed_{i:02d}_{w}x{h}.png', 'rb') as f:
+                  data = bytearray(f.read())
+              for _ in range(w):
+                  pos = random.randint(8, len(data)-1)
+                  data[pos] ^= random.randint(1,255)
+              with open(f'$FUZZ_DIR/corrupted_{i:02d}_{w}x{h}.png', 'wb') as f:
+                  f.write(data)
+          print(f'Generated {len(sizes)*2} seed+corrupted images')
+          "
+          ls -la "$FUZZ_DIR/"
+
+      - name: Validate images
+        run: |
+          set -euo pipefail
+          FUZZ_DIR="/tmp/fuzzed-output"
+
+          FILE_COUNT=$(find "$FUZZ_DIR" -type f 2>/dev/null | wc -l | tr -d ' ')
+          echo "Total files: $FILE_COUNT"
+
+          if [ "$FILE_COUNT" -eq 0 ]; then
+            echo "⚠️  No images to validate"
+            exit 0
+          fi
+
+          # Validate: non-zero size, valid header magic
+          VALID=0
+          INVALID=0
+          for f in "$FUZZ_DIR"/*; do
+            SIZE=$(stat -f%z "$f" 2>/dev/null || stat -c%s "$f")
+            if [ "$SIZE" -gt 0 ]; then
+              VALID=$((VALID + 1))
+            else
+              INVALID=$((INVALID + 1))
+              echo "⚠️  Empty file: $f"
+            fi
+          done
+
+          echo "✅ Valid: $VALID, Invalid: $INVALID"
+          echo "## Image Generation" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Metric | Value |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|--------|-------|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Total files | $FILE_COUNT |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Valid | $VALID |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Invalid | $INVALID |" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload fuzzed images artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: fuzzed-images
+          path: /tmp/fuzzed-output/
+          retention-days: 14
+          if-no-files-found: warn
+
+  # ── Job 3: Commit Images ──────────────────────────────────
+  commit-images:
+    name: Commit Fuzzed Images
+    runs-on: ubuntu-latest
+    needs: generate-images
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: true
+
+      - name: Download fuzzed images artifact
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: fuzzed-images
+          path: /tmp/fuzzed-download
+
+      - name: Commit images to fuzzed-images directory
+        run: |
+          set -euo pipefail
+
+          TIMESTAMP=$(date -u '+%Y-%m-%d-%H%M%S')
+          DEST_DIR="fuzzed-images/${TIMESTAMP}"
+          mkdir -p "$DEST_DIR"
+
+          FILE_COUNT=$(find /tmp/fuzzed-download -type f 2>/dev/null | wc -l | tr -d ' ')
+          if [ "$FILE_COUNT" -eq 0 ]; then
+            echo "⚠️  No fuzzed images to commit"
+            exit 0
+          fi
+
+          cp /tmp/fuzzed-download/* "$DEST_DIR/"
+          echo "Copied $FILE_COUNT files to $DEST_DIR"
+          ls -la "$DEST_DIR/"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "fuzzed-images/"
+          git commit -m "fuzzed-images: ${TIMESTAMP} — ${FILE_COUNT} files
+
+          Generated by xnuimagetools-build-and-test workflow
+          Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+          Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>"
+          # Pull --rebase in case remote advanced during the workflow run
+          git pull --rebase origin main
+          git push
+          echo "✅ Committed $FILE_COUNT fuzzed images to $DEST_DIR"

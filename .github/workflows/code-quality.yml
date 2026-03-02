@@ -1,0 +1,133 @@
+###############################################################
+#
+# Intent: xnuimagetools-code-quality
+#
+# Lightweight linting for Objective-C, Swift, C, and Python.
+# No macOS runner needed — runs on ubuntu-latest.
+#
+# Security hardened: pinned SHAs, least-privilege, no
+# user-controllable inputs in run: blocks.
+#
+###############################################################
+
+name: xnuimagetools-code-quality
+
+permissions:
+  contents: read
+
+concurrency:
+  group: code-quality-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  BASH_ENV: /dev/null
+
+defaults:
+  run:
+    shell: bash --noprofile --norc {0}
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  objc-syntax:
+    name: Objective-C / C Syntax
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Check for duplicate #defines
+        run: |
+          set -euo pipefail
+          DUPES=0
+          for f in $(find . -name '*.m' -o -name '*.h' -o -name '*.c' | grep -v '.git'); do
+            dups=$(grep -E '^\s*#define\s+' "$f" 2>/dev/null \
+              | awk '{print $2}' | sort | uniq -d)
+            if [ -n "$dups" ]; then
+              echo "❌ Duplicate #defines in $f: $dups"
+              DUPES=1
+            fi
+          done
+          if [ "$DUPES" -eq 1 ]; then
+            echo "::error::Duplicate #defines found"
+            exit 1
+          fi
+          echo "✅ No duplicate #defines"
+
+      - name: Check for common issues
+        run: |
+          set -euo pipefail
+          ISSUES=0
+
+          # Check for gets() usage (buffer overflow risk)
+          if grep -rn 'gets(' --include='*.m' --include='*.c' --include='*.h' . 2>/dev/null | grep -v '//'; then
+            echo "::warning::Found gets() usage — use fgets() instead"
+            ISSUES=1
+          fi
+
+          # Check for sprintf without bounds
+          if grep -rn 'sprintf(' --include='*.m' --include='*.c' --include='*.h' . 2>/dev/null | grep -v 'snprintf' | grep -v '//'; then
+            echo "::warning::Found sprintf() — consider snprintf()"
+          fi
+
+          echo "✅ Common issue check complete (issues=$ISSUES)"
+
+  python-lint:
+    name: Python Lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Install pyflakes
+        run: pip install pyflakes
+
+      - name: Run pyflakes
+        run: |
+          set -euo pipefail
+          PY_FILES=$(find . -name '*.py' -not -path './.git/*' | sort)
+          if [ -z "$PY_FILES" ]; then
+            echo "No Python files found"
+            exit 0
+          fi
+          echo "$PY_FILES" | xargs pyflakes
+          echo "✅ pyflakes passed"
+
+  swift-syntax:
+    name: Swift Syntax
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Check Swift files for common issues
+        run: |
+          set -euo pipefail
+          SWIFT_FILES=$(find . -name '*.swift' -not -path './.git/*' | sort)
+          if [ -z "$SWIFT_FILES" ]; then
+            echo "No Swift files found"
+            exit 0
+          fi
+
+          echo "Found Swift files:"
+          echo "$SWIFT_FILES"
+
+          # Check for force unwraps (informational)
+          FORCE_UNWRAPS=$(grep -rn '![^=]' --include='*.swift' . 2>/dev/null | grep -v '//' | grep -v 'guard' | grep -v '@IBAction' | wc -l | tr -d ' ')
+          echo "Force unwrap occurrences: $FORCE_UNWRAPS"
+
+          echo "✅ Swift syntax check complete"

@@ -284,13 +284,56 @@ int fuzz(const char *filename, int flip_intensity, int inject_intensity, int ove
             [reader addOutput:output];
             if (![reader startReading]) return 0;
 
-            for (int frame = 0; frame < 100; frame++) { // Process more frames to increase coverage
+            for (int frame = 0; frame < 100; frame++) {
                 @autoreleasepool {
                     CMSampleBufferRef sampleBuffer = [output copyNextSampleBuffer];
                     if (sampleBuffer == nil) break;
 
                     NSLog(@"Processing frame %d with flip intensity %d, inject intensity %d, overflow intensity %d", frame, flip_intensity, inject_intensity, overflow_intensity);
                     log_gpu_memory_info("Processing frame", __FILE__, __FUNCTION__, __LINE__);
+
+                    // Extract pixel buffer and apply fuzzing mutations
+                    CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+                    if (imageBuffer) {
+                        CVPixelBufferLockBaseAddress(imageBuffer, 0);
+                        uint8_t *baseAddress = (uint8_t *)CVPixelBufferGetBaseAddress(imageBuffer);
+                        size_t bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer);
+                        size_t height = CVPixelBufferGetHeight(imageBuffer);
+                        size_t width = CVPixelBufferGetWidth(imageBuffer);
+                        size_t totalBytes = bytesPerRow * height;
+
+                        if (baseAddress && totalBytes > 0) {
+                            // Bit-flip fuzzing: flip random bits proportional to intensity
+                            for (int f = 0; f < flip_intensity * 10; f++) {
+                                size_t pos = arc4random_uniform((uint32_t)totalBytes);
+                                uint8_t bit = 1 << arc4random_uniform(8);
+                                baseAddress[pos] ^= bit;
+                            }
+
+                            // Inject fuzzing: overwrite random spans with patterns
+                            for (int j = 0; j < inject_intensity; j++) {
+                                size_t pos = arc4random_uniform((uint32_t)(totalBytes > 16 ? totalBytes - 16 : 1));
+                                size_t len = arc4random_uniform(16) + 1;
+                                if (pos + len > totalBytes) len = totalBytes - pos;
+                                uint8_t pattern = (uint8_t)(arc4random_uniform(256));
+                                memset(baseAddress + pos, pattern, len);
+                            }
+
+                            // Overflow-style fuzzing: write extreme values at row boundaries
+                            for (int o = 0; o < overflow_intensity && o < (int)height; o++) {
+                                size_t rowStart = (arc4random_uniform((uint32_t)height)) * bytesPerRow;
+                                // Overwrite last 4 bytes of row with 0xFF
+                                for (size_t b = 0; b < 4 && rowStart + bytesPerRow - 1 - b < totalBytes; b++) {
+                                    baseAddress[rowStart + bytesPerRow - 1 - b] = 0xFF;
+                                }
+                            }
+
+                            NSLog(@"Fuzzed frame %d: %zu x %zu (%zu bytes), applied %d flips, %d injects, %d overflows",
+                                  frame, width, height, totalBytes, flip_intensity * 10, inject_intensity, overflow_intensity);
+                        }
+
+                        CVPixelBufferUnlockBaseAddress(imageBuffer, 0);
+                    }
 
                     CMSampleBufferInvalidate(sampleBuffer);
                     CFRelease(sampleBuffer);

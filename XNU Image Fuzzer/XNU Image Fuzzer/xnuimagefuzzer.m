@@ -88,16 +88,15 @@ static int verboseLogging = 0; // 1 enables detailed logging, 0 disables it.
  */
 #define ALL -1 // Special flag for operations applicable to all items or states.
 #define MAX_PERMUTATION 12 // Maximum permutations in image processing.
-#define COMM_PAGE64_BASE_ADDRESS (0x0000000FFFFFC000ULL)
-#define COMM_PAGE_CPU_CAPABILITIES64 (COMM_PAGE64_BASE_ADDRESS + 0x010)
-#define MAX_PERMUTATION 12 // Maximum permutations in image processing.
 #ifdef __arm64__
 #define COMM_PAGE64_BASE_ADDRESS        (0x0000000FFFFFC000ULL)
 #elif defined(__x86_64__)
-// Adjust this base address for x86_64 architectures as necessary
-// #define COMM_PAGE64_BASE_ADDRESS        (0x00007fffffe00000ULL)
+#define COMM_PAGE64_BASE_ADDRESS        (0x00007fffffe00000ULL)
+#else
+#define COMM_PAGE64_BASE_ADDRESS        (0x0000000FFFFFC000ULL)
 #endif
 
+#define COMM_PAGE_CPU_CAPABILITIES64    (COMM_PAGE64_BASE_ADDRESS + 0x010)
 #define COMM_PAGE_VERSION               (COMM_PAGE64_BASE_ADDRESS + 0x01E)
 #define COMM_PAGE_NCPUS                 (COMM_PAGE64_BASE_ADDRESS + 0x022)
 #define COMM_PAGE_CACHE_LINESIZE        (COMM_PAGE64_BASE_ADDRESS + 0x026)
@@ -112,7 +111,6 @@ static int verboseLogging = 0; // 1 enables detailed logging, 0 disables it.
 #define COMM_PAGE_LOGICAL_CPUS          (COMM_PAGE64_BASE_ADDRESS + 0x036)
 #define COMM_PAGE_MEMORY_SIZE           (COMM_PAGE64_BASE_ADDRESS + 0x038)
 #define COMM_PAGE_CPUFAMILY             (COMM_PAGE64_BASE_ADDRESS + 0x040)
-#define COMM_PAGE_CPU_CAPABILITIES64    (COMM_PAGE64_BASE_ADDRESS + 0x010)
 
 #pragma mark - Color Definitions
 
@@ -154,8 +152,6 @@ static int verboseLogging = 0; // 1 enables detailed logging, 0 disables it.
 
 #pragma mark - Injection Strings Configuration
 
-#pragma mark - Injection Strings Configuration
-
 /*!
  * @brief Configures robust strings for security testing within the application.
  *
@@ -187,7 +183,7 @@ static int verboseLogging = 0; // 1 enables detailed logging, 0 disables it.
 #define NUMBER_OF_STRINGS 10 // Total injection strings count.
 
 // Array for iteration and application in tests.
-char* injectStrings[NUMBER_OF_STRINGS] = {
+const char* injectStrings[NUMBER_OF_STRINGS] = {
     INJECT_STRING_1,
     INJECT_STRING_2,
     INJECT_STRING_3,
@@ -574,7 +570,6 @@ void printColored(const char* color, const char* message) {
  */
 BOOL isValidImagePath(NSString *path);
 unsigned long hashString(const char* str);
-UIImage *loadImageFromFile(NSString *path);
 UIImage *loadImageFromFile(NSString *filePath);
 // NSString* formattedCurrentDateTime(void);
 // NSString *createUniqueDirectoryForSavingImages(void);
@@ -603,9 +598,11 @@ void createBitmapContext8BitInvertedColors(CGImageRef cgImg);
 void createBitmapContext32BitFloat4Component(CGImageRef cgImg);
 void applyFuzzingToBitmapContext(unsigned char *rawData, size_t width, size_t height);
 void applyEnhancedFuzzingToBitmapContext(unsigned char *rawData, size_t width, size_t height, BOOL verbose);
+void applyEnhancedFuzzingToBitmapContext16Bit(unsigned char *rawData, size_t width, size_t height, BOOL verbose);
 void logPixelData(unsigned char *rawData, size_t width, size_t height, const char *message, BOOL verbose);
 void convertTo1BitMonochrome(unsigned char *rawData, size_t width, size_t height);
 void saveMonochromeImage(UIImage *image, NSString *identifier);
+NSData* applyPostEncodingCorruption(NSData *encodedData, NSString *format);
 // void dumpDeviceInfo(void);
 // void dumpMacDeviceInfo(void);
 // void dump_comm_page(void);
@@ -662,6 +659,23 @@ void saveFuzzedImage(UIImage *image, NSString *contextDescription) {
         } else {
             NSLog(@"Failed to create GIF data");
         }
+    } else if ([contextDescription containsString:@"tiff"]) {
+        fileExtension = @"tiff";
+        NSMutableData *tiffData = [NSMutableData data];
+        CGImageDestinationRef dest = CGImageDestinationCreateWithData(
+            (CFMutableDataRef)tiffData, (__bridge CFStringRef)UTTypeTIFF.identifier, 1, NULL);
+        if (dest) {
+            CGImageDestinationAddImage(dest, image.CGImage, NULL);
+            if (CGImageDestinationFinalize(dest)) {
+                imageData = tiffData;
+                NSLog(@"Successfully created TIFF data");
+            } else {
+                NSLog(@"Failed to finalize TIFF data");
+            }
+            CFRelease(dest);
+        } else {
+            NSLog(@"Failed to create TIFF image destination");
+        }
     } else if ([contextDescription containsString:@"premultipliedfirstalpha"]) {
         // Handle PremultipliedFirstAlpha specific logic here
         imageData = UIImagePNGRepresentation(image);
@@ -672,12 +686,25 @@ void saveFuzzedImage(UIImage *image, NSString *contextDescription) {
         NSLog(@"Saving image as PNG");
     }
 
-    // Generate file name based on the context description
-    NSString *fileName = [NSString stringWithFormat:@"fuzzed_image_%@.%@", contextDescription, fileExtension];
+    // Generate file name: strip trailing format suffix since extension is added separately
+    NSString *baseName = contextDescription;
+    for (NSString *suffix in @[@"_png", @"_jpeg", @"_jpg", @"_gif", @"_tiff"]) {
+        if ([baseName hasSuffix:suffix]) {
+            baseName = [baseName substringToIndex:[baseName length] - [suffix length]];
+            break;
+        }
+    }
+    NSString *fileName = [NSString stringWithFormat:@"fuzzed_image_%@.%@", baseName, fileExtension];
     
-    // Fetch the documents directory path
-    NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
-    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:fileName];
+    // Use FUZZ_OUTPUT_DIR env var if set (for CI), otherwise use Documents directory
+    NSString *outputDirectory;
+    const char *envDir = getenv("FUZZ_OUTPUT_DIR");
+    if (envDir) {
+        outputDirectory = [NSString stringWithUTF8String:envDir];
+    } else {
+        outputDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+    }
+    NSString *filePath = [outputDirectory stringByAppendingPathComponent:fileName];
     
     // Save the image data to the file
     BOOL success = [imageData writeToFile:filePath atomically:YES];
@@ -757,17 +784,19 @@ NSData* UIImageGIFRepresentation(UIImage *image) {
  * @endcode
  */
 extern void convertTo1BitMonochrome(unsigned char *rawData, size_t width, size_t height) {
-    size_t bytesPerRow = (width + 7) / 8; // Calculate the bytes per row for 1bpp
-    unsigned char threshold = 127; // Midpoint threshold for black/white conversion
+    size_t bytesPerRow = (width + 7) / 8;
 
+    // The 1-bit context data is already packed (1 bit per pixel).
+    // Apply fuzzing by randomly flipping bits to exercise edge cases.
     for (size_t y = 0; y < height; y++) {
         for (size_t x = 0; x < width; x++) {
             size_t byteIndex = y * bytesPerRow + x / 8;
-            unsigned char pixelValue = rawData[y * width + x]; // Assuming rawData is in a format where each pixel is a byte
-            unsigned char bit = (pixelValue > threshold) ? 1 : 0; // Apply threshold
+            unsigned char bitPos = 7 - (x % 8);
 
-            rawData[byteIndex] &= ~(1 << (7 - (x % 8))); // Clear the bit
-            rawData[byteIndex] |= (bit << (7 - (x % 8))); // Set the bit based on threshold
+            // Flip ~25% of bits randomly for fuzzing variation
+            if (arc4random_uniform(4) == 0) {
+                rawData[byteIndex] ^= (1 << bitPos);
+            }
         }
     }
 }
@@ -790,7 +819,13 @@ extern void convertTo1BitMonochrome(unsigned char *rawData, size_t width, size_t
  */
 extern void saveMonochromeImage(UIImage *image, NSString *identifier) {
     NSData *imageData = UIImagePNGRepresentation(image);
-    NSString *docsDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+    NSString *docsDir;
+    const char *envDir = getenv("FUZZ_OUTPUT_DIR");
+    if (envDir) {
+        docsDir = [NSString stringWithUTF8String:envDir];
+    } else {
+        docsDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+    }
     NSString *filePath = [docsDir stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.png", identifier]];
     
     if ([imageData writeToFile:filePath atomically:YES]) {
@@ -1002,7 +1037,7 @@ void applyEnhancedFuzzingToBitmapContext(unsigned char *rawData, size_t width, s
                     NSLog(@"Starting injection of string %zu: %s", stringIndex + 1, injectStrings[stringIndex]);
                 }
 
-                char *currentString = injectStrings[stringIndex];
+                const char *currentString = injectStrings[stringIndex];
                 size_t stringLength = strlen(currentString);
 
                 if (injectIndex < stringLength) {
@@ -1149,7 +1184,7 @@ void applyEnhancedFuzzingToBitmapContextWithFloats(float *rawData, size_t width,
         }
 
         // Hash the selected injection string to determine the fuzzing method
-        unsigned long hash = hashString(injectStrings[stringIndex]) % 5; // Modulo by 5 to fit our method range
+        unsigned long hash = hashString(injectStrings[stringIndex]) % 8; // Modulo by 8 for expanded method range
 
         for (size_t y = 0; y < height; y++) {
             for (size_t x = 0; x < width; x++) {
@@ -1160,13 +1195,13 @@ void applyEnhancedFuzzingToBitmapContextWithFloats(float *rawData, size_t width,
                     case 0:
                         // Additive noise
                         for (int i = 0; i < 4; i++) {
-                            rawData[pixelIndex + i] += ((float)arc4random_uniform(6) / RAND_MAX * 2.0f - 1.0f); // Noise range [-1, 1] // Noise range [-1, 1]
+                            rawData[pixelIndex + i] += ((float)arc4random() / UINT32_MAX * 2.0f - 1.0f); // Noise range [-1, 1]
                         }
                         break;
                     case 1:
                         // Multiplicative noise (scale)
                         for (int i = 0; i < 4; i++) {
-                            rawData[pixelIndex + i] *= ((float)arc4random_uniform(6) / RAND_MAX * 2.0f); // Scale range [0, 2]
+                            rawData[pixelIndex + i] *= ((float)arc4random() / UINT32_MAX * 2.0f); // Scale range [0, 2]
                         }
                         break;
                     case 2:
@@ -1189,6 +1224,33 @@ void applyEnhancedFuzzingToBitmapContextWithFloats(float *rawData, size_t width,
                                 case 1: rawData[pixelIndex + i] = INFINITY; break;
                                 case 2: rawData[pixelIndex + i] = -INFINITY; break;
                             }
+                        }
+                        break;
+                    case 5:
+                        // Subnormal/denormalized floats — stress float-to-int conversion
+                        for (int i = 0; i < 4; i++) {
+                            switch (arc4random_uniform(4)) {
+                                case 0: rawData[pixelIndex + i] = FLT_MIN * 0.5f; break;
+                                case 1: rawData[pixelIndex + i] = -0.0f; break;
+                                case 2: rawData[pixelIndex + i] = FLT_EPSILON; break;
+                                case 3: rawData[pixelIndex + i] = -FLT_MIN; break;
+                            }
+                        }
+                        break;
+                    case 6:
+                        // Premultiplied alpha violation: R,G,B > A (invalid for premultiplied)
+                        rawData[pixelIndex] = 1.0f;
+                        rawData[pixelIndex + 1] = 1.0f;
+                        rawData[pixelIndex + 2] = 1.0f;
+                        rawData[pixelIndex + 3] = 0.01f; // Very low alpha
+                        break;
+                    case 7:
+                        // Bit-level float corruption via type punning
+                        for (int i = 0; i < 4; i++) {
+                            union { float f; uint32_t u; } pun;
+                            pun.f = rawData[pixelIndex + i];
+                            pun.u ^= (1u << arc4random_uniform(32));
+                            rawData[pixelIndex + i] = pun.f;
                         }
                         break;
                 }
@@ -1260,6 +1322,140 @@ void applyEnhancedFuzzingToBitmapContextAlphaOnly(unsigned char *alphaData, size
     if (verboseLogging) {
         NSLog(@"Enhanced fuzzing on Alpha-only bitmap context completed");
     }
+}
+
+#pragma mark - applyEnhancedFuzzingToBitmapContext16Bit
+
+/*!
+ * @brief Applies enhanced fuzzing to 16-bit per component bitmap data.
+ * @details Properly handles 16-bit RGBA data (8 bytes per pixel, 2 bytes per component).
+ * Applies bit-level flips, boundary values, and channel swaps targeting 16-bit decoder paths.
+ */
+void applyEnhancedFuzzingToBitmapContext16Bit(unsigned char *rawData, size_t width, size_t height, BOOL verboseLogging) {
+    if (!rawData || width == 0 || height == 0) {
+        NSLog(@"No valid raw data for 16-bit fuzzing.");
+        return;
+    }
+
+    uint16_t *data16 = (uint16_t *)rawData;
+    size_t totalComponents = width * height * 4; // RGBA, 4 components per pixel
+
+    for (size_t i = 0; i < totalComponents; i++) {
+        switch (arc4random_uniform(8)) {
+            case 0: // Inversion
+                data16[i] = 0xFFFF - data16[i];
+                break;
+            case 1: // Random noise ±500
+                {
+                    int noise = (int)arc4random_uniform(1001) - 500;
+                    int newVal = (int)data16[i] + noise;
+                    data16[i] = (uint16_t)fmax(0, fmin(0xFFFF, newVal));
+                }
+                break;
+            case 2: // Boundary values
+                switch (arc4random_uniform(4)) {
+                    case 0: data16[i] = 0x0000; break;
+                    case 1: data16[i] = 0xFFFF; break;
+                    case 2: data16[i] = 0x7FFF; break; // Mid-range
+                    case 3: data16[i] = 0x0001; break; // Just above zero
+                }
+                break;
+            case 3: // Bit-level flip at random position
+                data16[i] ^= (1 << arc4random_uniform(16));
+                break;
+            case 4: // High byte corruption (leave low byte intact)
+                data16[i] = (data16[i] & 0x00FF) | (arc4random_uniform(256) << 8);
+                break;
+            case 5: // Low byte corruption (leave high byte intact)
+                data16[i] = (data16[i] & 0xFF00) | arc4random_uniform(256);
+                break;
+            case 6: // Complete random replacement
+                data16[i] = (uint16_t)arc4random_uniform(0x10000);
+                break;
+            case 7: // Channel swap (swap with next component if not alpha)
+                if (i % 4 < 3 && i + 1 < totalComponents) {
+                    uint16_t tmp = data16[i];
+                    data16[i] = data16[i + 1];
+                    data16[i + 1] = tmp;
+                }
+                break;
+        }
+    }
+
+    if (verboseLogging) {
+        NSLog(@"16-bit enhanced fuzzing completed on %zu components", totalComponents);
+    }
+}
+
+#pragma mark - applyPostEncodingCorruption
+
+/*!
+ * @brief Corrupts encoded image data at the byte level to stress decoder paths.
+ * @details After an image is encoded (PNG/JPEG/GIF/TIFF), this function corrupts
+ * specific bytes in the encoded stream to trigger edge cases in format parsers.
+ * Preserves the magic bytes so the decoder attempts to parse the corrupted data.
+ */
+NSData* applyPostEncodingCorruption(NSData *encodedData, NSString *format) {
+    if (!encodedData || [encodedData length] < 16) {
+        return encodedData;
+    }
+
+    NSMutableData *corrupted = [encodedData mutableCopy];
+    unsigned char *bytes = (unsigned char *)[corrupted mutableBytes];
+    NSUInteger len = [corrupted length];
+
+    // Preserve first 8 bytes (magic/signature) to ensure decoder attempts parsing
+    size_t safeStart = 8;
+
+    // Strategy 1: Flip random bits in 2% of bytes after the header
+    size_t flipCount = (len - safeStart) / 50;
+    for (size_t i = 0; i < flipCount; i++) {
+        size_t offset = safeStart + arc4random_uniform((uint32_t)(len - safeStart));
+        bytes[offset] ^= (1 << arc4random_uniform(8));
+    }
+
+    // Strategy 2: Corrupt dimension/length fields at known offsets
+    if ([format containsString:@"png"] && len > 24) {
+        // PNG IHDR chunk: width at offset 16-19, height at 20-23
+        if (arc4random_uniform(3) == 0) {
+            bytes[16 + arc4random_uniform(4)] ^= arc4random_uniform(256);
+            NSLog(@"Corrupted PNG IHDR width/height field");
+        }
+    } else if ([format containsString:@"jpeg"] && len > 20) {
+        // JPEG: corrupt a random marker length field
+        for (size_t i = safeStart; i < len - 2; i++) {
+            if (bytes[i] == 0xFF && bytes[i+1] >= 0xC0 && bytes[i+1] <= 0xFE && bytes[i+1] != 0xFF) {
+                if (i + 4 < len && arc4random_uniform(4) == 0) {
+                    bytes[i + 2] ^= arc4random_uniform(256);
+                    NSLog(@"Corrupted JPEG marker 0xFF%02X length at offset %zu", bytes[i+1], i+2);
+                    break;
+                }
+            }
+        }
+    } else if ([format containsString:@"tiff"] && len > 16) {
+        // TIFF: corrupt IFD entry count or offset
+        if (arc4random_uniform(3) == 0) {
+            size_t ifdOffset = safeStart + arc4random_uniform(8);
+            if (ifdOffset < len) {
+                bytes[ifdOffset] ^= arc4random_uniform(256);
+                NSLog(@"Corrupted TIFF IFD area at offset %zu", ifdOffset);
+            }
+        }
+    }
+
+    // Strategy 3: Insert premultiplied alpha violation patterns in raw chunks
+    if (arc4random_uniform(4) == 0 && len > 64) {
+        size_t offset = safeStart + arc4random_uniform((uint32_t)(len - safeStart - 4));
+        // Write R > A pattern (invalid for premultiplied formats)
+        bytes[offset] = 0xFF;     // R
+        bytes[offset+1] = 0xFF;   // G
+        bytes[offset+2] = 0xFF;   // B
+        bytes[offset+3] = 0x01;   // A (very low — R,G,B > A is invalid premultiplied)
+        NSLog(@"Injected premultiplied alpha violation at offset %zu", offset);
+    }
+
+    NSLog(@"Post-encoding corruption: %zu bit flips applied to %lu byte %@ blob", flipCount, (unsigned long)len, format);
+    return corrupted;
 }
 
 #pragma mark - applyFuzzingToBitmapContext
@@ -1400,25 +1596,73 @@ unsigned long hashString(const char* str) {
  * generate and process an image.
  */
 void performAllImagePermutations(void) {
-    // Define dimensions and image type for the generated image
-    size_t width = 128;
-    size_t height = 128;
-    CFStringRef imageType = (__bridge CFStringRef)UTTypePNG.identifier;
-    
-    // Generate the fuzzed image data
-    NSData *fuzzedImage = generateFuzzedImageData(width, height, imageType);
-    NSString *path = @"/tmp/fuzzed_image.png";
-    [fuzzedImage writeToFile:path atomically:YES];
-    
-    // Load the generated image
-    UIImage *image = [UIImage imageWithData:fuzzedImage];
-    if (!image) {
-        NSLog(@"Failed to load generated image from path: %@", path);
-        return;
-    }
+    // Generate diverse seed images with varied dimensions and process each
+    // through a different bitmap context permutation for maximum code coverage.
+    // Includes edge-case dimensions (1x1, 65535x1, odd aspect ratios).
+    struct { size_t width; size_t height; int permutation; } specs[] = {
+        { 64,  64,  1},  // Small square — StandardRGB
+        {128, 128,  3},  // Medium square — NonPremultipliedAlpha
+        {256, 256,  4},  // Large square — 16BitDepth
+        {100, 200,  6},  // Tall rectangle — HDRFloat
+        {200, 100,  7},  // Wide rectangle — AlphaOnly
+        { 32,  32,  8},  // Tiny square — 1BitMonochrome
+        {512, 512,  9},  // Large square — BigEndian
+        { 80, 120, 10},  // Odd aspect — LittleEndian
+        {160, 160, 11},  // Medium square — 8BitInvertedColors
+        { 96,  96, 12},  // Small square — 32BitFloat4Component
+        {  1,   1,  1},  // Edge case: 1x1 pixel — StandardRGB
+        { 13,   7,  5},  // Edge case: odd non-power-of-2 — Grayscale
+        {  3,   1,  2},  // Edge case: narrow strip — PremultipliedFirstAlpha
+        {  1, 100,  4},  // Edge case: single-column tall — 16BitDepth
+    };
+    int count = sizeof(specs) / sizeof(specs[0]);
 
-    // Process the image with permutation -1 (all permutations)
-    processImage(image, -1);
+    CFStringRef imageType = (__bridge CFStringRef)UTTypePNG.identifier;
+    const char *envDir = getenv("FUZZ_OUTPUT_DIR");
+
+    for (int i = 0; i < count; i++) {
+        NSLog(@"=== Generating fuzzed image %d/%d: %zux%zu, permutation %d ===",
+              i + 1, count, specs[i].width, specs[i].height, specs[i].permutation);
+
+        NSData *fuzzedImage = generateFuzzedImageData(specs[i].width, specs[i].height, imageType);
+        if (!fuzzedImage) {
+            NSLog(@"Failed to generate fuzzed image data for spec %d", i + 1);
+            continue;
+        }
+
+        // Save seed image
+        NSString *seedPath;
+        if (envDir) {
+            seedPath = [NSString stringWithFormat:@"%s/seed_%02d_%zux%zu.png",
+                        envDir, i + 1, specs[i].width, specs[i].height];
+        } else {
+            seedPath = [NSString stringWithFormat:@"/tmp/fuzzed_image_%d.png", i + 1];
+        }
+        [fuzzedImage writeToFile:seedPath atomically:YES];
+        NSLog(@"Seed image saved to %@", seedPath);
+
+        // Also save a post-encoding corrupted variant of the seed
+        NSData *corruptedPNG = applyPostEncodingCorruption(fuzzedImage, @"png");
+        NSString *corruptedPath;
+        if (envDir) {
+            corruptedPath = [NSString stringWithFormat:@"%s/corrupted_%02d_%zux%zu.png",
+                             envDir, i + 1, specs[i].width, specs[i].height];
+        } else {
+            corruptedPath = [NSString stringWithFormat:@"/tmp/corrupted_image_%d.png", i + 1];
+        }
+        [corruptedPNG writeToFile:corruptedPath atomically:YES];
+        NSLog(@"Corrupted seed saved to %@", corruptedPath);
+
+        UIImage *image = [UIImage imageWithData:fuzzedImage];
+        if (!image) {
+            NSLog(@"Failed to load seed image %d from %@", i + 1, seedPath);
+            continue;
+        }
+
+        processImage(image, specs[i].permutation);
+        NSLog(@"=== Completed image %d/%d ===", i + 1, count);
+    }
+    NSLog(@"All %d fuzzed images generated successfully", count);
 }
 
 #pragma mark - generateFuzzedImageData
@@ -1450,16 +1694,41 @@ NSData* generateFuzzedImageData(size_t width, size_t height, CFStringRef imageTy
     size_t bufferSize = bytesPerRow * height;
     
     uint8_t *buffer = (uint8_t *)malloc(bufferSize);
+    if (!buffer) {
+        NSLog(@"Failed to allocate buffer for fuzzed image data");
+        return nil;
+    }
     for (size_t i = 0; i < bufferSize; i++) {
         buffer[i] = arc4random_uniform(256);
     }
     
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
     CGContextRef context = CGBitmapContextCreate(buffer, width, height, bitsPerComponent, bytesPerRow, colorSpace, kCGImageAlphaPremultipliedLast);
+    if (!context) {
+        NSLog(@"Failed to create bitmap context in generateFuzzedImageData");
+        CGColorSpaceRelease(colorSpace);
+        free(buffer);
+        return nil;
+    }
     CGImageRef imageRef = CGBitmapContextCreateImage(context);
+    if (!imageRef) {
+        NSLog(@"Failed to create CGImage in generateFuzzedImageData");
+        CGColorSpaceRelease(colorSpace);
+        CGContextRelease(context);
+        free(buffer);
+        return nil;
+    }
     
     NSMutableData *imageData = [NSMutableData data];
     CGImageDestinationRef destination = CGImageDestinationCreateWithData((CFMutableDataRef)imageData, imageType, 1, NULL);
+    if (!destination) {
+        NSLog(@"Failed to create image destination in generateFuzzedImageData");
+        CGColorSpaceRelease(colorSpace);
+        CGContextRelease(context);
+        CGImageRelease(imageRef);
+        free(buffer);
+        return nil;
+    }
     CGImageDestinationAddImage(destination, imageRef, NULL);
     CGImageDestinationFinalize(destination);
     
@@ -1680,7 +1949,8 @@ void processImage(UIImage *image, int permutation) {
                     createBitmapContext16BitDepth(cgImg);
                     break;
                 case 5:
-                    NSLog(@"Grayscale image processing is currently pending implementation.");
+                    NSLog(@"Case: Creating bitmap context with Grayscale settings");
+                    createBitmapContextGrayscale(cgImg);
                     break;
                 case 6:
                     NSLog(@"Case: Creating bitmap context with HDR Float Components settings");
@@ -1735,8 +2005,9 @@ void processImage(UIImage *image, int permutation) {
                 createBitmapContext16BitDepth(cgImg);
                 break;
             case 5:
-                NSLog(@"Grayscale image processing is currently pending implementation.");
-                return;
+                NSLog(@"Case: Creating bitmap context with Grayscale settings");
+                createBitmapContextGrayscale(cgImg);
+                break;
             case 6:
                 NSLog(@"Case: Creating bitmap context with HDR Float Components settings");
                 createBitmapContextHDRFloatComponents(cgImg);
@@ -1830,6 +2101,9 @@ void createBitmapContextStandardRGB(CGImageRef cgImg, int permutation) {
         return;
     }
 
+    // Initialize memory with 0x41 pattern for post-operation change detection
+    memset(rawData, 0x41, height * bytesPerRow);
+
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
     if (!colorSpace) {
         NSLog(@"Failed to create color space");
@@ -1884,9 +2158,10 @@ void createBitmapContextStandardRGB(CGImageRef cgImg, int permutation) {
         UIImage *newImage = [UIImage imageWithCGImage:newCgImg];
         CGImageRelease(newCgImg);
 
-        saveFuzzedImage(newImage, @"premultiplied_first_alpha_png");
-        saveFuzzedImage(newImage, @"premultiplied_first_alpha_jpeg");
-        saveFuzzedImage(newImage, @"premultiplied_first_alpha_gif");
+        saveFuzzedImage(newImage, @"standard_rgb_png");
+        saveFuzzedImage(newImage, @"standard_rgb_jpeg");
+        saveFuzzedImage(newImage, @"standard_rgb_gif");
+        saveFuzzedImage(newImage, @"standard_rgb_tiff");
         
         NSLog(@"Modified UIImage created and saved successfully.");
     }
@@ -1994,6 +2269,7 @@ void createBitmapContextPremultipliedFirstAlpha(CGImageRef cgImg) {
         saveFuzzedImage(newImage, @"premultiplied_first_alpha_png");
         saveFuzzedImage(newImage, @"premultiplied_first_alpha_jpeg");
         saveFuzzedImage(newImage, @"premultiplied_first_alpha_gif");
+        saveFuzzedImage(newImage, @"premultiplied_first_alpha_tiff");
         
         NSLog(@"Modified UIImage created and saved successfully in both PNG and JPEG formats.");
     }
@@ -2050,6 +2326,9 @@ void createBitmapContextNonPremultipliedAlpha(CGImageRef cgImg) {
         NSLog(@"Failed to allocate memory for image processing");
         return;
     }
+
+    // Initialize memory with 0x41 pattern for post-operation change detection
+    memset(rawData, 0x41, height * bytesPerRow);
 
     // Create a color space for the bitmap context
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
@@ -2111,6 +2390,7 @@ void createBitmapContextNonPremultipliedAlpha(CGImageRef cgImg) {
         saveFuzzedImage(newImage, @"non_premultiplied_alpha_png");
         saveFuzzedImage(newImage, @"non_premultiplied_alpha_jpeg");
         saveFuzzedImage(newImage, @"non_premultiplied_alpha_gif");
+        saveFuzzedImage(newImage, @"non_premultiplied_alpha_tiff");
 
         NSLog(@"Modified UIImage created and saved successfully for non-premultiplied alpha in both PNG, JPEG and GIF formats.");
     }
@@ -2197,9 +2477,9 @@ void createBitmapContext16BitDepth(CGImageRef cgImg) {
     // Draw the CGImage into the bitmap context
     CGContextDrawImage(ctx, CGRectMake(0, 0, width, height), cgImg);
 
-    // Apply fuzzing logic directly to the bitmap's raw data
-    NSLog(@"Applying enhanced fuzzing logic to the bitmap context with 16-bit depth");
-    applyEnhancedFuzzingToBitmapContext(rawData, width, height, YES); // Assuming verbose logging is desired
+    // Apply fuzzing logic with proper 16-bit handler
+    NSLog(@"Applying enhanced 16-bit fuzzing logic to the bitmap context");
+    applyEnhancedFuzzingToBitmapContext16Bit(rawData, width, height, YES);
     // Initialize a variable to keep track of unchanged and changed bytes
     size_t unchangedCount = 0;
     size_t changedCount = 0;
@@ -2236,6 +2516,7 @@ void createBitmapContext16BitDepth(CGImageRef cgImg) {
         saveFuzzedImage(newImage, @"16bit_depth_png");
         saveFuzzedImage(newImage, @"16bit_depth_jpeg");
         saveFuzzedImage(newImage, @"16bit_depth_gif");
+        saveFuzzedImage(newImage, @"16bit_depth_tiff");
         
         NSLog(@"Modified UIImage created and saved successfully in both PNG and JPEG formats.");
     }
@@ -2249,8 +2530,87 @@ void createBitmapContext16BitDepth(CGImageRef cgImg) {
 #pragma mark - createBitmapContextGrayscale
 
 void createBitmapContextGrayscale(CGImageRef cgImg) {
-    NSLog(@"Grayscale image processing is not yet implemented.");
-    // No further processing or memory allocations
+    if (!cgImg) {
+        NSLog(@"Invalid CGImageRef provided.");
+        return;
+    }
+
+    NSLog(@"Creating bitmap context with Grayscale settings");
+
+    size_t width = CGImageGetWidth(cgImg);
+    size_t height = CGImageGetHeight(cgImg);
+    size_t bytesPerRow = width * 2; // 1 byte gray + 1 byte alpha per pixel
+
+    unsigned char *rawData = (unsigned char *)calloc(height * bytesPerRow, sizeof(unsigned char));
+    if (!rawData) {
+        NSLog(@"Failed to allocate memory for grayscale processing");
+        return;
+    }
+
+    memset(rawData, 0x41, height * bytesPerRow);
+
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
+    if (!colorSpace) {
+        NSLog(@"Failed to create grayscale color space");
+        free(rawData);
+        return;
+    }
+
+    CGContextRef ctx = CGBitmapContextCreate(rawData, width, height, 8, bytesPerRow, colorSpace, (CGBitmapInfo)kCGImageAlphaPremultipliedLast);
+    CGColorSpaceRelease(colorSpace);
+
+    if (!ctx) {
+        NSLog(@"Failed to create grayscale bitmap context");
+        free(rawData);
+        return;
+    }
+
+    CGContextDrawImage(ctx, CGRectMake(0, 0, width, height), cgImg);
+
+    // Apply grayscale-specific fuzzing: random noise, inversion, extreme values
+    for (size_t y = 0; y < height; y++) {
+        for (size_t x = 0; x < width; x++) {
+            size_t idx = y * bytesPerRow + x * 2;
+            switch (arc4random_uniform(5)) {
+                case 0: // Invert gray
+                    rawData[idx] = 255 - rawData[idx];
+                    break;
+                case 1: // Random noise
+                    {
+                        int noise = (int)arc4random_uniform(101) - 50;
+                        int newVal = (int)rawData[idx] + noise;
+                        rawData[idx] = (unsigned char)fmax(0, fmin(255, newVal));
+                    }
+                    break;
+                case 2: // Extreme value
+                    rawData[idx] = (arc4random_uniform(2) == 0) ? 0 : 255;
+                    break;
+                case 3: // Bit flip
+                    rawData[idx] ^= (1 << arc4random_uniform(8));
+                    break;
+                case 4: // Alpha mutation
+                    rawData[idx + 1] = arc4random_uniform(256);
+                    break;
+            }
+        }
+    }
+
+    CGImageRef newCgImg = CGBitmapContextCreateImage(ctx);
+    if (!newCgImg) {
+        NSLog(@"Failed to create CGImage from grayscale context");
+    } else {
+        UIImage *newImage = [UIImage imageWithCGImage:newCgImg];
+        CGImageRelease(newCgImg);
+
+        saveFuzzedImage(newImage, @"grayscale_png");
+        saveFuzzedImage(newImage, @"grayscale_jpeg");
+        saveFuzzedImage(newImage, @"grayscale_gif");
+        saveFuzzedImage(newImage, @"grayscale_tiff");
+        NSLog(@"Grayscale fuzzed image saved successfully.");
+    }
+
+    CGContextRelease(ctx);
+    free(rawData);
 }
 
 #pragma mark - createBitmapContextHDRFloatComponents
@@ -2294,7 +2654,7 @@ void createBitmapContextHDRFloatComponents(CGImageRef cgImg) {
     size_t bytesPerRow = width * 16; // Considering 16 bytes per pixel for HDR
 
     // Allocate memory for raw image data
-    float *rawData = (float *)calloc(height * bytesPerRow, sizeof(float));
+    float *rawData = (float *)calloc(height * width * 4, sizeof(float));
     if (!rawData) {
         NSLog(@"Failed to allocate memory for image processing");
         return;
@@ -2326,26 +2686,25 @@ void createBitmapContextHDRFloatComponents(CGImageRef cgImg) {
     applyEnhancedFuzzingToBitmapContextWithFloats(rawData, width, height, YES);
     currentStringIndex = (currentStringIndex + 1) % NUMBER_OF_STRINGS; // Move to the next string for the next call
 
-    // Initialize a variable to keep track of unchanged and changed bytes
+    // Initialize a variable to keep track of unchanged and changed floats
     size_t unchangedCount = 0;
     size_t changedCount = 0;
+    size_t totalFloats = height * width * 4;
 
-    // Check for 0x41 pattern after operations and detect changes
-    for (size_t i = 0; i < height * bytesPerRow; i++) {
-        if (rawData[i] == 0x41) {
+    // Check for changes in float data after operations
+    for (size_t i = 0; i < totalFloats; i++) {
+        if (rawData[i] == 0.0f) {
             unchangedCount++;
         } else {
             // Log the first few changes to avoid flooding the log
-            if (changedCount < 10) { // Limiting to the first 10 changes for brevity
-                // Using a union to reinterpret the float's bits as an unsigned int for logging
+            if (changedCount < 10) {
                 union {
                     float f;
                     unsigned int u;
                 } floatToHex;
 
-                floatToHex.f = rawData[i]; // Assign the float value to the union
-
-                NSLog(@"Detected change from 0x41 at byte offset %zu, new value: 0x%X", i, floatToHex.u);
+                floatToHex.f = rawData[i];
+                NSLog(@"Detected change at float offset %zu, value: %f (0x%X)", i, rawData[i], floatToHex.u);
             }
             changedCount++;
         }
@@ -2356,7 +2715,20 @@ void createBitmapContextHDRFloatComponents(CGImageRef cgImg) {
         NSLog(@"Detected unchanged 0x41 pattern in %zu places.", unchangedCount);
     }
     NSLog(@"Detected changes in %zu places.", changedCount);
-    
+
+    // Normalize float values to [0.0, 1.0] so saved images have visible variation.
+    // Without this, NaN/Infinity/FLT_MAX from fuzzing clamp to uniform black.
+    for (size_t i = 0; i < totalFloats; i++) {
+        float v = rawData[i];
+        if (isnan(v) || isinf(v)) {
+            rawData[i] = (float)arc4random() / UINT32_MAX;
+        } else {
+            v = fmodf(fabsf(v), 1.0f);
+            rawData[i] = v;
+        }
+    }
+    NSLog(@"Normalized %zu float values to [0.0, 1.0] for visible output", totalFloats);
+
     CGImageRef newCgImg = CGBitmapContextCreateImage(ctx);
     if (!newCgImg) {
         NSLog(@"Failed to create CGImage from HDR context");
@@ -2367,6 +2739,7 @@ void createBitmapContextHDRFloatComponents(CGImageRef cgImg) {
         saveFuzzedImage(newImage, @"hdr_float_png");
         saveFuzzedImage(newImage, @"hdr_float_jpeg");
         saveFuzzedImage(newImage, @"hdr_float_gif");
+        saveFuzzedImage(newImage, @"hdr_float_tiff");
         NSLog(@"Modified UIImage with HDR and floating-point components created and saved successfully in both PNG, JPEG and GIF formats.");
     }
 
@@ -2461,6 +2834,7 @@ void createBitmapContextAlphaOnly(CGImageRef cgImg) {
         saveFuzzedImage(newImage, @"alpha_channel_png");
         saveFuzzedImage(newImage, @"alpha_channel_jpeg");
         saveFuzzedImage(newImage, @"alpha_channel_gif");
+        saveFuzzedImage(newImage, @"alpha_channel_tiff");
         
         NSLog(@"Modified UIImage created and saved successfully.");
     }
@@ -2512,7 +2886,11 @@ void createBitmapContext1BitMonochrome(CGImageRef cgImg) {
     size_t height = CGImageGetHeight(cgImg);
     // Calculate bytes per row for 1 bit per pixel, rounded up to the nearest byte
     size_t bytesPerRow = (width + 7) / 8; // Round up to account for partial bytes
-    CGContextRef ctx = CGBitmapContextCreate(NULL, width, height, 1, bytesPerRow, NULL, kCGImageAlphaNone);
+
+    // Use device gray colorspace for 1-bit monochrome (NULL colorspace may fail on some systems)
+    CGColorSpaceRef graySpace = CGColorSpaceCreateDeviceGray();
+    CGContextRef ctx = CGBitmapContextCreate(NULL, width, height, 1, bytesPerRow, graySpace, kCGImageAlphaNone);
+    CGColorSpaceRelease(graySpace);
     if (!ctx) {
         NSLog(@"Failed to create bitmap context with 1-bit Monochrome settings");
         return;
@@ -2621,6 +2999,7 @@ void createBitmapContextBigEndian(CGImageRef cgImg) {
         saveFuzzedImage(newImage, @"Big_Endian_png");
         saveFuzzedImage(newImage, @"Big_Endian_jpeg");
         saveFuzzedImage(newImage, @"Big_Endian_gif");
+        saveFuzzedImage(newImage, @"Big_Endian_tiff");
         NSLog(@"Modified UIImage with Big Endian settings created and saved successfully in PNG, JPEG and GIF.");
     }
 
@@ -2698,6 +3077,7 @@ void createBitmapContextLittleEndian(CGImageRef cgImg) {
         saveFuzzedImage(newImage, @"Little_Endian_png");
         saveFuzzedImage(newImage, @"Little_Endian_jpeg");
         saveFuzzedImage(newImage, @"Little_Endian_gif");
+        saveFuzzedImage(newImage, @"Little_Endian_tiff");
         NSLog(@"Modified UIImage with Little Endian settings created and saved successfully for PNG, JPG and GIF.");
     }
 
@@ -2786,6 +3166,7 @@ void createBitmapContext8BitInvertedColors(CGImageRef cgImg) {
         saveFuzzedImage(newImage, @"8Bit_InvertedColors_png");
         saveFuzzedImage(newImage, @"8Bit_InvertedColors_jpeg");
         saveFuzzedImage(newImage, @"8Bit_InvertedColors_gif");
+        saveFuzzedImage(newImage, @"8Bit_InvertedColors_tiff");
         NSLog(@"Modified UIImage with createBitmapContext8BitInvertedColors settings created and saved successfully for PNG, JPG and GIF.");
     }
 
@@ -2869,8 +3250,20 @@ void createBitmapContext32BitFloat4Component(CGImageRef cgImg) {
     CGContextDrawImage(ctx, CGRectMake(0, 0, width, height), cgImg);
 
     NSLog(@"Applying enhanced fuzzing logic to the bitmap context");
-    // Placeholder for enhanced fuzzing logic application. Implement this function based on your fuzzing requirements.
-    applyEnhancedFuzzingToBitmapContextWithFloats((float*)CGBitmapContextGetData(ctx), width, height, YES);
+    float *floatData = (float*)CGBitmapContextGetData(ctx);
+    applyEnhancedFuzzingToBitmapContextWithFloats(floatData, width, height, YES);
+
+    // Normalize float values to [0.0, 1.0] so saved images have visible variation
+    size_t totalFloats = height * width * 4;
+    for (size_t i = 0; i < totalFloats; i++) {
+        float v = floatData[i];
+        if (isnan(v) || isinf(v)) {
+            floatData[i] = (float)arc4random() / UINT32_MAX;
+        } else {
+            floatData[i] = fmodf(fabsf(v), 1.0f);
+        }
+    }
+    NSLog(@"Normalized %zu float values to [0.0, 1.0] for visible output", totalFloats);
 
     CGImageRef newCgImg = CGBitmapContextCreateImage(ctx);
     if (!newCgImg) {
@@ -2882,6 +3275,7 @@ void createBitmapContext32BitFloat4Component(CGImageRef cgImg) {
         saveFuzzedImage(newImage, @"32bit_float4_png");
         saveFuzzedImage(newImage, @"32bit_float4_jpeg");
         saveFuzzedImage(newImage, @"32bit_float4_gif");
+        saveFuzzedImage(newImage, @"32bit_float4_tiff");
         NSLog(@"Modified UIImage with 32-bit float, 4-component settings created and saved successfully for PNG, JPG and GIF.");
     }
 

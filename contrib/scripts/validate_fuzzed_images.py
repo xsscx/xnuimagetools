@@ -89,7 +89,7 @@ def create_filmstrip(original_image, highlighted_image, bit_position, image_name
 	return filmstrip
 
 # Main function to verify and visualize images
-def verify_and_visualize_images(image_dir, output_dir, bit_position='LSB'):
+def verify_and_visualize_images(image_dir, output_dir, bit_position='LSB', output_size=None):
 	if not os.path.exists(output_dir):
 		os.makedirs(output_dir)
 		
