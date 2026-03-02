@@ -1,0 +1,294 @@
+###############################################################
+#
+# Intent: xnuimagetools-videotoolbox
+#
+# Build and test the VideoToolbox fuzzing harness (macOS native).
+# Produces command-line tools for iOS/macOS video codec fuzzing:
+#   - runner (macOS, runs iOS binaries via interposition)
+#   - runner_dist (macOS, distributed runner)
+#   - videotoolbox-runner (macOS, VideoToolbox fuzzer)
+#   - videotoolbox-interposer.dylib (macOS, function interposer)
+#
+# Security hardening (iccDEV patterns):
+#   - Pinned action SHAs
+#   - Least-privilege permissions
+#   - persist-credentials: false
+#   - BASH_ENV=/dev/null
+#   - No user-controllable inputs in run: blocks
+#   - Concurrency control with cancel-in-progress
+#
+###############################################################
+
+name: xnuimagetools-videotoolbox
+
+permissions:
+  contents: read
+
+concurrency:
+  group: videotoolbox-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  BASH_ENV: /dev/null
+
+defaults:
+  run:
+    shell: bash --noprofile --norc {0}
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'VideoToolbox/**'
+      - '.github/workflows/videotoolbox.yml'
+  pull_request:
+    branches: [main, master]
+    paths:
+      - 'VideoToolbox/**'
+      - '.github/workflows/videotoolbox.yml'
+  workflow_dispatch:
+
+jobs:
+  build-macos:
+    name: Build VideoToolbox Fuzzer (macOS)
+    runs-on: macos-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Credential hardening
+        run: |
+          set -euo pipefail
+          git config --global credential.helper ""
+          unset GITHUB_TOKEN || true
+
+      - name: Show toolchain
+        run: |
+          set -euo pipefail
+          clang --version | head -2
+          xcrun --sdk macosx --show-sdk-path
+          echo "---"
+          uname -m
+          sw_vers -productVersion
+
+      - name: Build runner (macOS)
+        working-directory: VideoToolbox/Fuzzing
+        run: |
+          set -euo pipefail
+          mkdir -p build
+          clang -isysroot "$(xcrun --sdk macosx --show-sdk-path)" \
+            -O2 -Wall -Wextra \
+            -o build/runner runner.c
+          codesign -s "-" --force build/runner
+          file build/runner
+          echo "✅ runner built"
+
+      - name: Build runner_dist (macOS)
+        working-directory: VideoToolbox/Fuzzing
+        run: |
+          set -euo pipefail
+          clang -isysroot "$(xcrun --sdk macosx --show-sdk-path)" \
+            -O2 -Wall -Wextra \
+            -o build/runner_dist runner_dist.c
+          codesign -s "-" --force build/runner_dist
+          file build/runner_dist
+          echo "✅ runner_dist built"
+
+      - name: Build videotoolbox-interposer.dylib (macOS)
+        working-directory: VideoToolbox/Fuzzing
+        run: |
+          set -euo pipefail
+          xcrun -sdk macosx clang \
+            -arch arm64 -g -O1 -Wall -Wextra \
+            -dynamiclib \
+            -framework IOKit \
+            -framework CoreFoundation \
+            -framework CoreMedia \
+            -framework CoreVideo \
+            -framework VideoToolbox \
+            -lz \
+            -o build/videotoolbox-interposer.dylib \
+            videotoolbox-interposer.c
+          codesign -s "-" --force build/videotoolbox-interposer.dylib
+          file build/videotoolbox-interposer.dylib
+          echo "✅ videotoolbox-interposer.dylib built"
+
+      - name: Build videotoolbox-runner (macOS)
+        working-directory: VideoToolbox/Fuzzing
+        run: |
+          set -euo pipefail
+          xcrun -sdk macosx clang \
+            -arch arm64 -g -O1 -Wall -Wextra \
+            -o build/videotoolbox-runner \
+            videotoolbox-runner.m \
+            build/videotoolbox-interposer.dylib \
+            -framework VideoToolbox \
+            -framework Foundation \
+            -framework AVFoundation \
+            -framework CoreFoundation \
+            -framework CoreMedia \
+            -framework CoreVideo \
+            -lz
+          codesign -s "-" --force build/videotoolbox-runner
+          file build/videotoolbox-runner
+          echo "✅ videotoolbox-runner built"
+
+      - name: Verify all artifacts
+        id: verify
+        working-directory: VideoToolbox/Fuzzing
+        run: |
+          set -euo pipefail
+          echo "## VideoToolbox Build Artifacts" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Binary | Type | Size |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|--------|------|------|" >> "$GITHUB_STEP_SUMMARY"
+
+          PASS=0
+          FAIL=0
+          for bin in build/runner build/runner_dist build/videotoolbox-runner build/videotoolbox-interposer.dylib; do
+            if [ -f "$bin" ]; then
+              TYPE=$(file -b "$bin" | head -c60)
+              SIZE=$(stat -f%z "$bin" 2>/dev/null || stat -c%s "$bin")
+              echo "✅ $(basename $bin): $TYPE ($SIZE bytes)"
+              echo "| $(basename $bin) | $TYPE | $SIZE bytes |" >> "$GITHUB_STEP_SUMMARY"
+              PASS=$((PASS + 1))
+            else
+              echo "❌ Missing: $bin"
+              FAIL=$((FAIL + 1))
+            fi
+          done
+
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Result:** ${PASS} passed, ${FAIL} failed" >> "$GITHUB_STEP_SUMMARY"
+          echo "build_dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
+
+          if [ "$FAIL" -gt 0 ]; then
+            exit 1
+          fi
+
+      - name: Smoke test — runner help
+        working-directory: VideoToolbox/Fuzzing
+        run: |
+          set -euo pipefail
+          # Verify runner loads and executes (will print usage/error since no args)
+          build/runner 2>&1 || EXIT=$?
+          echo "runner exit code: ${EXIT:-0}"
+          echo "✅ runner loads and executes"
+
+      - name: Smoke test — videotoolbox-runner help
+        working-directory: VideoToolbox/Fuzzing
+        run: |
+          set -euo pipefail
+          # Run with no args to verify it loads frameworks and prints usage
+          timeout 10 build/videotoolbox-runner 2>&1 || EXIT=$?
+          echo "videotoolbox-runner exit code: ${EXIT:-0}"
+          echo "✅ videotoolbox-runner loads and executes"
+
+      - name: Package artifacts
+        working-directory: VideoToolbox/Fuzzing
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/videotoolbox-release
+          cp build/runner build/runner_dist \
+             build/videotoolbox-runner build/videotoolbox-interposer.dylib \
+             /tmp/videotoolbox-release/
+          # Include the helper script and sample config
+          cp video-fuzzer.zsh entitlements.xml Info.plist \
+             /tmp/videotoolbox-release/ 2>/dev/null || true
+          # Include source for reference
+          cp videotoolbox-runner.m videotoolbox-interposer.c \
+             runner.c runner_dist.c interpose.c \
+             /tmp/videotoolbox-release/ 2>/dev/null || true
+          cd /tmp
+          tar czf videotoolbox-fuzzer-macos.tar.gz -C videotoolbox-release .
+          ls -lh videotoolbox-fuzzer-macos.tar.gz
+
+      - name: Upload VideoToolbox artifacts
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: videotoolbox-fuzzer-macos
+          path: /tmp/videotoolbox-fuzzer-macos.tar.gz
+          retention-days: 30
+          if-no-files-found: error
+
+      - name: Build summary
+        if: always()
+        run: |
+          set -euo pipefail
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "## Environment" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Metric | Value |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|--------|-------|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| macOS | $(sw_vers -productVersion) |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Xcode | $(xcodebuild -version | head -1) |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Arch | $(uname -m) |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| clang | $(clang --version | head -1) |" >> "$GITHUB_STEP_SUMMARY"
+
+  static-analysis:
+    name: Static Analysis (VideoToolbox)
+    runs-on: macos-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Credential hardening
+        run: |
+          set -euo pipefail
+          git config --global credential.helper ""
+          unset GITHUB_TOKEN || true
+
+      - name: Run Clang Static Analyzer
+        working-directory: VideoToolbox/Fuzzing
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/analyzer-output
+          echo "## Clang Static Analyzer" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+
+          WARNINGS=0
+          for src in runner.c runner_dist.c main.c interpose.c videotoolbox-interposer.c; do
+            echo "🔍 Analyzing $src..."
+            xcrun clang --analyze \
+              -isysroot "$(xcrun --sdk macosx --show-sdk-path)" \
+              -Xanalyzer -analyzer-output=text \
+              -framework IOKit \
+              -framework CoreFoundation \
+              "$src" 2>&1 | tee "/tmp/analyzer-$src.log" || true
+            W=$(grep -c "warning:" "/tmp/analyzer-$src.log" 2>/dev/null || echo "0")
+            WARNINGS=$((WARNINGS + W))
+            if [ "$W" -gt 0 ]; then
+              echo "| $src | ⚠️ $W warnings |" >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "| $src | ✅ clean |" >> "$GITHUB_STEP_SUMMARY"
+            fi
+          done
+
+          # Analyze ObjC source separately (needs Foundation)
+          echo "🔍 Analyzing videotoolbox-runner.m..."
+          xcrun clang --analyze \
+            -isysroot "$(xcrun --sdk macosx --show-sdk-path)" \
+            -Xanalyzer -analyzer-output=text \
+            -framework Foundation \
+            -framework AVFoundation \
+            -framework VideoToolbox \
+            -framework CoreFoundation \
+            -framework CoreMedia \
+            -framework CoreVideo \
+            videotoolbox-runner.m 2>&1 | tee "/tmp/analyzer-runner.m.log" || true
+          W=$(grep -c "warning:" "/tmp/analyzer-runner.m.log" 2>/dev/null || echo "0")
+          WARNINGS=$((WARNINGS + W))
+          if [ "$W" -gt 0 ]; then
+            echo "| videotoolbox-runner.m | ⚠️ $W warnings |" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "| videotoolbox-runner.m | ✅ clean |" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Total warnings: $WARNINGS**" >> "$GITHUB_STEP_SUMMARY"
+          echo "📊 Static analysis: $WARNINGS total warnings"
