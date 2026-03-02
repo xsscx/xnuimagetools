@@ -368,7 +368,8 @@ jobs:
           mkdir -p /tmp/fuzzed-video
 
           echo "🔨 Fuzzing for ${FUZZ_DURATION}s..."
-          timeout $((FUZZ_DURATION + 30)) \
+          # macOS has no GNU timeout; use perl one-liner as portable alternative
+          perl -e 'alarm shift; exec @ARGV' "$((FUZZ_DURATION + 30))" \
             build/videotoolbox-runner \
               -t "$FUZZ_DURATION" \
               -o /tmp/fuzzed-video \
@@ -391,7 +392,7 @@ jobs:
             echo "⚠️  No fuzzed frames generated"
           else
             echo "✅ Generated $FILE_COUNT fuzzed frames"
-            ls -lh /tmp/fuzzed-video/ | head -20
+            ls -lh /tmp/fuzzed-video/ | sed -n '1,20p'
           fi
 
       - name: Upload fuzzed video artifacts

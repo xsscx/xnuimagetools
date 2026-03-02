@@ -175,7 +175,8 @@ jobs:
           export LLVM_PROFILE_FILE="/tmp/profraw/vt-%m_%p.profraw"
 
           echo "🔨 Running instrumented fuzzer for ${FUZZ_DURATION}s..."
-          timeout $((FUZZ_DURATION + 30)) \
+          # macOS has no GNU timeout; use perl one-liner as portable alternative
+          perl -e 'alarm shift; exec @ARGV' "$((FUZZ_DURATION + 30))" \
             build/videotoolbox-runner \
               -t "$FUZZ_DURATION" \
               -o /tmp/fuzzed-video \
