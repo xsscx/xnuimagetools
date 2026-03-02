@@ -165,6 +165,7 @@ jobs:
           echo "✅ Instrumented runner + runner_dist built"
 
       - name: Run fuzzer under sanitizers
+        timeout-minutes: 5
         working-directory: VideoToolbox/Fuzzing
         env:
           FUZZ_DURATION: ${{ inputs.fuzz_duration || '60' }}
@@ -177,14 +178,22 @@ jobs:
           export LLVM_PROFILE_FILE="/tmp/profraw/vt-%m_%p.profraw"
 
           echo "🔨 Running instrumented fuzzer for ${FUZZ_DURATION}s..."
-          # macOS has no GNU timeout; use perl one-liner as portable alternative
-          perl -e 'alarm shift; exec @ARGV' "$((FUZZ_DURATION + 30))" \
-            build/videotoolbox-runner \
-              -t "$FUZZ_DURATION" \
-              -o /tmp/fuzzed-video \
-              big.mov 2>&1 | tee /tmp/fuzz-instrumented.log || EXIT=$?
+          build/videotoolbox-runner \
+            -t "$FUZZ_DURATION" \
+            -o /tmp/fuzzed-video \
+            big.mov > /tmp/fuzz-instrumented.log 2>&1 || EXIT=$?
 
           echo "Exit code: ${EXIT:-0}"
+
+          # Kill any orphan atos/symbolizer processes left by ASAN
+          for PID in $(pgrep -f 'atos' 2>/dev/null || true); do
+            kill "$PID" 2>/dev/null || true
+          done
+          sleep 1
+
+          # Show last 50 lines of fuzzer output
+          echo "--- Fuzzer output (last 50 lines) ---"
+          tail -50 /tmp/fuzz-instrumented.log || true
 
           # Collect sanitizer findings
           echo "## Sanitizer Findings" >> "$GITHUB_STEP_SUMMARY"
