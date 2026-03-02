@@ -60,7 +60,7 @@ videotoolbox_runner: clean_videotoolbox_runner
 	@$(call log_info, "videotoolbox-interposer.dylib macOS build completed")
 
 	@$(call log_build, "Starting build for videotoolbox-runner macOS")
-	xcrun -sdk macosx clang -arch arm64 -g -o videotoolbox-runner videotoolbox-runner.m videotoolbox-interposer.dylib -framework VideoToolbox -framework Foundation -framework AVFoundation -framework VideoToolbox -framework CoreFoundation -framework CoreMedia -framework CoreVideo -lz
+	xcrun -sdk macosx clang -arch arm64 -g -o videotoolbox-runner videotoolbox-runner.m videotoolbox-interposer.dylib -framework VideoToolbox -framework Foundation -framework AVFoundation -framework CoreFoundation -framework CoreMedia -framework CoreVideo -framework CoreImage -framework CoreGraphics -lz
 	@$(call log_info, "videotoolbox-runner macOS build completed")
 
 	@$(call log_build, "Starting build for videotoolbox-interposer-arm64e.dylib iOS")
@@ -69,7 +69,7 @@ videotoolbox_runner: clean_videotoolbox_runner
 
 	@$(call log_build, "Starting build for videotoolbox-runner.app iOS")
 	mkdir -p videotoolbox-runner.app
-	xcrun -sdk iphoneos clang -arch arm64e -g -o videotoolbox-runner.app/videotoolbox-runner videotoolbox-runner.m videotoolbox-interposer-arm64e.dylib -framework Foundation -framework AVFoundation -framework VideoToolbox -framework CoreFoundation -framework CoreMedia -framework CoreVideo -lz
+	xcrun -sdk iphoneos clang -arch arm64e -g -o videotoolbox-runner.app/videotoolbox-runner videotoolbox-runner.m videotoolbox-interposer-arm64e.dylib -framework Foundation -framework AVFoundation -framework VideoToolbox -framework CoreFoundation -framework CoreMedia -framework CoreVideo -framework CoreImage -framework CoreGraphics -lz
 	@$(call log_info, "videotoolbox-runner iOS build completed")
 
 	@$(call log, "Packaging videotoolbox-runner.app")

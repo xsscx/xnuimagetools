@@ -55,6 +55,7 @@
 #import <CoreMedia/CoreMedia.h>
 #import <CoreVideo/CoreVideo.h>
 #import <CoreImage/CoreImage.h>
+#import <CoreGraphics/CoreGraphics.h>
 #import <stdio.h>
 
 #pragma mark - Debugging Macros
@@ -271,7 +272,10 @@ int fuzz(const char *filename, int flip_intensity, int inject_intensity, int ove
         __strong AVAssetReader *reader = [[AVAssetReader alloc] initWithAsset:asset error:&error];
         if (reader == nil) return 0;
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
         NSArray *tracks = [asset tracksWithMediaType:AVMediaTypeVideo];
+#pragma clang diagnostic pop
         if (tracks == nil || ([tracks count] == 0)) {
             reader = nil; // Release reader
             return 0;
@@ -446,8 +450,6 @@ int main(int argc, const char *argv[]) {
 
     time_t startTime = time(NULL);
     int iteration = 0;
-    int totalFrames = 0;
-
     NSLog(@"Starting fuzzing: file=%s, duration=%ds, output=%s",
           filename, duration, outputDir ? outputDir : "(none)");
 
@@ -468,7 +470,6 @@ int main(int argc, const char *argv[]) {
         int result = fuzz(argv[1], intensity, intensity, intensity);
 
         if (result == 1) {
-            totalFrames++;
             // Save a representative frame if output directory is set
             if (outputDir) {
                 // Re-read first frame and save it fuzzed
@@ -478,7 +479,10 @@ int main(int argc, const char *argv[]) {
                     AVAsset *asset = [AVAsset assetWithURL:fileURL];
                     if (asset) {
                         AVAssetReader *reader = [[AVAssetReader alloc] initWithAsset:asset error:&error];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
                         NSArray *tracks = [asset tracksWithMediaType:AVMediaTypeVideo];
+#pragma clang diagnostic pop
                         if (reader && tracks.count > 0) {
                             NSDictionary *settings = @{(id)kCVPixelBufferPixelFormatTypeKey: @(kCMPixelFormat_32BGRA)};
                             AVAssetReaderTrackOutput *out = [AVAssetReaderTrackOutput assetReaderTrackOutputWithTrack:tracks[0] outputSettings:settings];
