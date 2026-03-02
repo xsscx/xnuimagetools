@@ -48,15 +48,15 @@ jobs:
         run: |
           set -euo pipefail
           DUPES=0
-          for f in $(find . \( -name '*.m' -o -name '*.h' -o -name '*.c' \) -not -path './.git/*'); do
+          find . \( -name '*.m' -o -name '*.h' -o -name '*.c' \) -not -path './.git/*' -print0 | while IFS= read -r -d '' f; do
             dups=$(grep -E '^\s*#define\s+' "$f" 2>/dev/null \
-              | awk '{print $2}' | sort | uniq -d)
+              | awk '{print $2}' | sort | uniq -d) || true
             if [ -n "$dups" ]; then
               echo "❌ Duplicate #defines in $f: $dups"
-              DUPES=1
+              echo "FOUND_DUPES=1" >> /tmp/dupes_flag
             fi
           done
-          if [ "$DUPES" -eq 1 ]; then
+          if [ -f /tmp/dupes_flag ]; then
             echo "::error::Duplicate #defines found"
             exit 1
           fi
