@@ -432,6 +432,7 @@ jobs:
           echo "✅ Located: $BINARY"
 
       - name: Run fuzzer under sanitizers with coverage
+        timeout-minutes: 5
         run: |
           set -euo pipefail
           BINARY="${{ steps.locate.outputs.binary }}"
@@ -447,7 +448,7 @@ jobs:
           echo "🔨 Launching Mac Catalyst fuzzer: $APP_BUNDLE"
 
           # Launch via 'open' — running bare binary exits immediately
-          open "$APP_BUNDLE" &
+          open "$APP_BUNDLE"
           echo "✅ App launched, waiting for fuzzing to complete..."
 
           # Poll for output files (fuzzing runs in viewDidLoad)
@@ -466,6 +467,14 @@ jobs:
           # Gracefully quit to flush profraw coverage data
           osascript -e 'tell application "XNU Image Fuzzer" to quit' 2>/dev/null || true
           sleep 2
+
+          # Force-kill if still running (osascript may not work for Mac Catalyst on CI)
+          APP_PID=$(pgrep -f "XNU Image Fuzzer" 2>/dev/null || true)
+          if [ -n "$APP_PID" ]; then
+            echo "⚠️  App still running (PID $APP_PID), force-killing..."
+            kill "$APP_PID" 2>/dev/null || true
+            sleep 1
+          fi
 
           FILE_COUNT=$(find /tmp/fuzzed-output-ios -type f 2>/dev/null | wc -l | tr -d ' ')
           PROFRAW_COUNT=$(find /tmp/profraw-ios -name "*.profraw" -type f 2>/dev/null | wc -l | tr -d ' ')
