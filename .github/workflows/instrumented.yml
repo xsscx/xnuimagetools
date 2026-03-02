@@ -2,15 +2,19 @@
 #
 # Intent: xnuimagetools-instrumented
 #
-# Build all tools with AddressSanitizer, UndefinedBehaviorSanitizer,
-# and code coverage instrumentation. Run fuzzers under sanitizers
-# and generate coverage reports for improving test coverage.
+# Three-job pipeline:
+#   Job 1 — ASAN+UBSAN sanitizer testing for iOS Fuzzer (Mac Catalyst, xcodebuild)
+#   Job 2 — Instrumentation summary
+#   Job 3 — Code coverage via native clang (arm64, no xcodebuild)
+#
+# Xcode's CLANG_ENABLE_CODE_COVERAGE=YES does NOT inject
+# -fprofile-instr-generate for Mac Catalyst builds, so coverage
+# is handled exclusively by the native-coverage job.
 #
 # Produces:
-#   - ASAN+UBSAN instrumented VideoToolbox binaries
 #   - ASAN+UBSAN instrumented iOS Fuzzer (.app)
-#   - Code coverage reports (llvm-cov text + HTML + lcov)
 #   - Sanitizer findings report
+#   - Code coverage reports (llvm-cov text + HTML + lcov)
 #
 # Security hardening (iccDEV patterns):
 #   - Pinned action SHAs
@@ -404,7 +408,7 @@ jobs:
 
   # ── Job 2: Instrumented iOS Fuzzer (Mac Catalyst) ─────────
   ios-instrumented:
-    name: iOS Fuzzer (Mac Catalyst ASAN+UBSAN+Coverage)
+    name: iOS Fuzzer (Mac Catalyst ASAN+UBSAN)
     runs-on: macos-latest
     timeout-minutes: 30
     steps:
@@ -419,7 +423,7 @@ jobs:
           git config --global credential.helper ""
           unset GITHUB_TOKEN || true
 
-      - name: Build Mac Catalyst with ASAN + UBSAN + Coverage
+      - name: Build Mac Catalyst with ASAN + UBSAN
         run: |
           set -euo pipefail
           xcodebuild build \
@@ -435,7 +439,6 @@ jobs:
             GCC_TREAT_WARNINGS_AS_ERRORS=YES \
             CLANG_ADDRESS_SANITIZER=YES \
             CLANG_UNDEFINED_BEHAVIOR_SANITIZER=YES \
-            CLANG_ENABLE_CODE_COVERAGE=YES \
             GCC_GENERATE_DEBUGGING_SYMBOLS=YES \
             OTHER_CFLAGS='$(inherited) -fno-omit-frame-pointer' \
             2>&1 | tee /tmp/xcodebuild-instrumented.log
@@ -456,32 +459,26 @@ jobs:
           file "$BINARY"
           echo "✅ Located: $BINARY"
 
-      - name: Run fuzzer under sanitizers with coverage
+      - name: Run fuzzer under sanitizers
         timeout-minutes: 5
         run: |
           set -euo pipefail
           BINARY="${{ steps.locate.outputs.binary }}"
           APP_BUNDLE=$(echo "$BINARY" | sed 's|/Contents/MacOS/.*||')
-          mkdir -p /tmp/profraw-ios /tmp/sanitizer-logs-ios /tmp/fuzzed-output-ios
+          mkdir -p /tmp/sanitizer-logs-ios /tmp/fuzzed-output-ios
 
-          # Set env vars via export AND launchctl (belt-and-suspenders)
           export FUZZ_OUTPUT_DIR="/tmp/fuzzed-output-ios"
-          export LLVM_PROFILE_FILE="/tmp/profraw-ios/fuzzer-%m_%p.profraw"
           export ASAN_OPTIONS="detect_leaks=0:halt_on_error=0:print_stats=1:log_path=/tmp/sanitizer-logs-ios/asan"
           export UBSAN_OPTIONS="print_stacktrace=1:halt_on_error=0:log_path=/tmp/sanitizer-logs-ios/ubsan"
 
           launchctl setenv FUZZ_OUTPUT_DIR "$FUZZ_OUTPUT_DIR"
-          launchctl setenv LLVM_PROFILE_FILE "$LLVM_PROFILE_FILE"
           launchctl setenv ASAN_OPTIONS "$ASAN_OPTIONS"
           launchctl setenv UBSAN_OPTIONS "$UBSAN_OPTIONS"
           sleep 1
 
           echo "🔨 Launching Mac Catalyst fuzzer: $APP_BUNDLE"
-          echo "   LLVM_PROFILE_FILE=$LLVM_PROFILE_FILE"
 
-          # Launch via 'open --env' (macOS 13+) — passes env vars directly to process
           open --env FUZZ_OUTPUT_DIR="$FUZZ_OUTPUT_DIR" \
-               --env LLVM_PROFILE_FILE="$LLVM_PROFILE_FILE" \
                --env ASAN_OPTIONS="$ASAN_OPTIONS" \
                --env UBSAN_OPTIONS="$UBSAN_OPTIONS" \
                "$APP_BUNDLE" &
@@ -521,12 +518,10 @@ jobs:
             fi
           fi
 
-          echo "Profraw files in /tmp/profraw-ios/:"
-          ls -la /tmp/profraw-ios/ 2>/dev/null || echo "  (none)"
+          echo "Note: coverage collected in native-coverage job, not here"
 
           FILE_COUNT=$(find /tmp/fuzzed-output-ios -type f 2>/dev/null | wc -l | tr -d ' ')
-          PROFRAW_COUNT=$(find /tmp/profraw-ios -name "*.profraw" -type f 2>/dev/null | wc -l | tr -d ' ')
-          echo "Generated $FILE_COUNT fuzzed images, $PROFRAW_COUNT profraw files"
+          echo "Generated $FILE_COUNT fuzzed images"
           ls -la /tmp/fuzzed-output-ios/ 2>/dev/null || true
 
           # Sanitizer findings
@@ -547,7 +542,6 @@ jobs:
           echo "| ASAN findings | ${ASAN_COUNT} |" >> "$GITHUB_STEP_SUMMARY"
           echo "| UBSAN findings | ${UBSAN_COUNT} |" >> "$GITHUB_STEP_SUMMARY"
           echo "| Fuzzed images | ${FILE_COUNT} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Profraw files | ${PROFRAW_COUNT} |" >> "$GITHUB_STEP_SUMMARY"
 
           # Ensure artifact directories have at least a summary file
           echo "ASAN: ${ASAN_COUNT}, UBSAN: ${UBSAN_COUNT}, Images: ${FILE_COUNT}" \
@@ -606,50 +600,6 @@ jobs:
           echo "| Invalid/unknown | $INVALID |" >> "$GITHUB_STEP_SUMMARY"
           echo "| Zero-size files | $ZERO_SIZE |" >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Generate iOS coverage report
-        run: |
-          set -euo pipefail
-          BINARY="${{ steps.locate.outputs.binary }}"
-          mkdir -p /tmp/coverage-report-ios
-
-          PROFRAW_COUNT=$(find /tmp/profraw-ios -name "*.profraw" -type f 2>/dev/null | wc -l | tr -d ' ')
-          if [ "$PROFRAW_COUNT" -eq 0 ]; then
-            echo "⚠️  No profraw files — coverage not generated"
-            echo "No profraw files collected." > /tmp/coverage-report-ios/summary.txt
-            exit 0
-          fi
-
-          xcrun llvm-profdata merge -sparse \
-            /tmp/profraw-ios/*.profraw \
-            -o /tmp/coverage-report-ios/merged.profdata
-
-          echo "## iOS Fuzzer Coverage" >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
-          xcrun llvm-cov report "$BINARY" \
-            -instr-profile=/tmp/coverage-report-ios/merged.profdata \
-            -ignore-filename-regex='.*/(usr|System|DerivedData)/.*' \
-            2>&1 | tee /tmp/coverage-report-ios/summary.txt >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
-
-          xcrun llvm-cov show "$BINARY" \
-            -instr-profile=/tmp/coverage-report-ios/merged.profdata \
-            -ignore-filename-regex='.*/(usr|System|DerivedData)/.*' \
-            -format=html -output-dir=/tmp/coverage-report-ios/html 2>&1 || true
-
-          xcrun llvm-cov export "$BINARY" \
-            -instr-profile=/tmp/coverage-report-ios/merged.profdata \
-            -ignore-filename-regex='.*/(usr|System|DerivedData)/.*' \
-            -format=lcov > /tmp/coverage-report-ios/coverage.lcov 2>&1 || true
-
-      - name: Upload iOS coverage report
-        if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: ios-fuzzer-coverage-report
-          path: /tmp/coverage-report-ios/
-          retention-days: 30
-          if-no-files-found: warn
-
       - name: Upload iOS sanitizer logs
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -676,13 +626,6 @@ jobs:
           path: /tmp/coverage
         continue-on-error: true
 
-      - name: Download iOS coverage report
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
-        with:
-          name: ios-fuzzer-coverage-report
-          path: /tmp/ios-coverage
-        continue-on-error: true
-
       - name: Summary
         run: |
           set -euo pipefail
@@ -694,9 +637,9 @@ jobs:
           echo "|---------|-------|" >> "$GITHUB_STEP_SUMMARY"
           echo "| AddressSanitizer | ✅ Enabled |" >> "$GITHUB_STEP_SUMMARY"
           echo "| UndefinedBehaviorSanitizer | ✅ Enabled |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Code Coverage | ✅ Enabled |" >> "$GITHUB_STEP_SUMMARY"
           echo "| Frame Pointers | ✅ Preserved |" >> "$GITHUB_STEP_SUMMARY"
           echo "| Debug Symbols | ✅ Enabled |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Code Coverage | ⏭️ See native-coverage job |" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
 
           if [ -f /tmp/coverage/summary.txt ]; then
@@ -706,20 +649,12 @@ jobs:
             echo '```' >> "$GITHUB_STEP_SUMMARY"
           fi
 
-          if [ -f /tmp/ios-coverage/summary.txt ]; then
-            echo "### iOS Fuzzer Coverage" >> "$GITHUB_STEP_SUMMARY"
-            echo '```' >> "$GITHUB_STEP_SUMMARY"
-            cat /tmp/ios-coverage/summary.txt >> "$GITHUB_STEP_SUMMARY"
-            echo '```' >> "$GITHUB_STEP_SUMMARY"
-          fi
-
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "### Artifacts" >> "$GITHUB_STEP_SUMMARY"
-          echo "- **videotoolbox-coverage-report** — HTML + LCOV + text coverage reports" >> "$GITHUB_STEP_SUMMARY"
           echo "- **videotoolbox-instrumented-binaries** — ASAN+UBSAN binaries for local testing" >> "$GITHUB_STEP_SUMMARY"
           echo "- **videotoolbox-sanitizer-logs** — ASAN/UBSAN findings" >> "$GITHUB_STEP_SUMMARY"
-          echo "- **ios-fuzzer-coverage-report** — iOS fuzzer coverage (Mac Catalyst)" >> "$GITHUB_STEP_SUMMARY"
           echo "- **ios-fuzzer-sanitizer-logs** — iOS runtime sanitizer output" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Coverage reports are generated in the **native-coverage** job" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "### Improving Coverage" >> "$GITHUB_STEP_SUMMARY"
           echo "1. Download \`videotoolbox-coverage-report\` artifact" >> "$GITHUB_STEP_SUMMARY"
