@@ -248,7 +248,8 @@ Every `saveFuzzedImage()` call for TIFF and PNG outputs automatically triggers
 | `code-quality.yml` | ObjC syntax, Python lint, CMake check | push/PR |
 | `build-and-test.yml` | Build, generate images, commit output | push/PR, cron 12h |
 | `cached-build.yml` | Fast build with DerivedData cache | push/PR |
-| `instrumented.yml` | ASAN+UBSAN testing + native clang coverage | push/PR, dispatch |
+| `instrumented.yml` | ASAN+UBSAN testing + native build + coverage (macOS 14/15 matrix) | push/PR, dispatch |
+| `videotoolbox.yml` | VideoToolbox fuzzer build, coverage, static analysis, fuzz | push/PR on VideoToolbox/** |
 | `release.yml` | Tag-triggered release with artifacts | tag v* |
 | `codeql-analysis.yml` | GitHub CodeQL security scanning | push/PR |
 
@@ -513,3 +514,50 @@ build-ios (Job 1)
   from raw ICC bytes, re-render through `CGBitmapContextCreate()`, and ImageIO
   auto-embeds the ICC profile when saving via `CGImageDestinationAddImage()`
 - `kCGImagePropertyProfileName` (string, not data) is available on all platforms
+
+## VideoToolbox Fuzzer
+
+### Overview
+
+The VideoToolbox fuzzer exercises Apple's hardware video decoding pipeline by
+extracting frames from video files, applying byte-level mutations, and encoding
+fuzzed frames through VTCompressionSession.
+
+### Key Files
+
+| File | Purpose |
+|------|---------|
+| `VideoToolbox/Fuzzing/videotoolbox-runner.m` | Main Obj-C harness — AVFoundation frame extraction, mutations, PNG output |
+| `VideoToolbox/Fuzzing/videotoolbox-interposer.c` | DYLD interposition — replaces `IOConnectCallMethod` to fuzz IOKit |
+| `VideoToolbox/Fuzzing/runner.c` | iOS launcher — patches AMFI `_amfi_check_dyld_policy_self` |
+| `VideoToolbox/Fuzzing/Makefile` | Build system — macOS + iOS targets |
+| `VideoToolbox/Fuzzing/videotoolbox_build.mk` | Shared config — `DEVELOPER_ID ?= "-"` (ad-hoc default) |
+| `VideoToolbox/Fuzzing/big.mov` | 20MB default fuzz input (committed to git, not LFS) |
+
+### Build
+
+```bash
+cd VideoToolbox/Fuzzing && make          # uses Makefile
+# Or manually: see .github/prompts/videotoolbox-fuzzing.prompt.md
+```
+
+### Run
+
+```bash
+ASAN_OPTIONS="detect_leaks=0:halt_on_error=0" \
+UBSAN_OPTIONS="print_stacktrace=1:halt_on_error=0" \
+  build/videotoolbox-runner -t 60 -o /tmp/fuzzed-frames big.mov
+```
+
+### Known Gotchas
+
+- **ASAN + `malloc_zone_print()`**: Interposer hot loop + ASAN = multi-minute hangs.
+  Coverage job omits ASAN for this reason.
+- **Signal handlers must be async-signal-safe**: Use `sigaction()`, not `signal()`.
+  Never call `malloc_zone_print()` or `log_memory_info()` from signal handlers.
+- **Use `arc4random_uniform()`**: `rand()` without `srand()` = identical mutations every run.
+- **CVPixelBuffer bounds**: Always validate `len >= 4*width*height` before
+  `CVPixelBufferCreateWithBytes` (640×480 = 1,228,800 bytes minimum).
+- **`free_with_guard` sizing**: Use original `compressBound()` allocation size, NOT
+  post-compression `compressed_len` (which shrinks after `compress_data()`).
+- **No GNU `timeout` in macOS CI**: Use `perl -e 'alarm shift; exec @ARGV'` instead.

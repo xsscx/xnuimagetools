@@ -8,6 +8,17 @@ description: Build and run the VideoToolbox fuzzer with sanitizers and coverage
 Build the VideoToolbox fuzzer with ASAN+UBSAN+coverage, run it against video
 files, and collect results.
 
+## Architecture
+
+- **`videotoolbox-runner.m`** (Obj-C) — Opens video via AVFoundation, extracts
+  CVPixelBuffer frames from CMSampleBuffer, applies bit-flip/inject/overflow
+  mutations, saves fuzzed frames as PNG via ImageIO
+- **`videotoolbox-interposer.c`** (C) — DYLD interposition library that replaces
+  `IOConnectCallMethod` to fuzz IOKit inputs. Also creates VTCompressionSession
+  for H.264 encoding of fuzzed pixel buffers
+- **`runner.c`** — iOS binary launcher that patches `_amfi_check_dyld_policy_self`
+- **`videotoolbox_build.mk`** — Shared build config; `DEVELOPER_ID ?= "-"` (ad-hoc default)
+
 ## Build Steps
 
 1. **Build the interposer** (dependency for the runner):
@@ -38,7 +49,8 @@ files, and collect results.
      -framework VideoToolbox -framework Foundation \
      -framework AVFoundation -framework CoreFoundation \
      -framework CoreMedia -framework CoreVideo \
-     -framework CoreImage -framework CoreGraphics -lz
+     -framework CoreImage -framework CoreGraphics \
+     -framework ImageIO -framework UniformTypeIdentifiers -lz
    codesign -s "-" --force build/videotoolbox-runner
    ```
 
@@ -96,12 +108,30 @@ done
 
 ## Key Files
 - `videotoolbox-runner.m` — Main harness: `fuzz()`, `save_fuzzed_frame()`, `main()`
-- `videotoolbox-interposer.c` — DYLD interposition hooks
-- `runner.c` — Process attachment runner
+- `videotoolbox-interposer.c` — DYLD interposition hooks for IOConnectCallMethod
+- `runner.c` — Process attachment runner (iOS AMFI bypass)
 - `Makefile` — Full build system (macOS + iOS targets)
+- `videotoolbox_build.mk` — Shared config (DEVELOPER_ID, SDK flags)
+- `big.mov` — 20MB default fuzz input (committed to git, not LFS)
 
-## Critical Notes
-- **Always link `-framework CoreGraphics`** for videotoolbox-runner
-- Ad-hoc codesign required: `codesign -s "-" --force`
-- `tracksWithMediaType:` deprecation is suppressed with pragma
-- The `-t` flag controls duration (default 60s), `-o` controls output dir
+## Known Gotchas
+
+- **ASAN + `malloc_zone_print()`** — The interposer hot loop calls `malloc_zone_print()`,
+  which under ASAN causes multi-minute hangs. The coverage job omits ASAN for this reason.
+- **`signal()` → `sigaction()`** — Signal handler must be async-signal-safe.
+  Do NOT call `malloc_zone_print()`, `log_memory_info()`, or `malloc_printf()` from handlers.
+- **`rand()` is deterministic** — Always use `arc4random_uniform()` for mutations.
+  `rand()` without `srand()` produces identical sequences every run.
+- **CVPixelBuffer size** — `process_with_videotoolbox()` hardcodes 640×480 (1,228,800 bytes).
+  Always validate `len >= 4*width*height` before `CVPixelBufferCreateWithBytes`.
+- **`free_with_guard` sizing** — Guard page math uses the original `compressBound()` size,
+  NOT the post-compression `compressed_len` (which is smaller after `compress_data()`).
+- **macOS CI has no `timeout`** — Use `perl -e 'alarm shift; exec @ARGV'` as portable alternative.
+- **`tracksWithMediaType:` deprecation** — Suppressed with pragma in videotoolbox-runner.m.
+
+## CI Workflows
+
+- **`videotoolbox.yml`** — 4 jobs: build-macos, coverage (UBSAN only, no ASAN),
+  static-analysis, fuzz-and-commit. Triggers on `VideoToolbox/**` path changes.
+- **`instrumented.yml`** — 3 jobs with macOS 14/15 matrix: ios-instrumented (Mac Catalyst),
+  macos-native (clang ASAN+UBSAN), native-coverage. Triggers on `**/*.m` etc.
