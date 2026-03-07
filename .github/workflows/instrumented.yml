@@ -2,14 +2,16 @@
 #
 # Intent: xnuimagetools-instrumented
 #
-# Three-job pipeline:
+# Three-job pipeline (each with macOS 14 + 15 matrix):
 #   Job 1 — ASAN+UBSAN sanitizer testing for iOS Fuzzer (Mac Catalyst, xcodebuild)
-#   Job 2 — Instrumentation summary
+#   Job 2 — macOS native build + ASAN+UBSAN (clang, no Xcode project)
 #   Job 3 — Code coverage via native clang (arm64, no xcodebuild)
 #
 # Xcode's CLANG_ENABLE_CODE_COVERAGE=YES does NOT inject
 # -fprofile-instr-generate for Mac Catalyst builds, so coverage
 # is handled exclusively by the native-coverage job.
+#
+# VideoToolbox instrumented testing lives in videotoolbox.yml.
 #
 # Produces:
 #   - ASAN+UBSAN instrumented iOS Fuzzer (.app)
@@ -69,347 +71,14 @@ on:
         type: string
 
 jobs:
-  # ── Job 1: Instrumented VideoToolbox Build + Fuzz + Coverage ──
-  # DISABLED: Moving to local macOS hardware for VideoToolbox testing
-  videotoolbox-instrumented:
-    if: false
-    name: VideoToolbox (ASAN+UBSAN+Coverage)
-    runs-on: macos-latest
-    timeout-minutes: 30
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-        with:
-          persist-credentials: false
-
-      - name: Credential hardening
-        run: |
-          set -euo pipefail
-          git config --global credential.helper ""
-          unset GITHUB_TOKEN || true
-
-      - name: Show toolchain
-        run: |
-          set -euo pipefail
-          clang --version 2>&1 | sed -n '1,2p'
-          xcrun --sdk macosx --show-sdk-path
-          echo "LLVM tools:"
-          xcrun llvm-profdata show --version 2>&1 | sed -n '1p' || echo "llvm-profdata available"
-          xcrun llvm-cov show --version 2>&1 | sed -n '1p' || echo "llvm-cov available"
-
-      - name: Build instrumented interposer
-        working-directory: VideoToolbox/Fuzzing
-        run: |
-          set -euo pipefail
-          mkdir -p build
-
-          SANITIZER_FLAGS="-fsanitize=address,undefined -fno-omit-frame-pointer -fno-optimize-sibling-calls"
-          COVERAGE_FLAGS="-fprofile-instr-generate -fcoverage-mapping"
-
-          xcrun -sdk macosx clang \
-            -arch arm64 -g -O1 -Wall -Wextra \
-            $SANITIZER_FLAGS $COVERAGE_FLAGS \
-            -dynamiclib \
-            -framework IOKit \
-            -framework CoreFoundation \
-            -framework CoreMedia \
-            -framework CoreVideo \
-            -framework VideoToolbox \
-            -lz \
-            -o build/videotoolbox-interposer.dylib \
-            videotoolbox-interposer.c
-          codesign -s "-" --force build/videotoolbox-interposer.dylib
-          echo "✅ Instrumented interposer built"
-
-      - name: Build instrumented videotoolbox-runner
-        working-directory: VideoToolbox/Fuzzing
-        run: |
-          set -euo pipefail
-
-          SANITIZER_FLAGS="-fsanitize=address,undefined -fno-omit-frame-pointer -fno-optimize-sibling-calls"
-          COVERAGE_FLAGS="-fprofile-instr-generate -fcoverage-mapping"
-
-          xcrun -sdk macosx clang \
-            -arch arm64 -g -O1 -Wall -Wextra \
-            $SANITIZER_FLAGS $COVERAGE_FLAGS \
-            -o build/videotoolbox-runner \
-            videotoolbox-runner.m \
-            build/videotoolbox-interposer.dylib \
-            -framework VideoToolbox \
-            -framework Foundation \
-            -framework AVFoundation \
-            -framework CoreFoundation \
-            -framework CoreMedia \
-            -framework CoreVideo \
-            -framework CoreImage \
-            -framework CoreGraphics \
-            -framework ImageIO \
-            -framework UniformTypeIdentifiers \
-            -lz
-          codesign -s "-" --force build/videotoolbox-runner
-          echo "✅ Instrumented videotoolbox-runner built"
-
-      - name: Build instrumented runner
-        working-directory: VideoToolbox/Fuzzing
-        run: |
-          set -euo pipefail
-
-          SANITIZER_FLAGS="-fsanitize=address,undefined -fno-omit-frame-pointer -fno-optimize-sibling-calls"
-          COVERAGE_FLAGS="-fprofile-instr-generate -fcoverage-mapping"
-
-          clang -isysroot "$(xcrun --sdk macosx --show-sdk-path)" \
-            -O1 -Wall -Wextra -g \
-            $SANITIZER_FLAGS $COVERAGE_FLAGS \
-            -o build/runner runner.c
-          codesign -s "-" --force build/runner
-
-          clang -isysroot "$(xcrun --sdk macosx --show-sdk-path)" \
-            -O1 -Wall -Wextra -g \
-            $SANITIZER_FLAGS $COVERAGE_FLAGS \
-            -o build/runner_dist runner_dist.c
-          codesign -s "-" --force build/runner_dist
-          echo "✅ Instrumented runner + runner_dist built"
-
-      - name: Run fuzzer under sanitizers
-        timeout-minutes: 5
-        working-directory: VideoToolbox/Fuzzing
-        env:
-          FUZZ_DURATION: ${{ inputs.fuzz_duration || '60' }}
-        run: |
-          set -euo pipefail
-          mkdir -p /tmp/fuzzed-video /tmp/profraw /tmp/sanitizer-logs
-
-          export ASAN_OPTIONS="detect_leaks=0:halt_on_error=0:print_stats=1:log_path=/tmp/sanitizer-logs/asan"
-          export UBSAN_OPTIONS="print_stacktrace=1:halt_on_error=0:log_path=/tmp/sanitizer-logs/ubsan"
-          export LLVM_PROFILE_FILE="/tmp/profraw/vt-%m_%p.profraw"
-
-          echo "🔨 Running instrumented fuzzer for ${FUZZ_DURATION}s..."
-          build/videotoolbox-runner \
-            -t "$FUZZ_DURATION" \
-            -o /tmp/fuzzed-video \
-            big.mov > /tmp/fuzz-instrumented.log 2>&1 &
-          VT_PID=$!
-
-          # Hard watchdog: kill if fuzz() hangs past duration
-          WATCHDOG_SECS=$((FUZZ_DURATION + 30))
-          ( sleep "$WATCHDOG_SECS" && kill $VT_PID 2>/dev/null ) &
-          WATCHDOG_PID=$!
-
-          wait $VT_PID 2>/dev/null || true
-          EXIT=$?
-
-          # Clean up watchdog
-          kill $WATCHDOG_PID 2>/dev/null || true
-          wait $WATCHDOG_PID 2>/dev/null || true
-
-          echo "Exit code: ${EXIT:-0}"
-
-          # Kill any orphan atos/symbolizer processes left by ASAN
-          for PID in $(pgrep -f 'atos' 2>/dev/null || true); do
-            kill "$PID" 2>/dev/null || true
-          done
-          sleep 1
-
-          # Show last 50 lines of fuzzer output
-          echo "--- Fuzzer output (last 50 lines) ---"
-          tail -50 /tmp/fuzz-instrumented.log || true
-
-          # Collect sanitizer findings
-          echo "## Sanitizer Findings" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-
-          ASAN_COUNT=0
-          UBSAN_COUNT=0
-          if ls /tmp/sanitizer-logs/asan.* 1>/dev/null 2>&1; then
-            ASAN_COUNT=$(grep -c "ERROR: AddressSanitizer" /tmp/sanitizer-logs/asan.* 2>/dev/null || echo "0")
-            echo "### AddressSanitizer" >> "$GITHUB_STEP_SUMMARY"
-            echo '```' >> "$GITHUB_STEP_SUMMARY"
-            cat /tmp/sanitizer-logs/asan.* >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || true
-            echo '```' >> "$GITHUB_STEP_SUMMARY"
-          fi
-          if ls /tmp/sanitizer-logs/ubsan.* 1>/dev/null 2>&1; then
-            UBSAN_COUNT=$(grep -c "runtime error:" /tmp/sanitizer-logs/ubsan.* 2>/dev/null || echo "0")
-            echo "### UndefinedBehaviorSanitizer" >> "$GITHUB_STEP_SUMMARY"
-            echo '```' >> "$GITHUB_STEP_SUMMARY"
-            cat /tmp/sanitizer-logs/ubsan.* >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || true
-            echo '```' >> "$GITHUB_STEP_SUMMARY"
-          fi
-
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Sanitizer | Findings |" >> "$GITHUB_STEP_SUMMARY"
-          echo "|-----------|----------|" >> "$GITHUB_STEP_SUMMARY"
-          echo "| ASAN | ${ASAN_COUNT} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| UBSAN | ${UBSAN_COUNT} |" >> "$GITHUB_STEP_SUMMARY"
-
-          FILE_COUNT=$(find /tmp/fuzzed-video -name "*.png" -type f 2>/dev/null | wc -l | tr -d ' ')
-          echo "Generated $FILE_COUNT fuzzed frames"
-
-      - name: Validate VideoToolbox output quality
-        if: always()
-        run: |
-          set -euo pipefail
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "## VideoToolbox Output Quality" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-
-          TOTAL=0
-          VALID=0
-          INVALID=0
-          ZERO_SIZE=0
-
-          echo "| File | Size | Format | Dimensions | Status |" >> "$GITHUB_STEP_SUMMARY"
-          echo "|------|------|--------|------------|--------|" >> "$GITHUB_STEP_SUMMARY"
-
-          for f in /tmp/fuzzed-video/*.png; do
-            [ -f "$f" ] || continue
-            TOTAL=$((TOTAL + 1))
-            NAME=$(basename "$f")
-            SIZE=$(stat -f%z "$f" 2>/dev/null || stat --printf="%s" "$f" 2>/dev/null || echo "0")
-
-            if [ "$SIZE" -eq 0 ]; then
-              ZERO_SIZE=$((ZERO_SIZE + 1))
-              INVALID=$((INVALID + 1))
-              echo "| $NAME | 0 B | — | — | ❌ Empty |" >> "$GITHUB_STEP_SUMMARY"
-              continue
-            fi
-
-            FORMAT=$(sips -g format "$f" 2>/dev/null | tail -1 | awk '{print $2}' || echo "unknown")
-            WIDTH=$(sips -g pixelWidth "$f" 2>/dev/null | tail -1 | awk '{print $2}' || echo "?")
-            HEIGHT=$(sips -g pixelHeight "$f" 2>/dev/null | tail -1 | awk '{print $2}' || echo "?")
-
-            if [ "$FORMAT" != "unknown" ] && [ "$WIDTH" != "?" ] && [ "$HEIGHT" != "?" ]; then
-              VALID=$((VALID + 1))
-              STATUS="✅ Valid"
-            else
-              INVALID=$((INVALID + 1))
-              STATUS="⚠️ $(file -b "$f" | cut -c1-40)"
-            fi
-
-            SIZE_H=$(numfmt --to=iec "$SIZE" 2>/dev/null || echo "${SIZE} B")
-            echo "| $NAME | $SIZE_H | $FORMAT | ${WIDTH}×${HEIGHT} | $STATUS |" >> "$GITHUB_STEP_SUMMARY"
-          done
-
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Metric | Count |" >> "$GITHUB_STEP_SUMMARY"
-          echo "|--------|-------|" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Total frames | $TOTAL |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Valid images | $VALID |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Invalid/unknown | $INVALID |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Zero-size files | $ZERO_SIZE |" >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Generate coverage report
-        working-directory: VideoToolbox/Fuzzing
-        run: |
-          set -euo pipefail
-          mkdir -p /tmp/coverage-report
-
-          # Merge profraw files
-          PROFRAW_COUNT=$(find /tmp/profraw -name "*.profraw" -type f 2>/dev/null | wc -l | tr -d ' ')
-          if [ "$PROFRAW_COUNT" -eq 0 ]; then
-            echo "⚠️  No profraw files found — coverage data not generated"
-            echo "This can happen if the fuzzer crashed before writing profile data."
-            echo "No profraw files collected." > /tmp/coverage-report/summary.txt
-            exit 0
-          fi
-
-          echo "Merging $PROFRAW_COUNT profraw files..."
-          xcrun llvm-profdata merge -sparse \
-            /tmp/profraw/*.profraw \
-            -o /tmp/coverage-report/merged.profdata
-
-          echo "## Code Coverage Report" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-
-          # Text summary
-          echo "### Coverage Summary" >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
-          xcrun llvm-cov report \
-            build/videotoolbox-runner \
-            -instr-profile=/tmp/coverage-report/merged.profdata \
-            -ignore-filename-regex='.*/(usr|System)/.*' \
-            2>&1 | tee /tmp/coverage-report/summary.txt >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
-
-          # Detailed line-by-line coverage
-          xcrun llvm-cov show \
-            build/videotoolbox-runner \
-            -instr-profile=/tmp/coverage-report/merged.profdata \
-            -ignore-filename-regex='.*/(usr|System)/.*' \
-            -format=html \
-            -output-dir=/tmp/coverage-report/html \
-            2>&1 || echo "HTML report generation failed (non-fatal)"
-
-          # LCOV export for integration with coverage tools
-          xcrun llvm-cov export \
-            build/videotoolbox-runner \
-            -instr-profile=/tmp/coverage-report/merged.profdata \
-            -ignore-filename-regex='.*/(usr|System)/.*' \
-            -format=lcov \
-            > /tmp/coverage-report/coverage.lcov \
-            2>&1 || echo "LCOV export failed (non-fatal)"
-
-          # Text annotated source (for easy reading)
-          xcrun llvm-cov show \
-            build/videotoolbox-runner \
-            -instr-profile=/tmp/coverage-report/merged.profdata \
-            -ignore-filename-regex='.*/(usr|System)/.*' \
-            -format=text \
-            > /tmp/coverage-report/annotated-source.txt \
-            2>&1 || echo "Text report generation failed (non-fatal)"
-
-          # Extract key metrics for summary
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "### Coverage Files" >> "$GITHUB_STEP_SUMMARY"
-          echo "- \`summary.txt\` — function/line/region coverage percentages" >> "$GITHUB_STEP_SUMMARY"
-          echo "- \`coverage.lcov\` — LCOV format for CI integrations" >> "$GITHUB_STEP_SUMMARY"
-          echo "- \`html/\` — interactive HTML coverage report" >> "$GITHUB_STEP_SUMMARY"
-          echo "- \`annotated-source.txt\` — line-by-line hit counts" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-
-          # Show uncovered functions for improvement guidance
-          echo "### Functions Needing Coverage" >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
-          xcrun llvm-cov report \
-            build/videotoolbox-runner \
-            -instr-profile=/tmp/coverage-report/merged.profdata \
-            -ignore-filename-regex='.*/(usr|System)/.*' \
-            -show-functions \
-            2>&1 | grep -E '^\S.*0\.00%' | sed -n '1,30p' >> "$GITHUB_STEP_SUMMARY" || echo "(all functions covered)" >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Upload coverage report
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: videotoolbox-coverage-report
-          path: /tmp/coverage-report/
-          retention-days: 30
-          if-no-files-found: warn
-
-      - name: Upload sanitizer logs
-        if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: videotoolbox-sanitizer-logs
-          path: /tmp/sanitizer-logs/
-          retention-days: 30
-          if-no-files-found: warn
-
-      - name: Upload instrumented binaries
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: videotoolbox-instrumented-binaries
-          path: |
-            VideoToolbox/Fuzzing/build/videotoolbox-runner
-            VideoToolbox/Fuzzing/build/videotoolbox-interposer.dylib
-            VideoToolbox/Fuzzing/build/runner
-            VideoToolbox/Fuzzing/build/runner_dist
-          retention-days: 14
-          if-no-files-found: warn
-
-  # ── Job 2: Instrumented iOS Fuzzer (Mac Catalyst) ─────────
+  # ── Job 1: Instrumented iOS Fuzzer (Mac Catalyst) ─────────
   ios-instrumented:
-    name: iOS Fuzzer (Mac Catalyst ASAN+UBSAN)
-    runs-on: macos-latest
+    name: iOS Fuzzer (Mac Catalyst ASAN+UBSAN — ${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-14, macos-15]
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 30
     steps:
       - name: Checkout repository
@@ -604,55 +273,127 @@ jobs:
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: ios-fuzzer-sanitizer-logs
+          name: ios-fuzzer-sanitizer-logs-${{ matrix.os }}
           path: |
             /tmp/sanitizer-logs-ios/
             /tmp/ios-fuzzer-output.log
           retention-days: 30
           if-no-files-found: warn
 
-  # ── Job 3: Summary ──────────────────────────────────────────
-  instrumentation-summary:
-    name: Instrumentation Summary
-    runs-on: ubuntu-latest
-    needs: [ios-instrumented]
-    if: always()
-    timeout-minutes: 5
+  # ── Job 2: macOS Native Build (ASAN+UBSAN, no Xcode) ──────
+  # Compiles xnuimagefuzzer.m directly with clang against macOS
+  # frameworks — validates that the code works outside Mac Catalyst.
+  macos-native:
+    name: macOS Native (ASAN+UBSAN — ${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-14, macos-15]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
     steps:
-      - name: Summary
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Credential hardening
         run: |
           set -euo pipefail
+          git config --global credential.helper ""
+          unset GITHUB_TOKEN || true
 
-          echo "## Instrumented Build Summary" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "### Build Configuration" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Setting | Value |" >> "$GITHUB_STEP_SUMMARY"
-          echo "|---------|-------|" >> "$GITHUB_STEP_SUMMARY"
-          echo "| AddressSanitizer | ✅ Enabled |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| UndefinedBehaviorSanitizer | ✅ Enabled |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Frame Pointers | ✅ Preserved |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Debug Symbols | ✅ Enabled |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Code Coverage | ⏭️ See native-coverage job |" >> "$GITHUB_STEP_SUMMARY"
+      - name: Show toolchain
+        run: |
+          set -euo pipefail
+          sw_vers
+          clang --version 2>&1 | sed -n '1p'
+          uname -m
+
+      - name: Build with ASAN + UBSAN
+        run: |
+          set -euo pipefail
+          SDK_PATH="$(xcrun --sdk macosx --show-sdk-path)"
+          SANITIZER_FLAGS="-fsanitize=address,undefined -fno-omit-frame-pointer -fno-optimize-sibling-calls"
+
+          mkdir -p /tmp/macos-native-build
+
+          xcrun -sdk macosx clang \
+            -isysroot "$SDK_PATH" \
+            -arch arm64 -g -O1 -Wall -Wextra \
+            $SANITIZER_FLAGS \
+            -DFUZZ_OUTPUT_DIR='"/tmp/fuzzed-output-native"' \
+            -fobjc-arc \
+            -o /tmp/macos-native-build/xnuimagefuzzer \
+            "XNU Image Fuzzer/XNU Image Fuzzer/xnuimagefuzzer.m" \
+            -framework Foundation \
+            -framework CoreGraphics \
+            -framework CoreImage \
+            -framework ImageIO \
+            -framework UniformTypeIdentifiers \
+            -framework CoreServices \
+            -framework AppKit \
+            2>&1 | head -50
+
+          echo "✅ macOS native build succeeded"
+          file /tmp/macos-native-build/xnuimagefuzzer
+          codesign -s "-" --force /tmp/macos-native-build/xnuimagefuzzer
+
+      - name: Run under sanitizers
+        timeout-minutes: 5
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/fuzzed-output-native /tmp/sanitizer-logs-native
+
+          export FUZZ_OUTPUT_DIR="/tmp/fuzzed-output-native"
+          export ASAN_OPTIONS="detect_leaks=0:halt_on_error=0:print_stats=1:log_path=/tmp/sanitizer-logs-native/asan"
+          export UBSAN_OPTIONS="print_stacktrace=1:halt_on_error=0:log_path=/tmp/sanitizer-logs-native/ubsan"
+
+          echo "🔨 Running macOS native fuzzer..."
+          /tmp/macos-native-build/xnuimagefuzzer 2>&1 | tail -30 || true
+
+          FILE_COUNT=$(find /tmp/fuzzed-output-native -type f 2>/dev/null | wc -l | tr -d ' ')
+          echo "Generated $FILE_COUNT fuzzed images"
+
+          # Sanitizer findings
+          echo "## macOS Native Sanitizer Findings (${{ matrix.os }})" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
 
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "### Artifacts" >> "$GITHUB_STEP_SUMMARY"
-          echo "- **ios-fuzzer-sanitizer-logs** — iOS runtime ASAN/UBSAN output" >> "$GITHUB_STEP_SUMMARY"
-          echo "- Coverage reports are generated in the **native-coverage** job" >> "$GITHUB_STEP_SUMMARY"
-          echo "- VideoToolbox coverage is in the **videotoolbox.yml** workflow" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "### Improving Coverage" >> "$GITHUB_STEP_SUMMARY"
-          echo "1. Check the **native-coverage** job for iOS fuzzer coverage" >> "$GITHUB_STEP_SUMMARY"
-          echo "2. Check the **videotoolbox.yml** workflow for VideoToolbox coverage" >> "$GITHUB_STEP_SUMMARY"
-          echo "3. Review uncovered functions and add test inputs" >> "$GITHUB_STEP_SUMMARY"
+          ASAN_COUNT=0
+          UBSAN_COUNT=0
+          if ls /tmp/sanitizer-logs-native/asan.* 1>/dev/null 2>&1; then
+            ASAN_COUNT=$(grep -c "ERROR: AddressSanitizer" /tmp/sanitizer-logs-native/asan.* 2>/dev/null || echo "0")
+          fi
+          if ls /tmp/sanitizer-logs-native/ubsan.* 1>/dev/null 2>&1; then
+            UBSAN_COUNT=$(grep -c "runtime error:" /tmp/sanitizer-logs-native/ubsan.* 2>/dev/null || echo "0")
+          fi
 
-  # ── Job 4: Native clang Build + Run + Coverage ─────────────
+          echo "| Metric | Value |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|--------|-------|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| ASAN findings | ${ASAN_COUNT} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| UBSAN findings | ${UBSAN_COUNT} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Fuzzed images | ${FILE_COUNT} |" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload sanitizer logs
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: macos-native-sanitizer-logs-${{ matrix.os }}
+          path: /tmp/sanitizer-logs-native/
+          retention-days: 30
+          if-no-files-found: warn
+
+  # ── Job 3: Native clang Build + Run + Coverage ─────────────
   # Xcode's CLANG_ENABLE_CODE_COVERAGE=YES does NOT inject
   # -fprofile-instr-generate for Mac Catalyst. This job compiles
   # directly with clang, producing real profraw/llvm-cov output.
   native-coverage:
-    name: Native Coverage (clang arm64)
-    runs-on: macos-latest
+    name: Native Coverage (clang arm64 — ${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-14, macos-15]
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     steps:
       - name: Checkout repository
@@ -699,7 +440,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: native-coverage-report
+          name: native-coverage-report-${{ matrix.os }}
           path: /tmp/coverage-report/
           retention-days: 30
           if-no-files-found: warn
@@ -708,7 +449,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: native-fuzzed-images
+          name: native-fuzzed-images-${{ matrix.os }}
           path: /tmp/fuzzed-output/
           retention-days: 14
           if-no-files-found: warn
