@@ -284,7 +284,7 @@ def main():
     manifest = process_directory(args.input, args.output, args.inject_cfl)
 
     stats = manifest['stats']
-    print(f'\n── Results ──')
+    print('\n── Results ──')
     print(f'  Files scanned:      {stats["files_scanned"]}')
     print(f'  ICC profiles:       {stats["icc_extracted"]}')
     print(f'  TIFF files:         {stats["tiff_copied"]}')
