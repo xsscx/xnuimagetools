@@ -375,3 +375,40 @@ lldb -- /tmp/xnuimagetools                     # interactive debugging
 ```bash
 .github/scripts/build-native.sh      # build + run + coverage report
 ```
+
+## CFL Fuzzer Seed Pipeline
+
+The xnuimagetools output can feed the CFL (Crash-Free LibFuzzer) ICC profile fuzzers
+in the parent research repo. The bridge script extracts ICC profiles from fuzzed images
+and copies TIFF files for the tiffdump/specsep fuzzers.
+
+### Extract and inject seeds
+```bash
+# Extract ICC profiles + TIFF files from all fuzzed-images runs
+python3 contrib/scripts/extract-icc-seeds.py \
+  --input fuzzed-images/ \
+  --output /tmp/extracted-seeds
+
+# Extract AND inject directly into CFL corpus directories
+python3 contrib/scripts/extract-icc-seeds.py \
+  --input fuzzed-images/ \
+  --inject-cfl ../cfl
+
+# Extract from a specific device run
+python3 contrib/scripts/extract-icc-seeds.py \
+  --input fuzzed-images/2026-03-03-030143/ \
+  --output /tmp/device-seeds
+```
+
+### What gets extracted
+- **ICC profiles** → `corpus-icc_profile_fuzzer/`, `corpus-icc_dump_fuzzer/`,
+  `corpus-icc_deep_dump_fuzzer/`, `corpus-icc_toxml_fuzzer/`
+- **TIFF files** → `corpus-icc_tiffdump_fuzzer/`, `corpus-icc_specsep_fuzzer/`
+
+### Maximizing ICC profile diversity
+To generate more embedded ICC profiles (currently only 2/2900 images have them),
+set `FUZZ_ICC_DIR` to a directory of ICC profiles before running the fuzzer:
+```bash
+FUZZ_ICC_DIR=../test-profiles FUZZ_OUTPUT_DIR=/tmp/icc-rich-output ./XNU\ Image\ Fuzzer
+```
+This round-robins through the profiles and embeds them into every generated image.
