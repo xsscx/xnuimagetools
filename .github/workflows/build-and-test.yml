@@ -19,7 +19,7 @@
 name: xnuimagetools-build-and-test
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: build-test-${{ github.ref }}
@@ -50,7 +50,7 @@ on:
   pull_request:
     branches: [main, master]
   schedule:
-    - cron: '0 */12 * * *'
+    - cron: '0 6 * * 1'
   workflow_dispatch:
 
 jobs:
@@ -198,7 +198,7 @@ jobs:
           FUZZ_DIR="/tmp/fuzzed-output"
           mkdir -p "$FUZZ_DIR"
 
-          xcrun simctl boot "$SIM_UDID" 2>/dev/null || true
+          timeout 60 xcrun simctl boot "$SIM_UDID" 2>/dev/null || true
 
           BUILD_DIR=$(xcodebuild \
             -project "$PROJECT" \
@@ -526,7 +526,7 @@ jobs:
           IOS_GEN_SCHEME="XNU Image Generator for iOS"
           BUNDLE_ID="cx.srd.imagegenerator-xnu-demo"
 
-          xcrun simctl boot "$SIM_UDID" 2>/dev/null || true
+          timeout 60 xcrun simctl boot "$SIM_UDID" 2>/dev/null || true
 
           BUILD_DIR=$(xcodebuild \
             -project "$IOS_GEN_PROJECT" \
@@ -709,7 +709,7 @@ jobs:
           fi
 
           echo "Found watchOS simulator: $SIM_UDID"
-          xcrun simctl boot "$SIM_UDID" 2>/dev/null || true
+          timeout 60 xcrun simctl boot "$SIM_UDID" 2>/dev/null || true
 
           BUILD_DIR=$(xcodebuild \
             -project "$WATCH_PROJECT" \
