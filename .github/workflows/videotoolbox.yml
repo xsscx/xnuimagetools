@@ -311,6 +311,18 @@ jobs:
           codesign -s "-" --force build-cov/videotoolbox-runner
           echo "✅ runner built with coverage"
 
+      - name: Validate test video
+        working-directory: VideoToolbox/Fuzzing
+        run: |
+          set -euo pipefail
+          if [ ! -f big.mov ] || [ ! -s big.mov ]; then
+            echo "❌ big.mov is missing or empty"
+            exit 1
+          fi
+          SIZE=$(stat -f%z big.mov 2>/dev/null || stat -c%s big.mov)
+          echo "✅ big.mov present ($SIZE bytes)"
+          file big.mov
+
       - name: Run fuzzer with coverage collection
         working-directory: VideoToolbox/Fuzzing
         env:
@@ -485,6 +497,18 @@ jobs:
           codesign -s "-" --force build/videotoolbox-interposer.dylib
           file build/videotoolbox-runner
           echo "✅ Artifacts extracted from build-macos job"
+
+      - name: Validate test video
+        working-directory: VideoToolbox/Fuzzing
+        run: |
+          set -euo pipefail
+          if [ ! -f big.mov ] || [ ! -s big.mov ]; then
+            echo "❌ big.mov is missing or empty"
+            exit 1
+          fi
+          SIZE=$(stat -f%z big.mov 2>/dev/null || stat -c%s big.mov)
+          echo "✅ big.mov present ($SIZE bytes)"
+          file big.mov
 
       - name: Run VideoToolbox fuzzer
         working-directory: VideoToolbox/Fuzzing
