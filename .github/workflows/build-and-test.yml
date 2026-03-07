@@ -348,7 +348,105 @@ jobs:
           retention-days: 14
           if-no-files-found: warn
 
-  # ── Job 3: Build & Generate iOS Generator Images ───────────
+  # ── Job 3: Mac Catalyst Build & Generate ICC-Diverse Images ──
+  generate-catalyst-images:
+    name: Mac Catalyst Generate ICC-Diverse Images
+    runs-on: macos-latest
+    needs: build-ios
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Credential hardening
+        run: |
+          set -euo pipefail
+          git config --global credential.helper ""
+          unset GITHUB_TOKEN || true
+
+      - name: Build for Mac Catalyst
+        run: |
+          set -euo pipefail
+          CATALYST_DEST="platform=macOS,variant=Mac Catalyst"
+          xcodebuild build \
+            -project "$PROJECT" \
+            -scheme "$SCHEME" \
+            -destination "$CATALYST_DEST" \
+            -configuration Debug \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            ONLY_ACTIVE_ARCH=YES \
+            2>&1 | tee /tmp/xcodebuild-catalyst.log
+          echo "✅ Mac Catalyst build succeeded"
+
+      - name: Generate ICC-diverse fuzzed images
+        run: |
+          set -euo pipefail
+          FUZZ_DIR="/tmp/catalyst-output"
+          mkdir -p "$FUZZ_DIR"
+
+          # Locate the Mac Catalyst binary
+          BUILD_DIR=$(xcodebuild \
+            -project "$PROJECT" \
+            -scheme "$SCHEME" \
+            -destination "platform=macOS,variant=Mac Catalyst" \
+            -configuration Debug \
+            -showBuildSettings \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            2>/dev/null | grep -m1 'BUILT_PRODUCTS_DIR' | awk '{print $3}')
+
+          APP_PATH="$BUILD_DIR/XNU Image Fuzzer.app"
+          if [ ! -d "$APP_PATH" ]; then
+            echo "❌ Mac Catalyst app not found at $APP_PATH"
+            ls -la "$BUILD_DIR/" 2>/dev/null || true
+            exit 1
+          fi
+          echo "✅ Found app: $APP_PATH"
+
+          # Set FUZZ_ICC_DIR to macOS system ICC profiles for full ICC variant coverage
+          # This enables all 4 variants: real ICC, mutated ICC, stripped, mismatched
+          export FUZZ_OUTPUT_DIR="$FUZZ_DIR"
+          export FUZZ_ICC_DIR="/System/Library/ColorSync/Profiles"
+
+          echo "FUZZ_OUTPUT_DIR=$FUZZ_OUTPUT_DIR"
+          echo "FUZZ_ICC_DIR=$FUZZ_ICC_DIR"
+          echo "System ICC profiles:"
+          ls "$FUZZ_ICC_DIR/"*.icc 2>/dev/null | head -10 || true
+
+          # Run the Mac Catalyst app directly (no simulator needed)
+          "$APP_PATH/Contents/MacOS/XNU Image Fuzzer" 2>&1 | tail -60 || true
+
+          # Give it time to finish writing
+          sleep 5
+
+          FILE_COUNT=$(find "$FUZZ_DIR" -type f 2>/dev/null | wc -l | tr -d ' ')
+          echo "Generated $FILE_COUNT ICC-diverse files"
+
+          if [ "$FILE_COUNT" -eq 0 ]; then
+            echo "⚠️  No files generated, checking app output..."
+            # Fallback: check ~/Documents or current dir
+            find /tmp -maxdepth 2 -name "fuzzed_image_*" 2>/dev/null | head -10
+          fi
+
+          ls -la "$FUZZ_DIR/" 2>/dev/null | head -30 || true
+          echo "✅ Mac Catalyst image generation complete ($FILE_COUNT files)"
+
+      - name: Upload Mac Catalyst images artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: catalyst-images
+          path: /tmp/catalyst-output/
+          retention-days: 14
+          if-no-files-found: warn
+
+  # ── Job 5: Build & Generate iOS Generator Images ───────────
   generate-ios-gen-images:
     name: Generate iOS Generator Images
     runs-on: macos-latest
@@ -506,7 +604,7 @@ jobs:
           retention-days: 14
           if-no-files-found: warn
 
-  # ── Job 5: Build & Generate Watch Images ──────────────────
+  # ── Job 6: Build & Generate Watch Images ──────────────────
   build-watch:
     name: Build Watch & Generate Images
     runs-on: macos-latest
@@ -648,11 +746,11 @@ jobs:
           retention-days: 14
           if-no-files-found: warn
 
-  # ── Job 6: Commit Images ──────────────────────────────────
+  # ── Job 7: Commit Images ──────────────────────────────────
   commit-images:
     name: Commit Fuzzed Images
     runs-on: ubuntu-latest
-    needs: [generate-images, generate-ios-gen-images, build-watch]
+    needs: [generate-images, generate-catalyst-images, generate-ios-gen-images, build-watch]
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
     timeout-minutes: 10
     permissions:
@@ -683,13 +781,20 @@ jobs:
           path: /tmp/ios-gen-download
         continue-on-error: true
 
+      - name: Download Mac Catalyst images artifact
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: catalyst-images
+          path: /tmp/catalyst-download
+        continue-on-error: true
+
       - name: Commit images to fuzzed-images directory
         run: |
           set -euo pipefail
 
           TIMESTAMP=$(date -u '+%Y-%m-%d-%H%M%S')
           DEST_DIR="fuzzed-images/${TIMESTAMP}"
-          mkdir -p "$DEST_DIR" "$DEST_DIR/watch" "$DEST_DIR/ios-gen"
+          mkdir -p "$DEST_DIR" "$DEST_DIR/watch" "$DEST_DIR/ios-gen" "$DEST_DIR/catalyst"
 
           # Copy fuzzer images
           FILE_COUNT=$(find /tmp/fuzzed-download -type f 2>/dev/null | wc -l | tr -d ' ')
@@ -712,18 +817,25 @@ jobs:
             echo "Copied $IOS_GEN_COUNT iOS generator images to $DEST_DIR/ios-gen/"
           fi
 
-          TOTAL=$((FILE_COUNT + WATCH_COUNT + IOS_GEN_COUNT))
+          # Copy Mac Catalyst ICC-diverse images
+          CATALYST_COUNT=$(find /tmp/catalyst-download -type f 2>/dev/null | wc -l | tr -d ' ')
+          if [ "$CATALYST_COUNT" -gt 0 ]; then
+            cp /tmp/catalyst-download/* "$DEST_DIR/catalyst/"
+            echo "Copied $CATALYST_COUNT Mac Catalyst ICC-diverse images to $DEST_DIR/catalyst/"
+          fi
+
+          TOTAL=$((FILE_COUNT + WATCH_COUNT + IOS_GEN_COUNT + CATALYST_COUNT))
           if [ "$TOTAL" -eq 0 ]; then
             echo "⚠️  No images to commit"
             exit 0
           fi
 
-          ls -la "$DEST_DIR/" "$DEST_DIR/watch/" "$DEST_DIR/ios-gen/" 2>/dev/null || true
+          ls -la "$DEST_DIR/" "$DEST_DIR/watch/" "$DEST_DIR/ios-gen/" "$DEST_DIR/catalyst/" 2>/dev/null || true
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add "fuzzed-images/"
-          git commit -m "fuzzed-images: ${TIMESTAMP} — ${TOTAL} files (${FILE_COUNT} fuzzer + ${IOS_GEN_COUNT} iOS-gen + ${WATCH_COUNT} watch)
+          git commit -m "fuzzed-images: ${TIMESTAMP} — ${TOTAL} files (${FILE_COUNT} fuzzer + ${CATALYST_COUNT} catalyst-icc + ${IOS_GEN_COUNT} iOS-gen + ${WATCH_COUNT} watch)
 
           Generated by xnuimagetools-build-and-test workflow
           Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
@@ -732,4 +844,82 @@ jobs:
           # Pull --rebase in case remote advanced during the workflow run
           git pull --rebase origin main
           git push
-          echo "✅ Committed $TOTAL images ($FILE_COUNT fuzzer + $IOS_GEN_COUNT iOS-gen + $WATCH_COUNT watch) to $DEST_DIR"
+          echo "✅ Committed $TOTAL images to $DEST_DIR"
+
+  # ── Job 8: Extract Seeds for CFL Fuzzers ─────────────────
+  extract-seeds:
+    name: Extract ICC Seeds for CFL
+    runs-on: macos-latest
+    needs: [generate-images, generate-catalyst-images]
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Download fuzzed images
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: fuzzed-images
+          path: /tmp/seed-input/sim
+        continue-on-error: true
+
+      - name: Download Mac Catalyst images
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: catalyst-images
+          path: /tmp/seed-input/catalyst
+        continue-on-error: true
+
+      - name: Extract ICC profiles and TIFF seeds
+        run: |
+          set -euo pipefail
+          INPUT_DIR="/tmp/seed-input"
+          OUTPUT_DIR="/tmp/extracted-seeds"
+          mkdir -p "$OUTPUT_DIR"
+
+          TOTAL=$(find "$INPUT_DIR" -type f 2>/dev/null | wc -l | tr -d ' ')
+          echo "Input files: $TOTAL"
+
+          if [ "$TOTAL" -eq 0 ]; then
+            echo "⚠️  No input files for seed extraction"
+            exit 0
+          fi
+
+          # Run extraction across both sim and catalyst output dirs
+          for subdir in sim catalyst; do
+            SRC="$INPUT_DIR/$subdir"
+            [ -d "$SRC" ] || continue
+            COUNT=$(find "$SRC" -type f 2>/dev/null | wc -l | tr -d ' ')
+            echo "Processing $subdir: $COUNT files"
+
+            python3 contrib/scripts/extract-icc-seeds.py \
+              --input "$SRC" \
+              --output "$OUTPUT_DIR" \
+              2>&1 || true
+          done
+
+          echo ""
+          echo "── Extracted Seeds ──"
+          ICC_COUNT=$(find "$OUTPUT_DIR/icc" -type f 2>/dev/null | wc -l | tr -d ' ')
+          TIFF_COUNT=$(find "$OUTPUT_DIR/tiff" -type f 2>/dev/null | wc -l | tr -d ' ')
+          echo "ICC profiles: $ICC_COUNT"
+          echo "TIFF files:   $TIFF_COUNT"
+
+          echo "## Seed Extraction" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Metric | Value |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|--------|-------|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Input files | $TOTAL |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| ICC profiles extracted | $ICC_COUNT |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| TIFF seeds extracted | $TIFF_COUNT |" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload extracted seeds artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: cfl-seeds
+          path: /tmp/extracted-seeds/
+          retention-days: 30
+          if-no-files-found: warn
