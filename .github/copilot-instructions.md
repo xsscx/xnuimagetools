@@ -175,7 +175,7 @@ Every `saveFuzzedImage()` call for TIFF and PNG outputs automatically triggers
 
 | Variant | Function | Description |
 |---------|----------|-------------|
-| Real ICC | `encodeImageWithICCProfile()` | Injects ICC from `FUZZ_ICC_DIR` via `kCGImagePropertyICCProfile` |
+| Real ICC | `encodeImageWithICCProfile()` | Re-renders through ICC color space via `CGColorSpaceCreateWithICCData()` |
 | Stripped | `encodeImageStrippingColorSpace()` | Re-renders through DeviceRGB — no ICC metadata |
 | Mismatched | `encodeImageWithMismatchedProfile()` | CMYK/Gray/Lab/truncated profile on RGB image |
 | Mutated | `mutateICCProfile()` + encode | 6 corruption strategies on real ICC data |
@@ -195,7 +195,7 @@ Every `saveFuzzedImage()` call for TIFF and PNG outputs automatically triggers
 
 | Function | Lines | Purpose |
 |----------|-------|---------|
-| `encodeImageWithICCProfile()` | ~2060-2095 | Inject raw ICC via `kCGImagePropertyICCProfile` property dict |
+| `encodeImageWithICCProfile()` | ~2060-2120 | Re-render through ICC color space via `CGColorSpaceCreateWithICCData()` |
 | `encodeImageStrippingColorSpace()` | ~2105-2140 | Re-render through DeviceRGB context, encode with no ICC |
 | `encodeImageWithMismatchedProfile()` | ~2155-2210 | Build synthetic 132-byte ICC header with wrong color space |
 | `saveFuzzedImageWithICCVariants()` | ~2220-2305 | Orchestrate all 4 variants, output to `FUZZ_OUTPUT_DIR` |
@@ -465,7 +465,7 @@ python3 contrib/scripts/extract-icc-seeds.py \
 - **Mismatched ICC TIFFs** → Especially valuable for error-path coverage in
   `icc_profile_fuzzer` and `icc_toxml_fuzzer` (exercises ICC validation failures)
 
-### Coverage Optimization Methodology (Proven 5-Step Process)
+### Coverage Optimization Methodology (Proven 6-Step Process)
 
 This methodology was developed across multi-session work and yielded significant
 coverage improvements across all 19 CFL fuzzers:
@@ -477,3 +477,39 @@ coverage improvements across all 19 CFL fuzzers:
 5. **Doxygen Inheritance Analysis** — Map class hierarchies to find untested leaf classes
 6. **ICC Diversity Generation** — Use xnuimagetools ICC variants to create seeds with
    embedded/stripped/mismatched/mutated ICC profiles
+
+### CI Pipeline: build-and-test.yml (8 Jobs)
+
+The `build-and-test.yml` workflow implements the full seed generation pipeline:
+
+```
+build-ios (Job 1)
+  ├→ generate-images (Job 2)          — iOS Simulator fuzzed images
+  ├→ generate-catalyst-images (Job 3) — Mac Catalyst + FUZZ_ICC_DIR (all 4 ICC variants)
+  ├→ generate-ios-gen-images (Job 5)  — iOS Generator images
+  └→ build-watch (Job 6)             — watchOS images
+       │
+       ▼
+  commit-images (Job 7)  — collects all 4 sources into fuzzed-images/<timestamp>/
+  extract-seeds (Job 8)  — runs extract-icc-seeds.py → uploads cfl-seeds artifact (30-day)
+```
+
+**Mac Catalyst job** (`generate-catalyst-images`):
+- Builds with `platform=macOS,variant=Mac Catalyst` destination
+- Runs binary directly (`$APP_PATH/Contents/MacOS/XNU Image Fuzzer`) — no simulator
+- Sets `FUZZ_ICC_DIR=/System/Library/ColorSync/Profiles` for system ICC profiles
+- Enables all 4 ICC variants: real, mutated, stripped, mismatched
+- `SUPPORTS_MACCATALYST = YES` is already set in pbxproj
+
+**Seed extraction job** (`extract-seeds`):
+- Downloads sim + catalyst artifacts
+- Runs `extract-icc-seeds.py` to extract ICC profiles and TIFF files
+- Uploads `cfl-seeds` artifact with 30-day retention for CFL consumption
+
+### API Notes
+
+- **`kCGImagePropertyICCProfile` does NOT exist** in Apple SDKs — do not use it
+- Use `CGColorSpaceCreateWithICCData()` (iOS 10+/macOS 10.12+) to create a color space
+  from raw ICC bytes, re-render through `CGBitmapContextCreate()`, and ImageIO
+  auto-embeds the ICC profile when saving via `CGImageDestinationAddImage()`
+- `kCGImagePropertyProfileName` (string, not data) is available on all platforms

@@ -71,7 +71,7 @@ producing up to 4 additional ICC-diverse files:
 
 | Function | Purpose | ICC Source |
 |----------|---------|-----------|
-| `encodeImageWithICCProfile()` | Inject raw ICC via `kCGImagePropertyICCProfile` | `FUZZ_ICC_DIR` (round-robin) |
+| `encodeImageWithICCProfile()` | Re-render through ICC color space via `CGColorSpaceCreateWithICCData()` | `FUZZ_ICC_DIR` (round-robin) |
 | `encodeImageStrippingColorSpace()` | Re-render through DeviceRGB, strip ICC | None (orphan image) |
 | `encodeImageWithMismatchedProfile()` | Attach wrong-colorspace ICC header | Synthetic 132-byte header |
 | `mutateICCProfile()` + encode | Corrupt real ICC data, then embed | Mutated `FUZZ_ICC_DIR` profile |
@@ -85,14 +85,20 @@ producing up to 4 additional ICC-diverse files:
 All synthetic headers include valid `acsp` magic (offset 36) and D50 PCS illuminant
 (offset 68–79) to pass initial parser validation before triggering deep-path errors.
 
-### Legacy Embedding (Lines ~2025–2115)
+### ICC Embedding via Color Space (Lines ~2060–2120)
 ```objc
-// embedICCProfile — loads from FUZZ_ICC_DIR and embeds via CGImageDestination
-CGImageDestinationAddImage(destination, image, (__bridge CFDictionaryRef)@{
-    (NSString *)kCGImageDestinationEmbedThumbnail: @YES,
-    (NSString *)kCGImagePropertyICCProfile: iccData
-});
+// encodeImageWithICCProfile — creates color space from ICC data, re-renders image
+CGColorSpaceRef iccColorSpace = CGColorSpaceCreateWithICCData((CFDataRef)iccData);
+CGContextRef ctx = CGBitmapContextCreate(NULL, width, height, 8, width * 4,
+    iccColorSpace, (CGBitmapInfo)kCGImageAlphaPremultipliedLast);
+CGContextDrawImage(ctx, CGRectMake(0, 0, width, height), image);
+CGImageRef iccImage = CGBitmapContextCreateImage(ctx);
+// ImageIO auto-embeds the ICC profile from the image's color space
+CGImageDestinationAddImage(dest, iccImage, NULL);
 ```
+
+**API Note:** `kCGImagePropertyICCProfile` does NOT exist in Apple SDKs.
+Use `CGColorSpaceCreateWithICCData()` (iOS 10+/macOS 10.12+) instead.
 
 ### encodeImageMultiFormat ICC Outputs
 The multi-format encoder also produces ICC variants:
