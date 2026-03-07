@@ -41,7 +41,6 @@
 #include <errno.h>
 #include <execinfo.h>
 #include <signal.h>
-#include <malloc/malloc.h>
 #include <IOKit/IOKitLib.h>
 #include <stdarg.h>
 #include <stdint.h>
@@ -49,7 +48,6 @@
 #include <sys/sysctl.h>
 #include <time.h>
 #include <unistd.h>
-#include <sys/mman.h>
 #import <AVFoundation/AVFoundation.h>
 #import <Foundation/Foundation.h>
 #import <CoreMedia/CoreMedia.h>
@@ -58,7 +56,6 @@
 #import <CoreGraphics/CoreGraphics.h>
 #import <ImageIO/ImageIO.h>
 #import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
-#import <stdio.h>
 
 #pragma mark - Debugging Macros
 
@@ -111,63 +108,6 @@ DebugLog(@"An informative debug message with context.");
         } \
     } while(0)
 
-#define page_align(addr) (vm_address_t)((uintptr_t)(addr) & (~(vm_page_size - 1)))
-
-#pragma mark - Memory Logging
-
-/**
-@brief Logs detailed memory zone information using the default malloc zone.
-
-This function retrieves the default malloc zone and prints detailed information about it. This can be useful for debugging memory usage and allocation patterns within the application.
-*/
-void log_memory_info() {
-    malloc_zone_t *zone = malloc_default_zone();
-    malloc_zone_print(zone, false);
-}
-
-#pragma mark - Malloc Allocations
-
-/**
-@brief Allocates memory with guard pages to detect buffer overflows.
-
-This function allocates memory with additional guard pages before and after the allocated region. These guard pages are set to be inaccessible, helping to detect buffer overflows by causing a segmentation fault if accessed.
-
-@param size The size of the memory to allocate.
-@return A pointer to the allocated memory, or NULL if the allocation failed.
-*/
-void *malloc_with_guard(size_t size) {
-    size_t page_size = getpagesize();
-    size_t total_size = size + (2 * page_size);
-
-    void *base = mmap(NULL, total_size, PROT_NONE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-    if (base == MAP_FAILED) return NULL;
-
-    void *ptr = (char *)base + page_size;
-    if (mprotect(ptr, size, PROT_READ | PROT_WRITE) != 0) {
-        munmap(base, total_size);
-        return NULL;
-    }
-
-    return ptr;
-}
-
-#pragma mark - Free Memory
-
-/**
-@brief Frees memory that was allocated with guard pages.
-
-This function frees memory that was previously allocated with `malloc_with_guard`, ensuring that the guard pages are also properly released.
-
-@param ptr A pointer to the memory to free.
-@param size The size of the memory that was allocated.
-*/
-void free_with_guard(void *ptr, size_t size) {
-    size_t page_size = getpagesize();
-    void *base = (char *)ptr - page_size;
-    size_t total_size = size + (2 * page_size);
-    munmap(base, total_size);
-}
-
 #pragma mark - GPU Logging
 
 /**
@@ -182,7 +122,6 @@ This function logs a custom message along with details about the current file, f
 */
 void log_gpu_memory_info(const char *description, const char *file, const char *function, int line) {
     printf("GPU Info: %s, File: %s, Function: %s, Line: %d\n", description, file, function, line);
-    malloc_zone_print(NULL, 1); // Log detailed memory zone information
 }
 
 #pragma mark - Signal Logging
@@ -236,52 +175,137 @@ void setup_signal_handlers() {
 
 #pragma mark - Fuzzing Function
 
+#pragma mark - Frame Saving
+
+/**
+@brief Saves a fuzzed frame as a PNG file in the output directory.
+
+Uses CGImageCreate with CGDataProvider to avoid the read-only lock issue that
+caused CGBitmapContextCreate to return NULL (it requires writable backing store).
+
+@param imageBuffer The pixel buffer to save.
+@param outputDir   The directory to write the file into.
+@param iteration   The fuzzing iteration number.
+@param frame       The frame number within the iteration.
+@return 1 if saved successfully, 0 on failure.
+*/
+static int save_fuzzed_frame(CVImageBufferRef imageBuffer, const char *outputDir, int iteration, int frame) {
+    @autoreleasepool {
+        CVPixelBufferLockBaseAddress(imageBuffer, kCVPixelBufferLock_ReadOnly);
+        size_t w = CVPixelBufferGetWidth(imageBuffer);
+        size_t h = CVPixelBufferGetHeight(imageBuffer);
+        size_t bpr = CVPixelBufferGetBytesPerRow(imageBuffer);
+        void *base = CVPixelBufferGetBaseAddress(imageBuffer);
+        if (!base || w == 0 || h == 0) {
+            NSLog(@"save_fuzzed_frame: invalid pixel buffer (base=%p, w=%zu, h=%zu)", base, w, h);
+            CVPixelBufferUnlockBaseAddress(imageBuffer, kCVPixelBufferLock_ReadOnly);
+            return 0;
+        }
+
+        // Copy pixel data so we can release the lock before writing PNG
+        size_t dataLen = bpr * h;
+        CFDataRef pixelData = CFDataCreate(kCFAllocatorDefault, (const UInt8 *)base, dataLen);
+        CVPixelBufferUnlockBaseAddress(imageBuffer, kCVPixelBufferLock_ReadOnly);
+
+        if (!pixelData) {
+            NSLog(@"save_fuzzed_frame: CFDataCreate failed (len=%zu)", dataLen);
+            return 0;
+        }
+
+        CGDataProviderRef provider = CGDataProviderCreateWithCFData(pixelData);
+        CFRelease(pixelData);
+        if (!provider) {
+            NSLog(@"save_fuzzed_frame: CGDataProviderCreate failed");
+            return 0;
+        }
+
+        CGColorSpaceRef cs = CGColorSpaceCreateDeviceRGB();
+        // BGRA pixel format: premultiplied first + little-endian 32-bit
+        CGImageRef cgImg = CGImageCreate(w, h, 8, 32, bpr, cs,
+            kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little,
+            provider, NULL, false, kCGRenderingIntentDefault);
+        CGDataProviderRelease(provider);
+        CGColorSpaceRelease(cs);
+
+        if (!cgImg) {
+            NSLog(@"save_fuzzed_frame: CGImageCreate failed (%zu x %zu, bpr=%zu)", w, h, bpr);
+            return 0;
+        }
+
+        NSString *path = [NSString stringWithFormat:@"%s/fuzzed_iter%03d_frame%03d.png",
+                          outputDir, iteration, frame];
+        NSURL *url = [NSURL fileURLWithPath:path];
+        CGImageDestinationRef dest = CGImageDestinationCreateWithURL(
+            (__bridge CFURLRef)url, (__bridge CFStringRef)UTTypePNG.identifier, 1, NULL);
+        if (!dest) {
+            NSLog(@"save_fuzzed_frame: CGImageDestinationCreateWithURL failed for %@", path);
+            CGImageRelease(cgImg);
+            return 0;
+        }
+
+        CGImageDestinationAddImage(dest, cgImg, NULL);
+        bool ok = CGImageDestinationFinalize(dest);
+        CFRelease(dest);
+        CGImageRelease(cgImg);
+
+        if (!ok) {
+            NSLog(@"save_fuzzed_frame: CGImageDestinationFinalize failed for %@", path);
+            return 0;
+        }
+        return 1;
+    }
+}
+
+#pragma mark - Fuzzing Function
+
 /**
 @brief Fuzzes a video file by applying various intensities of bit flips, data injections, and buffer overflows.
 
-This function opens a video file using AVFoundation, reads its frames, and applies fuzzing techniques to the frames. The fuzzing intensities for bit flipping, data injection, and buffer overflow increase as specified by the parameters.
+Opens a video file using AVFoundation, reads its frames, applies fuzzing mutations, and optionally
+saves the first mutated frame as PNG. Saves frames inline to avoid the wasteful re-open pattern.
 
 @param filename The path to the video file to fuzz.
 @param flip_intensity The intensity of bit flips to apply to the video frames.
 @param inject_intensity The intensity of random data injections to apply to the video frames.
 @param overflow_intensity The intensity of buffer overflows to apply to the video frames.
-@return 1 if the fuzzing was successful, or 0 if there was an error.
+@param outputDir Optional output directory for saving fuzzed frames (NULL to skip).
+@param iteration The current fuzzing iteration number (for filename generation).
+@return Number of frames saved (>= 0), or -1 on video open/decode error.
 */
-int fuzz(const char *filename, int flip_intensity, int inject_intensity, int overflow_intensity) {
+int fuzz(const char *filename, int flip_intensity, int inject_intensity, int overflow_intensity,
+         const char *outputDir, int iteration) {
+    int framesSaved = 0;
     @autoreleasepool {
         NSError *error = nil;
         NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithCString:filename encoding:NSUTF8StringEncoding]];
         AVAsset *asset = [AVAsset assetWithURL:fileURL];
-        if (asset == nil) return 0;
+        if (asset == nil) return -1;
 
         __strong AVAssetReader *reader = [[AVAssetReader alloc] initWithAsset:asset error:&error];
-        if (reader == nil) return 0;
+        if (reader == nil) return -1;
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
         NSArray *tracks = [asset tracksWithMediaType:AVMediaTypeVideo];
 #pragma clang diagnostic pop
         if (tracks == nil || ([tracks count] == 0)) {
-            reader = nil; // Release reader
-            return 0;
+            reader = nil;
+            return -1;
         }
 
         @try {
             AVAssetTrack *track = tracks[0];
             NSDictionary *outputSettings = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCMPixelFormat_32BGRA]
-                                                                       forKey:(id)kCVPixelBufferPixelFormatTypeKey];
+                                                                        forKey:(id)kCVPixelBufferPixelFormatTypeKey];
             AVAssetReaderTrackOutput *output = [AVAssetReaderTrackOutput assetReaderTrackOutputWithTrack:track outputSettings:outputSettings];
             [reader addOutput:output];
-            if (![reader startReading]) return 0;
+            if (![reader startReading]) return -1;
 
             for (int frame = 0; frame < 100; frame++) {
                 @autoreleasepool {
                     CMSampleBufferRef sampleBuffer = [output copyNextSampleBuffer];
                     if (sampleBuffer == nil) break;
 
-                    NSLog(@"Processing frame %d with flip intensity %d, inject intensity %d, overflow intensity %d", frame, flip_intensity, inject_intensity, overflow_intensity);
-
-                    // Extract pixel buffer and apply fuzzing mutations
                     CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
                     if (imageBuffer) {
                         CVPixelBufferLockBaseAddress(imageBuffer, 0);
@@ -292,14 +316,12 @@ int fuzz(const char *filename, int flip_intensity, int inject_intensity, int ove
                         size_t totalBytes = bytesPerRow * height;
 
                         if (baseAddress && totalBytes > 0) {
-                            // Bit-flip fuzzing: flip random bits proportional to intensity
                             for (int f = 0; f < flip_intensity * 10; f++) {
                                 size_t pos = arc4random_uniform((uint32_t)totalBytes);
                                 uint8_t bit = 1 << arc4random_uniform(8);
                                 baseAddress[pos] ^= bit;
                             }
 
-                            // Inject fuzzing: overwrite random spans with patterns
                             for (int j = 0; j < inject_intensity; j++) {
                                 size_t pos = arc4random_uniform((uint32_t)(totalBytes > 16 ? totalBytes - 16 : 1));
                                 size_t len = arc4random_uniform(16) + 1;
@@ -308,10 +330,8 @@ int fuzz(const char *filename, int flip_intensity, int inject_intensity, int ove
                                 memset(baseAddress + pos, pattern, len);
                             }
 
-                            // Overflow-style fuzzing: write extreme values at row boundaries
                             for (int o = 0; o < overflow_intensity && o < (int)height; o++) {
                                 size_t rowStart = (arc4random_uniform((uint32_t)height)) * bytesPerRow;
-                                // Overwrite last 4 bytes of row with 0xFF
                                 for (size_t b = 0; b < 4 && rowStart + bytesPerRow - 1 - b < totalBytes; b++) {
                                     baseAddress[rowStart + bytesPerRow - 1 - b] = 0xFF;
                                 }
@@ -322,6 +342,11 @@ int fuzz(const char *filename, int flip_intensity, int inject_intensity, int ove
                         }
 
                         CVPixelBufferUnlockBaseAddress(imageBuffer, 0);
+
+                        // Save first frame of each iteration inline (actual mutated data)
+                        if (outputDir && frame == 0) {
+                            framesSaved += save_fuzzed_frame(imageBuffer, outputDir, iteration, frame);
+                        }
                     }
 
                     CMSampleBufferInvalidate(sampleBuffer);
@@ -330,77 +355,21 @@ int fuzz(const char *filename, int flip_intensity, int inject_intensity, int ove
                 }
             }
         } @finally {
-            [reader cancelReading]; // Ensure reader is properly stopped
-            reader = nil; // Explicitly release reader
+            [reader cancelReading];
+            reader = nil;
         }
     }
-    return 1;
+    return framesSaved;
 }
 
 #pragma mark - Application Entry Point
 
-/**
-@brief The main function of the fuzzing application.
-
-This function sets up the environment, initializes signal handlers, and performs multiple iterations of fuzzing on the provided video file. The fuzzing intensities increase with each iteration.
-
-@param argc The number of command-line arguments.
-@param argv The array of command-line arguments.
-@return 0 if the program executes successfully, or a non-zero value if there was an error.
-*/
 static void print_usage(const char *prog) {
     printf("Usage: %s [options] <filename>\n", prog);
     printf("Options:\n");
     printf("  -t <seconds>  Fuzzing duration in seconds (default: 60, 0 = unlimited)\n");
     printf("  -o <dir>      Output directory for fuzzed frames (default: none)\n");
     printf("  -h            Show this help\n");
-}
-
-/**
-@brief Saves a fuzzed frame as a PNG file in the output directory.
-
-@param imageBuffer The pixel buffer to save.
-@param outputDir   The directory to write the file into.
-@param iteration   The fuzzing iteration number.
-@param frame       The frame number within the iteration.
-*/
-static void save_fuzzed_frame(CVImageBufferRef imageBuffer, const char *outputDir, int iteration, int frame) {
-    @autoreleasepool {
-        CVPixelBufferLockBaseAddress(imageBuffer, kCVPixelBufferLock_ReadOnly);
-        size_t w = CVPixelBufferGetWidth(imageBuffer);
-        size_t h = CVPixelBufferGetHeight(imageBuffer);
-        size_t bpr = CVPixelBufferGetBytesPerRow(imageBuffer);
-        void *base = CVPixelBufferGetBaseAddress(imageBuffer);
-        if (!base || w == 0 || h == 0) {
-            CVPixelBufferUnlockBaseAddress(imageBuffer, kCVPixelBufferLock_ReadOnly);
-            return;
-        }
-
-        CGColorSpaceRef cs = CGColorSpaceCreateDeviceRGB();
-        // BGRA pixel format: premultiplied first + little-endian 32-bit
-        CGContextRef cgCtx = CGBitmapContextCreate(base, w, h, 8, bpr,
-            cs, kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little);
-        CVPixelBufferUnlockBaseAddress(imageBuffer, kCVPixelBufferLock_ReadOnly);
-        if (!cgCtx) { CGColorSpaceRelease(cs); return; }
-
-        CGImageRef cgImg = CGBitmapContextCreateImage(cgCtx);
-        CGContextRelease(cgCtx);
-        CGColorSpaceRelease(cs);
-        if (!cgImg) return;
-
-        NSString *path = [NSString stringWithFormat:@"%s/fuzzed_iter%03d_frame%03d.png",
-                          outputDir, iteration, frame];
-        NSURL *url = [NSURL fileURLWithPath:path];
-        CGImageDestinationRef dest = CGImageDestinationCreateWithURL(
-            (__bridge CFURLRef)url, (__bridge CFStringRef)UTTypePNG.identifier, 1, NULL);
-        if (dest) {
-            CGImageDestinationAddImage(dest, cgImg, NULL);
-            CGImageDestinationFinalize(dest);
-            CFRelease(dest);
-        }
-        CGImageRelease(cgImg);
-        NSLog(@"Saved fuzzed frame: %@", path);
-    }
 }
 
 int main(int argc, const char *argv[]) {
@@ -452,6 +421,7 @@ int main(int argc, const char *argv[]) {
 
     time_t startTime = time(NULL);
     int iteration = 0;
+    int totalFramesSaved = 0;
     NSLog(@"Starting fuzzing: file=%s, duration=%ds, output=%s",
           filename, duration, outputDir ? outputDir : "(none)");
 
@@ -468,58 +438,17 @@ int main(int argc, const char *argv[]) {
         iteration++;
         int intensity = ((iteration - 1) % 50) + 1;
 
-        NSLog(@"Fuzzing iteration %d (intensity %d)", iteration, intensity);
-        int result = fuzz(filename, intensity, intensity, intensity);
+        int result = fuzz(filename, intensity, intensity, intensity, outputDir, iteration);
 
-        if (result == 1) {
-            // Save a representative frame if output directory is set
-            if (outputDir) {
-                // Re-read first frame and save it fuzzed
-                @autoreleasepool {
-                    NSError *error = nil;
-                    NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithCString:filename encoding:NSUTF8StringEncoding]];
-                    AVAsset *asset = [AVAsset assetWithURL:fileURL];
-                    if (asset) {
-                        AVAssetReader *reader = [[AVAssetReader alloc] initWithAsset:asset error:&error];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-                        NSArray *tracks = [asset tracksWithMediaType:AVMediaTypeVideo];
-#pragma clang diagnostic pop
-                        if (reader && tracks.count > 0) {
-                            NSDictionary *settings = @{(id)kCVPixelBufferPixelFormatTypeKey: @(kCMPixelFormat_32BGRA)};
-                            AVAssetReaderTrackOutput *out = [AVAssetReaderTrackOutput assetReaderTrackOutputWithTrack:tracks[0] outputSettings:settings];
-                            [reader addOutput:out];
-                            if ([reader startReading]) {
-                                CMSampleBufferRef sb = [out copyNextSampleBuffer];
-                                if (sb) {
-                                    CVImageBufferRef ib = CMSampleBufferGetImageBuffer(sb);
-                                    if (ib) {
-                                        CVPixelBufferLockBaseAddress(ib, 0);
-                                        // Apply fuzzing to this frame before saving
-                                        uint8_t *base = (uint8_t *)CVPixelBufferGetBaseAddress(ib);
-                                        size_t total = CVPixelBufferGetBytesPerRow(ib) * CVPixelBufferGetHeight(ib);
-                                        if (base && total > 0) {
-                                            for (int f = 0; f < intensity * 10; f++) {
-                                                size_t pos = arc4random_uniform((uint32_t)total);
-                                                base[pos] ^= (1 << arc4random_uniform(8));
-                                            }
-                                        }
-                                        CVPixelBufferUnlockBaseAddress(ib, 0);
-                                        save_fuzzed_frame(ib, outputDir, iteration, 0);
-                                    }
-                                    CMSampleBufferInvalidate(sb);
-                                    CFRelease(sb);
-                                }
-                            }
-                            [reader cancelReading];
-                        }
-                    }
-                }
+        if (result >= 0) {
+            totalFramesSaved += result;
+            // Log periodically to avoid excessive output
+            if (iteration % 100 == 0 || iteration == 1) {
+                log_gpu_memory_info("Fuzzing progress", __FILE__, __FUNCTION__, __LINE__);
+                NSLog(@"Progress: iteration %d, %d frames saved so far", iteration, totalFramesSaved);
             }
-            log_gpu_memory_info("Fuzzing completed successfully", __FILE__, __FUNCTION__, __LINE__);
         } else {
-            NSLog(@"Fuzzing iteration %d: codec unavailable, generating synthetic frame", iteration);
-            // Generate synthetic fuzzed frame when video codec is unavailable (e.g. CI headless)
+            // Video decode failed — generate synthetic fuzzed frame
             if (outputDir) {
                 @autoreleasepool {
                     size_t w = 320, h = 240;
@@ -545,24 +474,28 @@ int main(int argc, const char *argv[]) {
                             base[pos] ^= (1 << arc4random_uniform(8));
                         }
                         CVPixelBufferUnlockBaseAddress(pb, 0);
-                        // Save every 100th synthetic frame to avoid excessive disk I/O
-                        if (iteration % 100 == 0) {
-                            save_fuzzed_frame(pb, outputDir, iteration, 0);
+                        // Save every 10th synthetic frame
+                        if (iteration % 10 == 0) {
+                            totalFramesSaved += save_fuzzed_frame(pb, outputDir, iteration, 0);
                         }
                         CVPixelBufferRelease(pb);
                     }
                 }
             }
-            log_gpu_memory_info("Synthetic frame generated", __FILE__, __FUNCTION__, __LINE__);
+            if (iteration % 100 == 0 || iteration == 1) {
+                log_gpu_memory_info("Synthetic frame generated", __FILE__, __FUNCTION__, __LINE__);
+            }
         }
     }
 
     time_t elapsed = time(NULL) - startTime;
-    NSLog(@"Fuzzing complete: %d iterations, %ld seconds elapsed", iteration, (long)elapsed);
+    NSLog(@"Fuzzing complete: %d iterations, %d frames saved, %ld seconds elapsed",
+          iteration, totalFramesSaved, (long)elapsed);
     printf("## VideoToolbox Fuzzer Summary\n");
     printf("- Input: %s\n", filename);
     printf("- Duration: %lds / %ds target\n", (long)elapsed, duration);
     printf("- Iterations: %d\n", iteration);
+    printf("- Fuzzed frames: %d\n", totalFramesSaved);
     if (outputDir) {
         printf("- Output: %s\n", outputDir);
     }
