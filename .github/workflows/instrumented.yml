@@ -281,8 +281,11 @@ jobs:
           if-no-files-found: warn
 
   # ── Job 2: macOS Native Build (ASAN+UBSAN, no Xcode) ──────
-  # Compiles xnuimagefuzzer.m directly with clang against macOS
-  # frameworks — validates that the code works outside Mac Catalyst.
+  # Compiles xnuimagefuzzer.m directly with clang using the Mac
+  # Catalyst target — validates the build works without xcodebuild.
+  # Uses -target arm64-apple-ios-macabi because xnuimagefuzzer.m
+  # requires UIKit (87 API references), which is only available
+  # via Mac Catalyst on macOS (not the raw macOS SDK).
   macos-native:
     name: macOS Native (ASAN+UBSAN — ${{ matrix.os }})
     strategy:
@@ -313,26 +316,31 @@ jobs:
       - name: Build with ASAN + UBSAN
         run: |
           set -euo pipefail
-          SDK_PATH="$(xcrun --sdk macosx --show-sdk-path)"
+          SDKROOT="$(xcrun --show-sdk-path)"
           SANITIZER_FLAGS="-fsanitize=address,undefined -fno-omit-frame-pointer -fno-optimize-sibling-calls"
+          SRC_DIR="XNU Image Fuzzer/XNU Image Fuzzer"
 
           mkdir -p /tmp/macos-native-build
 
-          xcrun -sdk macosx clang \
-            -isysroot "$SDK_PATH" \
-            -arch arm64 -g -O1 -Wall -Wextra \
+          clang -arch arm64 \
+            -target arm64-apple-ios17.2-macabi \
+            -isysroot "$SDKROOT" \
+            -iframework "$SDKROOT/System/iOSSupport/System/Library/Frameworks" \
+            -g -O1 -Wall -Wextra \
             $SANITIZER_FLAGS \
             -DFUZZ_OUTPUT_DIR='"/tmp/fuzzed-output-native"' \
             -fobjc-arc \
+            -I"$SRC_DIR" \
             -o /tmp/macos-native-build/xnuimagefuzzer \
-            "XNU Image Fuzzer/XNU Image Fuzzer/xnuimagefuzzer.m" \
+            "$SRC_DIR/xnuimagefuzzer.m" \
+            "$SRC_DIR/AppDelegate.m" \
+            "$SRC_DIR/SceneDelegate.m" \
+            "$SRC_DIR/ViewController.m" \
             -framework Foundation \
+            -framework UIKit \
             -framework CoreGraphics \
-            -framework CoreImage \
             -framework ImageIO \
             -framework UniformTypeIdentifiers \
-            -framework CoreServices \
-            -framework AppKit \
             2>&1 | head -50
 
           echo "✅ macOS native build succeeded"
