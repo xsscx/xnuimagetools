@@ -390,7 +390,8 @@ jobs:
           FUZZ_DIR="/tmp/catalyst-output"
           mkdir -p "$FUZZ_DIR"
 
-          # Locate the Mac Catalyst binary
+          # Locate the Mac Catalyst binary — use EFFECTIVE_PLATFORM_NAME filter
+          # to ensure we get Debug-maccatalyst not Debug-iphoneos
           BUILD_DIR=$(xcodebuild \
             -project "$PROJECT" \
             -scheme "$SCHEME" \
@@ -400,11 +401,18 @@ jobs:
             CODE_SIGN_IDENTITY="-" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO \
-            2>/dev/null | grep -m1 'BUILT_PRODUCTS_DIR' | awk '{print $3}')
+            2>/dev/null | grep 'BUILT_PRODUCTS_DIR' | grep -i 'maccatalyst' | head -1 | awk '{print $3}')
+
+          # Fallback: derive path from DerivedData if grep missed
+          if [ -z "$BUILD_DIR" ] || [ ! -d "$BUILD_DIR" ]; then
+            BUILD_DIR=$(find ~/Library/Developer/Xcode/DerivedData -type d -name "Debug-maccatalyst" 2>/dev/null | head -1)
+          fi
 
           APP_PATH="$BUILD_DIR/XNU Image Fuzzer.app"
           if [ ! -d "$APP_PATH" ]; then
             echo "❌ Mac Catalyst app not found at $APP_PATH"
+            echo "BUILD_DIR=$BUILD_DIR"
+            find ~/Library/Developer/Xcode/DerivedData -type d -name "Debug-*" 2>/dev/null | head -5
             ls -la "$BUILD_DIR/" 2>/dev/null || true
             exit 1
           fi
