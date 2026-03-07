@@ -125,6 +125,11 @@ main() → performAllImagePermutations()
       createBitmapContext*() → fill with fuzz data
       → CGBitmapContextCreateImage()
       → saveFuzzedImage(seed) → FUZZ_OUTPUT_DIR/
+        └→ saveFuzzedImageWithICCVariants() (TIFF/PNG only)
+           ├→ encodeImageWithICCProfile()     — real ICC from FUZZ_ICC_DIR
+           ├→ encodeImageStrippingColorSpace() — DeviceRGB, no ICC metadata
+           ├→ encodeImageWithMismatchedProfile() — CMYK/Gray/Lab on RGB
+           └→ mutateICCProfile() + encode      — corrupted ICC profile
       → applyPostEncodingCorruption(seed) → 6 PNG chunk-level mutations
       → saveFuzzedImage(corrupted) → FUZZ_OUTPUT_DIR/
       → processImage(seed, permutation) → save as PNG/JPEG/GIF/TIFF
@@ -163,10 +168,48 @@ main() → performAllImagePermutations()
 Images are saved as: PNG, JPEG, GIF, BMP, TIFF, HEIF
 using `CGImageDestinationCreateWithURL` with the appropriate UTType.
 
+### ICC Variant Generation
+
+Every `saveFuzzedImage()` call for TIFF and PNG outputs automatically triggers
+`saveFuzzedImageWithICCVariants()`, which produces up to 4 additional files per image:
+
+| Variant | Function | Description |
+|---------|----------|-------------|
+| Real ICC | `encodeImageWithICCProfile()` | Injects ICC from `FUZZ_ICC_DIR` via `kCGImagePropertyICCProfile` |
+| Stripped | `encodeImageStrippingColorSpace()` | Re-renders through DeviceRGB — no ICC metadata |
+| Mismatched | `encodeImageWithMismatchedProfile()` | CMYK/Gray/Lab/truncated profile on RGB image |
+| Mutated | `mutateICCProfile()` + encode | 6 corruption strategies on real ICC data |
+
+**Mismatch strategies** (cycled per call):
+1. CMYK output profile on RGB image (`prtr` + `CMYK` color space)
+2. Gray display profile on RGB image (`mntr` + `GRAY` color space)
+3. Abstract Lab profile on RGB image (`abst` + `Lab` + `Lab` PCS)
+4. Truncated profile (header says 1024 bytes, only 132 present)
+
+**`encodeImageMultiFormat()` also produces ICC variants:**
+- `tiff-no-icc.tiff` / `png-no-icc.png` — stripped color space
+- `tiff-icc-mismatch.tiff` / `png-icc-mismatch.png` — mismatched profiles
+- `tiff-cs0.tiff` through `tiff-cs6.tiff` — 7 named color spaces (sRGB, AdobeRGB1998, DisplayP3, GenericRGBLinear, GenericGrayGamma2.2, ACESCGLinear, ExtendedLinearSRGB)
+
+### ICC Profile Functions Reference
+
+| Function | Lines | Purpose |
+|----------|-------|---------|
+| `encodeImageWithICCProfile()` | ~2060-2095 | Inject raw ICC via `kCGImagePropertyICCProfile` property dict |
+| `encodeImageStrippingColorSpace()` | ~2105-2140 | Re-render through DeviceRGB context, encode with no ICC |
+| `encodeImageWithMismatchedProfile()` | ~2155-2210 | Build synthetic 132-byte ICC header with wrong color space |
+| `saveFuzzedImageWithICCVariants()` | ~2220-2305 | Orchestrate all 4 variants, output to `FUZZ_OUTPUT_DIR` |
+| `embedICCProfile()` | ~2025-2115 | Re-render through ICC color space (3-component only) |
+| `embedICCProfileData()` | ~2900-2960 | Embed from raw ICC bytes via CGColorSpaceCreateWithICCData |
+| `mutateICCProfile()` | ~2960-3090 | 6 targeted corruption strategies |
+| `loadICCProfilePaths()` | ~2120-2145 | Read `FUZZ_ICC_DIR` env var, return array of .icc/.icm paths |
+| `createNamedColorSpace()` | ~2150-2175 | 7 named Apple color spaces by index |
+
 ### Environment Variables
 | Variable | Purpose |
 |----------|---------|
-| `FUZZ_OUTPUT_DIR` | Override image output directory |
+| `FUZZ_OUTPUT_DIR` | Override image output directory (default: app Documents) |
+| `FUZZ_ICC_DIR` | Directory of `.icc`/`.icm` profiles for embedding (round-robin) |
 | `LLVM_PROFILE_FILE` | Coverage profraw output path |
 | `ASAN_OPTIONS` | AddressSanitizer configuration |
 | `UBSAN_OPTIONS` | UBSanitizer configuration |
@@ -378,9 +421,24 @@ lldb -- /tmp/xnuimagetools                     # interactive debugging
 
 ## CFL Fuzzer Seed Pipeline
 
-The xnuimagetools output can feed the CFL (Crash-Free LibFuzzer) ICC profile fuzzers
-in the parent research repo. The bridge script extracts ICC profiles from fuzzed images
-and copies TIFF files for the tiffdump/specsep fuzzers.
+The xnuimagetools output feeds the CFL (Crash-Free LibFuzzer) ICC profile fuzzers
+in the research repo. With ICC variant generation enabled, each run produces images
+with diverse ICC profiles embedded — dramatically improving CFL seed coverage.
+
+### Maximizing ICC profile diversity
+Set `FUZZ_ICC_DIR` to generate ICC-rich output:
+```bash
+FUZZ_ICC_DIR=../test-profiles FUZZ_OUTPUT_DIR=/tmp/icc-rich-output ./XNU\ Image\ Fuzzer
+```
+
+**Without `FUZZ_ICC_DIR`**: ICC variants still generate stripped (no-ICC) and mismatched
+(CMYK/Gray/Lab on RGB) files. Only real ICC and mutated ICC variants require `FUZZ_ICC_DIR`.
+
+**Expected output per TIFF/PNG save** (with `FUZZ_ICC_DIR` set):
+- `fuzzed_image_<ctx>_icc_<profilename>.tiff` — real ICC profile embedded
+- `fuzzed_image_<ctx>_icc_mutated.tiff` — mutated ICC profile
+- `fuzzed_image_<ctx>_no_icc.tiff` — stripped color space
+- `fuzzed_image_<ctx>_icc_mismatch.tiff` — mismatched profile
 
 ### Extract and inject seeds
 ```bash
@@ -404,11 +462,18 @@ python3 contrib/scripts/extract-icc-seeds.py \
 - **ICC profiles** → `corpus-icc_profile_fuzzer/`, `corpus-icc_dump_fuzzer/`,
   `corpus-icc_deep_dump_fuzzer/`, `corpus-icc_toxml_fuzzer/`
 - **TIFF files** → `corpus-icc_tiffdump_fuzzer/`, `corpus-icc_specsep_fuzzer/`
+- **Mismatched ICC TIFFs** → Especially valuable for error-path coverage in
+  `icc_profile_fuzzer` and `icc_toxml_fuzzer` (exercises ICC validation failures)
 
-### Maximizing ICC profile diversity
-To generate more embedded ICC profiles (currently only 2/2900 images have them),
-set `FUZZ_ICC_DIR` to a directory of ICC profiles before running the fuzzer:
-```bash
-FUZZ_ICC_DIR=../test-profiles FUZZ_OUTPUT_DIR=/tmp/icc-rich-output ./XNU\ Image\ Fuzzer
-```
-This round-robins through the profiles and embeds them into every generated image.
+### Coverage Optimization Methodology (Proven 5-Step Process)
+
+This methodology was developed across multi-session work and yielded significant
+coverage improvements across all 19 CFL fuzzers:
+
+1. **Coverage Report Analysis** — Generate `llvm-cov` reports, identify uncovered functions
+2. **Dictionary Expansion** — Add type signatures, tag names, magic bytes from uncovered code paths
+3. **Targeted Seed Creation** — Synthesize seed files exercising specific functions
+4. **Fidelity Audit** — Compare fuzzer input handling vs upstream iccDEV tool behavior
+5. **Doxygen Inheritance Analysis** — Map class hierarchies to find untested leaf classes
+6. **ICC Diversity Generation** — Use xnuimagetools ICC variants to create seeds with
+   embedded/stripped/mismatched/mutated ICC profiles

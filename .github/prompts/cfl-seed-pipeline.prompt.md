@@ -17,19 +17,36 @@ TIFF files across hardware-diverse image outputs.
 
 ## Phase 1: Generate ICC-Rich Images
 
-By default, most xnuimagetools images do NOT embed ICC profiles — they use named
-color spaces (DeviceRGB, DeviceGray). To maximize ICC diversity:
+With ICC variant generation (commit 5865137), every TIFF/PNG save automatically
+produces up to 4 ICC variants — stripped, mismatched, real ICC, and mutated ICC.
+Setting `FUZZ_ICC_DIR` unlocks all 4 strategies:
 
 ```bash
-# Set FUZZ_ICC_DIR to a library of ICC profiles before running the fuzzer
+# Full ICC diversity — generates all 4 variant types per TIFF/PNG save
 FUZZ_ICC_DIR=../research/test-profiles \
 FUZZ_OUTPUT_DIR=/tmp/icc-rich-output \
   ./XNU\ Image\ Fuzzer
 
-# This round-robins through the profiles and embeds them into every generated image.
-# With 15 bitmap contexts × N ICC profiles × 6 formats, this generates thousands
-# of images with diverse ICC profile + pixel format combinations.
+# Without FUZZ_ICC_DIR — still generates stripped + mismatched variants
+# (real ICC and mutated ICC require FUZZ_ICC_DIR)
+FUZZ_OUTPUT_DIR=/tmp/basic-output ./XNU\ Image\ Fuzzer
 ```
+
+### ICC Variant Output Per Save
+
+| Variant | Filename Pattern | Requires FUZZ_ICC_DIR |
+|---------|-----------------|----------------------|
+| Real ICC | `fuzzed_image_<ctx>_icc_<name>.<ext>` | Yes |
+| Mutated ICC | `fuzzed_image_<ctx>_icc_mutated.<ext>` | Yes |
+| Stripped | `fuzzed_image_<ctx>_no_icc.<ext>` | No |
+| Mismatched | `fuzzed_image_<ctx>_icc_mismatch.<ext>` | No |
+
+### encodeImageMultiFormat Variants
+
+Additionally, `encodeImageMultiFormat()` produces:
+- `tiff-no-icc.tiff` / `png-no-icc.png`
+- `tiff-icc-mismatch.tiff` / `png-icc-mismatch.png`
+- `tiff-cs0.tiff` through `tiff-cs6.tiff` (7 named Apple color spaces)
 
 ### ICC Profile Sources (Priority Order)
 

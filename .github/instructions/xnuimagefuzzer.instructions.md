@@ -2,10 +2,10 @@
 
 ## What This Is
 
-A 5,119-line Objective-C image fuzzer that exercises Apple's CoreGraphics rendering
-pipeline through 15 distinct CGBitmapContext configurations, plus structure-aware PNG
-chunk mutations and post-encoding corruption strategies. Runs on macOS (Mac Catalyst),
-iOS, iPadOS, watchOS, and visionOS.
+A 5,400+-line Objective-C image fuzzer that exercises Apple's CoreGraphics rendering
+pipeline through 15 distinct CGBitmapContext configurations, ICC profile variant
+generation (4 strategies), structure-aware PNG chunk mutations, and 30+ output format
+encodings. Runs on macOS (Mac Catalyst), iOS, iPadOS, watchOS, and visionOS.
 
 ## Build
 
@@ -51,19 +51,41 @@ cd "XNU Image Fuzzer" && cmake -B build -G Ninja \
 
 ## Output Formats
 
-Each bitmap context generates images in multiple formats:
-- **PNG** — with 6 post-encoding corruption strategies
+Each bitmap context generates images in multiple formats plus ICC variants:
+- **PNG** — with 6 post-encoding corruption strategies + ICC variants
 - **JPEG** — quality 0.8
-- **TIFF** — uncompressed, 16-bit, float variants
+- **TIFF** — uncompressed, LZW, PackBits, JPEG-in-TIFF, Deflate + ICC variants
 - **GIF** — via ImageIO
 - **BMP** — via ImageIO
-- **HEIF** — when hardware encoder available
+- **HEIF/HEIC** — when hardware encoder available
+- **WebP, JP2, DNG, TGA, ASTC, KTX, PDF, ICNS, EXR** — via `encodeImageMultiFormat()`
 
-Total output per run: 15 contexts × 17 seed specs × 6+ formats = **1,500+ images**
+Total output per run: 15 contexts × 17 seed specs × 6+ formats + ICC variants = **2,000+ images**
 
-## ICC Profile Handling (Lines 625–2020)
+## ICC Profile Handling
 
-### Embedding
+### ICC Variant Generation (Lines ~2060–2305)
+
+Every `saveFuzzedImage()` call for TIFF/PNG outputs triggers `saveFuzzedImageWithICCVariants()`,
+producing up to 4 additional ICC-diverse files:
+
+| Function | Purpose | ICC Source |
+|----------|---------|-----------|
+| `encodeImageWithICCProfile()` | Inject raw ICC via `kCGImagePropertyICCProfile` | `FUZZ_ICC_DIR` (round-robin) |
+| `encodeImageStrippingColorSpace()` | Re-render through DeviceRGB, strip ICC | None (orphan image) |
+| `encodeImageWithMismatchedProfile()` | Attach wrong-colorspace ICC header | Synthetic 132-byte header |
+| `mutateICCProfile()` + encode | Corrupt real ICC data, then embed | Mutated `FUZZ_ICC_DIR` profile |
+
+### Mismatch Strategies (cycled per call)
+1. **CMYK on RGB** — `prtr` class, `CMYK` data space, `Lab` PCS
+2. **Gray on RGB** — `mntr` class, `GRAY` data space, `XYZ` PCS
+3. **Abstract Lab on RGB** — `abst` class, `Lab` data space, `Lab` PCS
+4. **Truncated** — header says 1024 bytes, only 132 present (size mismatch)
+
+All synthetic headers include valid `acsp` magic (offset 36) and D50 PCS illuminant
+(offset 68–79) to pass initial parser validation before triggering deep-path errors.
+
+### Legacy Embedding (Lines ~2025–2115)
 ```objc
 // embedICCProfile — loads from FUZZ_ICC_DIR and embeds via CGImageDestination
 CGImageDestinationAddImage(destination, image, (__bridge CFDictionaryRef)@{
@@ -71,6 +93,12 @@ CGImageDestinationAddImage(destination, image, (__bridge CFDictionaryRef)@{
     (NSString *)kCGImagePropertyICCProfile: iccData
 });
 ```
+
+### encodeImageMultiFormat ICC Outputs
+The multi-format encoder also produces ICC variants:
+- `tiff-no-icc.tiff` / `png-no-icc.png` — stripped DeviceRGB
+- `tiff-icc-mismatch.tiff` / `png-icc-mismatch.png` — mismatched profiles
+- `tiff-cs0.tiff` through `tiff-cs6.tiff` — 7 named Apple color spaces
 
 ### Environment Variables for ICC
 | Variable | Purpose | Example |
@@ -80,10 +108,10 @@ CGImageDestinationAddImage(destination, image, (__bridge CFDictionaryRef)@{
 | LLVM_PROFILE_FILE | Coverage profraw output | `output_%m_%p.profraw` |
 
 ### Key Insight
-**Most generated images do NOT embed ICC profiles** unless `FUZZ_ICC_DIR` is set.
-Only HDR float contexts (contexts 6 and 14) attach ICC profiles by default because
-they use `CGColorSpaceCreateWithName(kCGColorSpaceExtendedLinearSRGB)` which
-ImageIO embeds automatically for non-standard color spaces.
+**Without `FUZZ_ICC_DIR`**: ICC variants still generate stripped (no-ICC) and mismatched
+(CMYK/Gray/Lab/truncated on RGB) files. Only real ICC and mutated ICC variants require
+`FUZZ_ICC_DIR`. HDR float contexts (6 and 14) always embed `ExtendedLinearSRGB` ICC
+because ImageIO auto-embeds non-standard color spaces.
 
 To maximize ICC profile diversity for CFL fuzzer seeds:
 ```bash
@@ -103,8 +131,8 @@ FUZZ_ICC_DIR=../research/test-profiles FUZZ_OUTPUT_DIR=/tmp/icc-rich ./XNU\ Imag
 
 ## Memory Management
 
-**Manual retain/release** — NO ARC. Every `CGContextRef`, `CGColorSpaceRef`,
-`CGImageRef`, and `CFDataRef` must be explicitly released:
+**ARC enabled** (`CLANG_ENABLE_OBJC_ARC = YES`) — Objective-C objects are automatically
+managed. Core Graphics and Core Foundation objects still require explicit release:
 ```objc
 CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
 CGContextRef ctx = CGBitmapContextCreate(...);
@@ -116,7 +144,10 @@ CGColorSpaceRelease(colorSpace);
 **Common leak patterns:**
 - Missing `CGColorSpaceRelease()` in error paths
 - Missing `CGImageRelease()` after `CGBitmapContextCreateImage()`
+- Missing `CFRelease()` for `CGImageDestinationRef` and `CFStringRef`
 - `@autoreleasepool` blocks required around batch operations
+- ICC variant functions must release `CGContextRef`, `CGImageRef`, `CGColorSpaceRef`
+  in all early-return paths
 
 ## Debugging Environment Variables
 
@@ -147,16 +178,18 @@ python3 contrib/scripts/extract-icc-seeds.py \
 
 ### Seed Value by Bitmap Context
 
-| Context | ICC Value | TIFF Value | Notes |
-|---------|-----------|------------|-------|
-| StandardRGB | Low | Medium | Common DeviceRGB, well-tested |
-| HDRFloat | **High** | **High** | ExtendedLinearSRGB ICC auto-embedded |
-| HDRFloat16 | **High** | **High** | Half-precision edge cases |
-| CMYK | **High** | **High** | CMYK color space rarely fuzzed |
-| Grayscale | Medium | **High** | Tests grayscale ICC paths |
-| 16BitDepth | Medium | **High** | 16bpc TIFF exercises depth conversion |
-| 32BitFloat4 | Medium | **High** | 128-bit float TIFF exercises range |
-| IndexedColor | Low | Medium | Palette-based, limited ICC relevance |
+| Context | ICC Value | TIFF Value | ICC Variants | Notes |
+|---------|-----------|------------|-------------|-------|
+| StandardRGB | Medium | Medium | ✅ All 4 | Most common, ICC variants add diversity |
+| HDRFloat | **High** | **High** | ✅ All 4 | ExtendedLinearSRGB ICC auto-embedded |
+| HDRFloat16 | **High** | **High** | ✅ All 4 | Half-precision + ICC = rare combo |
+| CMYK | **High** | **High** | ✅ All 4 | CMYK ctx + CMYK mismatch ICC = double coverage |
+| Grayscale | Medium | **High** | ✅ All 4 | Gray ctx + Gray mismatch ICC = error paths |
+| 16BitDepth | Medium | **High** | ✅ All 4 | 16bpc TIFF + ICC exercises depth conversion |
+| 32BitFloat4 | Medium | **High** | ✅ All 4 | 128-bit float TIFF + ICC exercises range |
+| IndexedColor | Low | Medium | ✅ 2 (PNG) | Palette-based, ICC mismatch useful |
+| AlphaOnly | Low | Low | ❌ No TIFF | Alpha-only, limited ICC relevance |
+| 1BitMonochrome | Low | Medium | ✅ All 4 | Monochrome + RGB ICC = interesting mismatch |
 
 ## Testing
 

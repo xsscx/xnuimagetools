@@ -11,14 +11,15 @@ seed pipeline integration.
 
 ## Overview
 
-This methodology was developed during a session that achieved significant coverage
-gains across multiple fuzzers by combining five techniques:
+This methodology was developed across multi-session work that achieved significant
+coverage gains across 19 CFL fuzzers by combining six techniques:
 
 1. **HTML coverage report analysis** — identify uncovered lines and classify gaps
 2. **Dictionary expansion** — add ICC specification tokens to fuzzer dictionaries
 3. **Targeted seed creation** — craft inputs that exercise specific code paths
 4. **Source code fidelity audit** — compare fuzzers against iccDEV tool source code
 5. **Doxygen inheritance analysis** — find untested class hierarchies
+6. **ICC diversity generation** — use xnuimagetools ICC variants for seed enrichment
 
 ## Step 1: Identify Coverage Gaps from HTML Reports
 
@@ -206,4 +207,51 @@ feat(cfl): improve icc_link_fuzzer coverage
 - Coverage: 35% → 65% fidelity with IccApplyToLink tool
 - Edge count: +174 new edges in 30s verification
 - ASAN: 0 findings on smoke test
+```
+
+## Step 6: ICC Diversity via xnuimagetools
+
+After Steps 1–5, use xnuimagetools' ICC variant generation to create seeds with
+diverse ICC profile characteristics. This targets the remaining uncovered ICC
+parsing paths that need valid-structure but unusual-content profiles.
+
+### Generate ICC-Diverse Seeds
+
+```bash
+# Generate with all ICC variants (4 per TIFF/PNG save)
+FUZZ_ICC_DIR=../research/test-profiles \
+FUZZ_OUTPUT_DIR=/tmp/icc-diverse \
+  open --env FUZZ_ICC_DIR=../research/test-profiles \
+       --env FUZZ_OUTPUT_DIR=/tmp/icc-diverse "$APP_BUNDLE"
+
+# Extract and inject into CFL corpus
+python3 contrib/scripts/extract-icc-seeds.py \
+  --input /tmp/icc-diverse --inject-cfl ../research/cfl
+```
+
+### ICC Variant Types and Their Coverage Impact
+
+| Variant | Coverage Target | Why Effective |
+|---------|----------------|---------------|
+| Real ICC (round-robin) | TRC curves, A2B/B2A LUTs | Exercises full color conversion pipeline |
+| Stripped (no ICC) | Fallback/default paths | Tests what happens with no color management |
+| Mismatched (CMYK on RGB) | Validation + error handling | Triggers colorSpace mismatch detection |
+| Mismatched (Gray on RGB) | Channel count mismatch | Tests nComponents validation |
+| Mismatched (Lab abstract) | Abstract profile handling | Exercises Lab→Lab transform paths |
+| Mismatched (truncated) | Size validation | Tests profile size vs declared size |
+| Mutated (6 strategies) | Error recovery paths | Corrupted tags/offsets/CLUTs/headers |
+| Named color spaces (7) | Per-space TRC/gamut paths | sRGB/P3/AdobeRGB/ACES/ExtLinear |
+
+### Cross-Reference with Doxygen
+
+After generating ICC variants, cross-reference coverage gains against the Doxygen
+inheritance tree (`inherits.html`) to identify which CIccTag and CIccMpe subclasses
+the new seeds reached. Leaf classes still uncovered need hand-crafted seeds targeting
+their specific tag signatures:
+
+```bash
+# Check which tag types appear in the ICC variant seeds
+for f in /tmp/icc-diverse/fuzzed_image_*_icc_*.tiff; do
+  xxd "$f" | grep -c "acsp" && echo "$f"
+done
 ```
