@@ -401,7 +401,7 @@ jobs:
             CODE_SIGN_IDENTITY="-" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO \
-            2>/dev/null | grep 'BUILT_PRODUCTS_DIR' | grep -i 'maccatalyst' | head -1 | awk '{print $3}')
+            2>/dev/null | grep 'BUILT_PRODUCTS_DIR' | grep -i 'maccatalyst' | head -1 | awk '{print $3}' || true)
 
           # Fallback: derive path from DerivedData if grep missed
           if [ -z "$BUILD_DIR" ] || [ ! -d "$BUILD_DIR" ]; then
