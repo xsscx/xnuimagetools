@@ -22,7 +22,7 @@
 name: xnuimagetools-videotoolbox
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: videotoolbox-${{ github.ref }}
@@ -468,45 +468,23 @@ jobs:
           set -euo pipefail
           git config --global credential.helper ""
 
-      - name: Build videotoolbox-runner
+      - name: Download build artifacts
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: videotoolbox-fuzzer-macos
+          path: /tmp/videotoolbox-download
+
+      - name: Extract and prepare artifacts
         working-directory: VideoToolbox/Fuzzing
         run: |
           set -euo pipefail
           mkdir -p build
-
-          # Build interposer first (dependency)
-          xcrun -sdk macosx clang \
-            -arch arm64 -g -O1 -Wall -Wextra \
-            -dynamiclib \
-            -framework IOKit \
-            -framework CoreFoundation \
-            -framework CoreMedia \
-            -framework CoreVideo \
-            -framework VideoToolbox \
-            -lz \
-            -o build/videotoolbox-interposer.dylib \
-            videotoolbox-interposer.c
-          codesign -s "-" --force build/videotoolbox-interposer.dylib
-
-          # Build runner
-          xcrun -sdk macosx clang \
-            -arch arm64 -g -O1 -Wall -Wextra \
-            -o build/videotoolbox-runner \
-            videotoolbox-runner.m \
-            build/videotoolbox-interposer.dylib \
-            -framework VideoToolbox \
-            -framework Foundation \
-            -framework AVFoundation \
-            -framework CoreFoundation \
-            -framework CoreMedia \
-            -framework CoreVideo \
-            -framework CoreImage \
-            -framework CoreGraphics \
-            -framework ImageIO \
-            -framework UniformTypeIdentifiers \
-            -lz
+          tar xzf /tmp/videotoolbox-download/videotoolbox-fuzzer-macos.tar.gz -C build/
+          chmod +x build/videotoolbox-runner build/runner build/runner_dist
           codesign -s "-" --force build/videotoolbox-runner
-          echo "✅ videotoolbox-runner built for fuzzing"
+          codesign -s "-" --force build/videotoolbox-interposer.dylib
+          file build/videotoolbox-runner
+          echo "✅ Artifacts extracted from build-macos job"
 
       - name: Run VideoToolbox fuzzer
         working-directory: VideoToolbox/Fuzzing

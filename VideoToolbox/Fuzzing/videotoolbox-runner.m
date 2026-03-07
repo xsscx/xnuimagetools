@@ -168,24 +168,6 @@ void free_with_guard(void *ptr, size_t size) {
     munmap(base, total_size);
 }
 
-#pragma mark - Print env
-
-extern char **environ;
-
-/**
-@brief Prints all environment variables to the standard output.
-
-This function iterates over the environment variables and prints each one. This can be useful for debugging and understanding the context in which the application is running.
-*/
-void showme_environment() {
-    char **env = environ;
-    while (env && *env) {
-        // Safe printing of environment variables
-        printf("%s\n", *env);
-        env++;
-    }
-}
-
 #pragma mark - GPU Logging
 
 /**
@@ -206,9 +188,11 @@ void log_gpu_memory_info(const char *description, const char *file, const char *
 #pragma mark - Signal Logging
 
 /**
-@brief Signal handler that logs memory information and stack traces on signal receipt.
+@brief Signal handler that logs stack traces on signal receipt.
 
-This function is a signal handler that logs detailed memory information and stack traces when a signal (such as SIGSEGV or SIGABRT) is caught. It helps in diagnosing the cause of the signal and understanding the state of the program at the time of the signal.
+This function is a signal handler that logs stack traces when a signal
+(such as SIGSEGV or SIGABRT) is caught. Only async-signal-safe functions
+are called.
 
 @param sig The signal number.
 */
@@ -216,22 +200,15 @@ void signal_handler(int sig) {
     void *array[64];
     size_t size;
 
-    // Get void*'s for all entries on the stack
     size = backtrace(array, 64);
 
-    // Print out all the frames to stderr
-    DEBUG_PRINT("Error: signal %d:\n", sig);
-    log_memory_info();  // Log detailed memory info on signal
+    // Only use async-signal-safe functions in signal handler
+    const char msg[] = "Error: caught signal\n";
+    (void)write(STDERR_FILENO, msg, sizeof(msg) - 1);
 
-    // Cast size to int to avoid loss of precision warning
     backtrace_symbols_fd(array, (int)size, STDERR_FILENO);
 
-    // Log memory allocation details
-    malloc_printf("Malloc: signal %d caught. Memory dump:\n", sig);
-    log_memory_info();  // Log detailed memory info on signal
-    malloc_zone_print(NULL, 1);
-
-    exit(1);
+    _exit(128 + sig);
 }
 
 #pragma mark - Signal Handlers
@@ -244,11 +221,17 @@ This function sets up signal handlers for a variety of signals that might indica
 @note This setup is essential for debugging and ensuring that any errors are properly logged.
 */
 void setup_signal_handlers() {
-    signal(SIGABRT, signal_handler);
-    signal(SIGSEGV, signal_handler);
-    signal(SIGBUS, signal_handler);
-    signal(SIGILL, signal_handler);
-    signal(SIGFPE, signal_handler);
+    struct sigaction sa;
+    memset(&sa, 0, sizeof(sa));
+    sa.sa_handler = signal_handler;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+
+    sigaction(SIGABRT, &sa, NULL);
+    sigaction(SIGSEGV, &sa, NULL);
+    sigaction(SIGBUS, &sa, NULL);
+    sigaction(SIGILL, &sa, NULL);
+    sigaction(SIGFPE, &sa, NULL);
 }
 
 #pragma mark - Fuzzing Function
@@ -267,7 +250,7 @@ This function opens a video file using AVFoundation, reads its frames, and appli
 int fuzz(const char *filename, int flip_intensity, int inject_intensity, int overflow_intensity) {
     @autoreleasepool {
         NSError *error = nil;
-        NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithCString:filename encoding:NSASCIIStringEncoding]];
+        NSURL *fileURL = [NSURL fileURLWithPath:[NSString stringWithCString:filename encoding:NSUTF8StringEncoding]];
         AVAsset *asset = [AVAsset assetWithURL:fileURL];
         if (asset == nil) return 0;
 
@@ -486,7 +469,7 @@ int main(int argc, const char *argv[]) {
         int intensity = ((iteration - 1) % 50) + 1;
 
         NSLog(@"Fuzzing iteration %d (intensity %d)", iteration, intensity);
-        int result = fuzz(argv[1], intensity, intensity, intensity);
+        int result = fuzz(filename, intensity, intensity, intensity);
 
         if (result == 1) {
             // Save a representative frame if output directory is set

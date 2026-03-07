@@ -206,9 +206,9 @@ void flip_bits(void *buf, size_t len, int num_flips, int step) {
     log_fuzzing_info("Starting bit flips", len, buf, num_flips, step);
 
     for (int i = 0; i < num_flips; ++i) {
-        size_t offset = rand() % len;
-        int bit_position = rand() % 8;
-        ((uint8_t *)buf)[offset] ^= (0x1 << bit_position);  // Flip a random bit in a random byte
+        size_t offset = arc4random_uniform((uint32_t)len);
+        int bit_position = arc4random_uniform(8);
+        ((uint8_t *)buf)[offset] ^= (0x1 << bit_position);
     }
 
     log_fuzzing_info("Completed bit flips", len, buf, num_flips, step);
@@ -232,11 +232,11 @@ void inject_random_data(void *buf, size_t len, int num_injections, int step) {
     log_fuzzing_info("Starting data injection", len, buf, num_injections, step);
 
     for (int i = 0; i < num_injections; ++i) {
-        size_t offset = rand() % len;
-        int data_length = rand() % 4 + 1; // Random length between 1 and 4 bytes
+        size_t offset = arc4random_uniform((uint32_t)len);
+        int data_length = arc4random_uniform(4) + 1;
         for (int j = 0; j < data_length; ++j) {
             if (offset + j < len) {
-                ((uint8_t *)buf)[offset + j] = rand() % 256;  // Inject random byte
+                ((uint8_t *)buf)[offset + j] = (uint8_t)arc4random_uniform(256);
             }
         }
     }
@@ -265,13 +265,13 @@ void buffer_overflow(void *buf, size_t len, int overflow_amount, int step) {
     uint8_t *overflow_buf = (uint8_t *)malloc_with_guard(new_len);
     if (!overflow_buf) {
         log_allocation("Failed to allocate buffer", overflow_buf, new_len);
-        return; // Check for allocation failure
+        return;
     }
 
     memcpy(overflow_buf, buf, len);
 
     for (size_t i = len; i < new_len; ++i) {
-        overflow_buf[i] = (rand() % 2) ? 0x41 : rand() % 256; // Fill overflow with 'A' or random byte
+        overflow_buf[i] = (arc4random_uniform(2)) ? 0x41 : (uint8_t)arc4random_uniform(256);
     }
 
     log_allocation("Allocating buffer", overflow_buf, new_len);
@@ -373,16 +373,17 @@ void compression_fuzz(void *buf, size_t len, int step) {
 
     log_fuzzing_info("Starting compression fuzz", len, buf, 0, step);
 
-    size_t compressed_len = compressBound(len);
-    uint8_t *compressed_buf = (uint8_t *)malloc_with_guard(compressed_len);
+    size_t alloc_compressed_len = compressBound(len);
+    size_t compressed_len = alloc_compressed_len;
+    uint8_t *compressed_buf = (uint8_t *)malloc_with_guard(alloc_compressed_len);
     if (!compressed_buf) {
-        log_fuzzing_info("Failed to allocate compressed buffer", compressed_len, compressed_buf, 0, step);
+        log_fuzzing_info("Failed to allocate compressed buffer", alloc_compressed_len, compressed_buf, 0, step);
         return;
     }
 
     if (compress_data(buf, len, compressed_buf, &compressed_len) != Z_OK) {
         log_fuzzing_info("Compression failed", len, buf, 0, step);
-        free_with_guard(compressed_buf, compressed_len);
+        free_with_guard(compressed_buf, alloc_compressed_len);
         return;
     }
 
@@ -393,22 +394,22 @@ void compression_fuzz(void *buf, size_t len, int step) {
     uint8_t *decompressed_buf = (uint8_t *)malloc_with_guard(decompressed_len);
     if (!decompressed_buf) {
         log_fuzzing_info("Failed to allocate decompressed buffer", decompressed_len, decompressed_buf, 0, step);
-        free_with_guard(compressed_buf, compressed_len);
+        free_with_guard(compressed_buf, alloc_compressed_len);
         return;
     }
 
     if (decompress_data(compressed_buf, compressed_len, decompressed_buf, &decompressed_len) != Z_OK) {
         log_fuzzing_info("Decompression failed", len, buf, 0, step);
-        free_with_guard(decompressed_buf, decompressed_len);
-        free_with_guard(compressed_buf, compressed_len);
+        free_with_guard(decompressed_buf, len);
+        free_with_guard(compressed_buf, alloc_compressed_len);
         return;
     }
 
     // Process the decompressed fuzzed buffer with VideoToolbox functions and check for crashes/errors
     process_with_videotoolbox(decompressed_buf, decompressed_len);
 
-    free_with_guard(decompressed_buf, decompressed_len);
-    free_with_guard(compressed_buf, compressed_len);
+    free_with_guard(decompressed_buf, len);
+    free_with_guard(compressed_buf, alloc_compressed_len);
 
     log_fuzzing_info("Completed compression fuzz", len, buf, 0, step);
 }
@@ -422,20 +423,20 @@ This function processes the buffer with VideoToolbox functions, providing detail
 @param len The length of the buffer.
 */
 void process_with_videotoolbox(void *buf, size_t len) {
-    // Log the initial call details
     printf("Processing with VideoToolbox: Buffer Address: %p, Size: %zu\n", buf, len);
 
-    if (!buf || len == 0) {
-        printf("Error: Invalid buffer or length\n");
+    // Minimum buffer size for 640x480 BGRA: 4 * 640 * 480 = 1,228,800 bytes
+    const size_t kMinBufferSize = 4 * 640 * 480;
+    if (!buf || len < kMinBufferSize) {
+        printf("Error: Invalid buffer or insufficient length (need %zu, have %zu)\n", kMinBufferSize, len);
         return;
     }
 
-    // Example: Create a CVPixelBuffer from the buffer
     CVPixelBufferRef pixelBuffer = NULL;
-    CFDictionaryRef empty;
-    CFMutableDictionaryRef attrs;
-    empty = CFDictionaryCreate(kCFAllocatorDefault, NULL, NULL, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-    attrs = CFDictionaryCreateMutable(kCFAllocatorDefault, 1, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+    CFDictionaryRef empty = CFDictionaryCreate(kCFAllocatorDefault, NULL, NULL, 0,
+        &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+    CFMutableDictionaryRef attrs = CFDictionaryCreateMutable(kCFAllocatorDefault, 1,
+        &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
 
     CFDictionarySetValue(attrs, kCVPixelBufferIOSurfacePropertiesKey, empty);
 
@@ -452,8 +453,7 @@ void process_with_videotoolbox(void *buf, size_t len) {
         return;
     }
 
-    // Example: Create a VTCompressionSession for further processing
-    VTCompressionSessionRef compressionSession;
+    VTCompressionSessionRef compressionSession = NULL;
     status = VTCompressionSessionCreate(kCFAllocatorDefault,
                                         640, 480, kCMVideoCodecType_H264,
                                         NULL, NULL, NULL,
@@ -467,10 +467,8 @@ void process_with_videotoolbox(void *buf, size_t len) {
         return;
     }
 
-    // Log compression session creation
     printf("VTCompressionSession created successfully\n");
 
-    // Example: Encode the pixel buffer using the compression session
     VTEncodeInfoFlags flags;
     status = VTCompressionSessionEncodeFrame(compressionSession,
                                              pixelBuffer, CMTimeMake(1, 30),
@@ -482,7 +480,6 @@ void process_with_videotoolbox(void *buf, size_t len) {
         printf("VTCompressionSessionEncodeFrame succeeded\n");
     }
 
-    // Cleanup
     VTCompressionSessionInvalidate(compressionSession);
     CFRelease(compressionSession);
     CVPixelBufferRelease(pixelBuffer);
