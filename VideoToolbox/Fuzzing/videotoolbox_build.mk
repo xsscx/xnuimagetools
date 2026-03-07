@@ -18,7 +18,7 @@ export SDK ?= iphoneos
 CC = clang
 XCRUN = xcrun
 CODESIGN = codesign
-DEVELOPER_ID = "79744B7FFC78720777469A82065993CA962BC8E8"
+DEVELOPER_ID ?= "-"
 ENTITLEMENTS = entitlements.xml
 MFLAGS = -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/$(MACOS_SDK)
 
