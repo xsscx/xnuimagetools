@@ -20,9 +20,7 @@
  *
  *  @section CHANGES
  *  - 18/05/2024, h02332: Update commit.
- *
- *  @section TODO
- *  - Logging
+ *  - 03/2026: Logging implemented via DEBUG_PRINT macros and signal handler
  *
  *
  *  @section Run

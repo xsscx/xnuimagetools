@@ -18,10 +18,8 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- *  @section TODO
- *  - Implement comprehensive logging.
- *  - Extend debugging utilities.
- *  - Validate XPC object manipulation safety.
+ *  @section CHANGES
+ *  - 03/2026: Logging implemented via DEBUG_PRINT macros; XPC safety via DEBUG_PRINT_ERRNO
  */
 
 #pragma mark - Headers

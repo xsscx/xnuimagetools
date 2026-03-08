@@ -20,9 +20,7 @@
  *
  *  @section CHANGES
  *  - 01/03/2023, h02332: Update Logging and Quick Help, setup libgmalloc
- *
- *  @section TODO
- *  - Logging
+ *  - 03/2026: Logging implemented via printf; error handling for vm_read added
  */
 
 #pragma mark - Headers

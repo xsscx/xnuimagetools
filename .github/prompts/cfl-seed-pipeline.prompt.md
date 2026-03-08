@@ -6,7 +6,7 @@ description: Extract ICC profiles and TIFF files from xnuimagetools output and i
 # CFL Fuzzer Seed Pipeline
 
 Bridge xnuimagetools fuzzed image output into CFL LibFuzzer seed corpora for the
-research repo's 19 ICC profile fuzzers. Extracts embedded ICC profiles and copies
+research repo's 18 ICC profile fuzzers. Extracts embedded ICC profiles and copies
 TIFF files across hardware-diverse image outputs.
 
 ## Prerequisites

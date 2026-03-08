@@ -66,15 +66,16 @@ void instrument(pid_t pid) {
         vm_size_t bytes_read;
         kr = vm_read_overwrite(task, addr, 4, (vm_address_t)&header, &bytes_read);
         if (kr != KERN_SUCCESS) {
-            // TODO handle this, some mappings are probably just not readable
-            printf("vm_read_overwrite failed\n");
-            return;
+            // Some mappings are not readable (e.g. guard pages, __LINKEDIT).
+            // Skip and continue scanning.
+            addr += size;
+            continue;
         }
 
         if (bytes_read != 4) {
-            // TODO handle this properly
-            printf("[-] vm_read read to few bytes\n");
-            return;
+            // Partial read — region may be smaller than expected. Skip it.
+            addr += size;
+            continue;
         }
 
         if (header == 0xfeedfacf) {
