@@ -1,0 +1,11 @@
+{
+  "output_entropy" : 7.9640896315173073,
+  "input_sha256" : "5893c53a3218907bff48a6c7e614492812387039f4298fcd5009112e972fb152",
+  "output_sha256" : "ce618756df288bebeabc518e07535e6322964acd887cfb566be1c6c7dbb23df4",
+  "input_entropy" : 7.9708395593851291,
+  "output_size" : 8469,
+  "size_delta" : 736,
+  "input_size" : 7733,
+  "output_path" : "\/tmp\/catalyst-output\/seed_icc_perm13_DCI(P3) RGB_015.png",
+  "timestamp" : "2026-03-08 18:55:51"
+}

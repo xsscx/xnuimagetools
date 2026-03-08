@@ -1,0 +1,11 @@
+{
+  "output_entropy" : 7.9640966584641335,
+  "input_sha256" : "3c00efb5f51c48a0524bb06ad5586c1e14834571e241a0b7035784994036ace0",
+  "output_sha256" : "d453a5cecc304712c5ce3e421418a99dcec854fb69b9481ebf1e637c661aae24",
+  "input_entropy" : 7.9555738963058324,
+  "output_size" : 7798,
+  "size_delta" : 1017,
+  "input_size" : 6781,
+  "output_path" : "\/tmp\/catalyst-output\/seed_icc_perm14_ACESCG Linear_016.png",
+  "timestamp" : "2026-03-08 18:55:51"
+}
