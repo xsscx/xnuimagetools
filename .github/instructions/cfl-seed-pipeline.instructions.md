@@ -82,3 +82,26 @@ python3 contrib/scripts/extract-icc-seeds.py \
   from raw ICC bytes, re-render through `CGBitmapContextCreate()`, and ImageIO
   auto-embeds the ICC profile when saving via `CGImageDestinationAddImage()`
 - `kCGImagePropertyProfileName` (string, not data) is available on all platforms
+
+## Remote Analysis via MCP Docker API
+
+Instead of committing extracted ICC profiles to git for WSL-2 analysis, macOS agents
+can analyze profiles directly via the MCP Docker REST API:
+
+```bash
+# Upload extracted ICC profile for analysis (no git commit needed)
+curl -s -F "file=@extracted-profile.icc" http://<host>:8080/api/upload
+# → {"ok":true,"path":"/tmp/mcp-uploads/a1b2c3_extracted-profile.icc",...}
+
+# Get 141-heuristic security analysis as JSON
+curl -s "http://<host>:8080/api/security-json?path=/tmp/mcp-uploads/a1b2c3_extracted-profile.icc"
+
+# Full combined analysis
+curl -s "http://<host>:8080/api/full?path=/tmp/mcp-uploads/a1b2c3_extracted-profile.icc"
+```
+
+Docker image: `ghcr.io/xsscx/icc-profile-demo` (run with `api` argument for REST mode).
+See `research/.github/prompts/remote-analysis.prompt.md` for the full workflow.
+
+**Use remote API for**: Quick triage of many profiles, spot-checks during fuzzing.
+**Use git commit for**: Crash PoCs, batch reports, anything worth preserving long-term.

@@ -182,3 +182,17 @@ cd VideoToolbox/Fuzzing && make          # build
 ASAN_OPTIONS="detect_leaks=0:halt_on_error=0" \
   build/videotoolbox-runner -t 60 -o /tmp/fuzzed-frames big.mov
 ```
+
+
+## Multi-Agent Collaboration
+
+This repo works with the `xsscx/research` repo (WSL-2/Linux agent). Key coordination:
+
+- **File ownership**: macOS agent owns `xnuimagetools/`, `fuzz/graphics/*/xig-*`, `fuzz/xnuimage*/`
+- **Seeds flow**: macOS generates → `fuzz/` staging → WSL-2 seeds into `cfl/corpus-*/`
+- **Crash testing**: WSL-2 finds crashes → macOS tests against ColorSync/ImageIO
+- **Remote analysis**: Use MCP Docker API (`ghcr.io/xsscx/icc-profile-demo api`) to
+  analyze ICC profiles without git commit overhead. See `cfl-seed-pipeline.instructions.md`.
+- **Coordination docs**: `research/.github/instructions/multi-agent.instructions.md` and
+  `research/.github/prompts/cooperative-development.prompt.md`
+- **Always fetch/pull** at session start: `git fetch --all && git pull`
