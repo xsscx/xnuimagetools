@@ -199,6 +199,7 @@ jobs:
           mkdir -p "$FUZZ_DIR"
 
           timeout 60 xcrun simctl boot "$SIM_UDID" 2>/dev/null || true
+          sleep 5
 
           BUILD_DIR=$(xcodebuild \
             -project "$PROJECT" \
@@ -527,6 +528,7 @@ jobs:
           BUNDLE_ID="cx.srd.imagegenerator-xnu-demo"
 
           timeout 60 xcrun simctl boot "$SIM_UDID" 2>/dev/null || true
+          sleep 5
 
           BUILD_DIR=$(xcodebuild \
             -project "$IOS_GEN_PROJECT" \
@@ -710,6 +712,7 @@ jobs:
 
           echo "Found watchOS simulator: $SIM_UDID"
           timeout 60 xcrun simctl boot "$SIM_UDID" 2>/dev/null || true
+          sleep 5
 
           BUILD_DIR=$(xcodebuild \
             -project "$WATCH_PROJECT" \
