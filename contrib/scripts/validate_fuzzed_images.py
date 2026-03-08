@@ -1,7 +1,20 @@
 #!/usr/bin/env python3
+"""Validate fuzzed images for steganographic injection strings.
+
+Scans PNG/JPEG images for embedded injection signatures in LSB/MSB bit planes,
+highlights detected regions, and generates filmstrip comparisons.
+
+Usage:
+    python3 validate_fuzzed_images.py [image_dir] [output_dir]
+
+Defaults:
+    image_dir:  current directory
+    output_dir: image_dir/compare/
+"""
 
 from PIL import Image, ImageDraw
 import os
+import sys
 
 # Injection strings
 INJECT_STRINGS = [
@@ -91,30 +104,40 @@ def create_filmstrip(original_image, highlighted_image, bit_position, image_name
 def verify_and_visualize_images(image_dir, output_dir, bit_position='LSB', output_size=None):
 	if not os.path.exists(output_dir):
 		os.makedirs(output_dir)
-		
-	for filename in os.listdir(image_dir):
+
+	scanned = 0
+	skipped = 0
+	found = 0
+	for filename in sorted(os.listdir(image_dir)):
 		if filename.lower().endswith(('.png', '.jpg', '.jpeg')):
 			image_path = os.path.join(image_dir, filename)
-			extracted_bits, original_image = extract_bits_from_image(image_path, bit_position)
+			try:
+				extracted_bits, original_image = extract_bits_from_image(image_path, bit_position)
+			except Exception:
+				skipped += 1
+				continue
+			scanned += 1
 			found_string, start_bit = check_injection_strings(extracted_bits)
 			if found_string:
+				found += 1
 				bit_length = len(str_to_bin(found_string))
 				highlighted_image = visualize_encoded_data(Image.new('RGB', original_image.size), start_bit, bit_length, bit_position)
 				output_path = os.path.join(output_dir, f"highlighted_{filename}")
 				highlighted_image.save(output_path)
-				print(f"Injection string found in {filename}: {found_string}. Highlighted image saved to {output_path}")
-				
+				print(f"  FOUND in {filename}: {found_string[:40]}...")
+
 				# Create filmstrip
 				filmstrip = create_filmstrip(original_image, highlighted_image, bit_position, filename)
 				filmstrip_path = os.path.join(output_dir, f"filmstrip_{bit_position}_{filename}")
 				filmstrip.save(filmstrip_path)
-				print(f"Filmstrip saved to {filmstrip_path}")
-								
-# Example usage
-image_directory = "/mnt/xnuimagefuzzer/fuzzed/images/"
-output_directory = "/mnt/xnuimagefuzzer/fuzzed/images/compare/"
-output_image_size = (1024, 1024)  # Specify the desired output size here
 
-verify_and_visualize_images(image_directory, output_directory, bit_position='LSB', output_size=output_image_size)
-verify_and_visualize_images(image_directory, output_directory, bit_position='MSB', output_size=output_image_size)
+	print(f"  {bit_position}: scanned={scanned}, skipped={skipped}, injections_found={found}")
 
+if __name__ == "__main__":
+	image_directory = sys.argv[1] if len(sys.argv) > 1 else "."
+	output_directory = sys.argv[2] if len(sys.argv) > 2 else os.path.join(image_directory, "compare")
+
+	print(f"Validating images in: {image_directory}")
+	print(f"Output directory: {output_directory}")
+	verify_and_visualize_images(image_directory, output_directory, bit_position='LSB')
+	verify_and_visualize_images(image_directory, output_directory, bit_position='MSB')
