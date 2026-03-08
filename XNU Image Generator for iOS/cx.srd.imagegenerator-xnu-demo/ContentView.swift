@@ -2,8 +2,8 @@
  *  @file ContentView.swift
  *  @brief XNU Image Generator for iOS
  *  @author @h02332 | David Hoyt | @xsscx
- *  @date 27 MAY 2024
- *  @version 1.7.5
+ *  @date 08 MAR 2026
+ *  @version 1.8.0
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,6 +21,8 @@
  *  @section CHANGES
  *  - 21/05/2024, h02332: Initial commit.
  *  - 27/05/2024, h02332: Add Random Image Generator for iOS + Watch
+ *  - 08/03/2026, h02332: v1.8.0 — ICC profile embedding, P3/sRGB/AdobeRGB color spaces,
+ *    1BitMonochrome generation, dimension diversity, 32BitFloat differentiation
  *
  */
 
@@ -187,9 +189,7 @@ struct ActivityViewController: NSViewControllerRepresentable {
  @param contextType The type of context to create.
  @return An optional CGImage if the image is successfully generated, otherwise nil.
  */
-func generateImage(contextType: String) -> CGImage? {
-    let width = 300
-    let height = 300
+func generateImage(contextType: String, width: Int = 300, height: Int = 300) -> CGImage? {
     let context: CGContext?
     
     // Switch case to handle different context types
@@ -206,8 +206,6 @@ func generateImage(contextType: String) -> CGImage? {
         context = createBitmapContextGrayscale(width: width, height: height)
     case "HDRFloatComponents":
         context = createBitmapContextHDRFloatComponents(width: width, height: height)
-    case "AlphaOnly":
-        context = createBitmapContextAlphaOnly(width: width, height: height)
     case "1BitMonochrome":
         context = createBitmapContext1BitMonochrome(width: width, height: height)
     case "BigEndian":
@@ -216,6 +214,12 @@ func generateImage(contextType: String) -> CGImage? {
         context = createBitmapContextLittleEndian(width: width, height: height)
     case "32BitFloat4Component":
         context = createBitmapContext32BitFloat4Component(width: width, height: height)
+    case "DisplayP3":
+        context = createBitmapContextDisplayP3(width: width, height: height)
+    case "sRGB":
+        context = createBitmapContextSRGB(width: width, height: height)
+    case "AdobeRGB1998":
+        context = createBitmapContextAdobeRGB(width: width, height: height)
     default:
         context = nil
     }
@@ -295,13 +299,20 @@ func generateImage(contextType: String) -> CGImage? {
  @param uti The UTType of the image format.
  @return A Boolean value indicating whether the image was successfully saved.
  */
-func saveImage(_ image: CGImage, to url: URL, uti: UTType) -> Bool {
+func saveImage(_ image: CGImage, to url: URL, uti: UTType, iccProfileData: Data? = nil) -> Bool {
     guard let destination = CGImageDestinationCreateWithURL(url as CFURL, uti.identifier as CFString, 1, nil) else {
         print("Failed to create CGImageDestination for \(url.path)")
         return false
     }
     
-    CGImageDestinationAddImage(destination, image, nil)
+    var imageToSave = image
+    if let iccData = iccProfileData,
+       let colorSpace = CGColorSpace(iccData: iccData as CFData),
+       let converted = image.copy(colorSpace: colorSpace) {
+        imageToSave = converted
+    }
+    
+    CGImageDestinationAddImage(destination, imageToSave, nil)
     
     if CGImageDestinationFinalize(destination) {
         print("Successfully saved image to URL: \(url)")
@@ -316,7 +327,9 @@ func generateAndSaveImages(basePath: String) -> [URL] {
     let contextTypes = [
         "StandardRGB", "PremultipliedFirstAlpha", "NonPremultipliedAlpha",
         "16BitDepth", "Grayscale", "HDRFloatComponents",
-        "BigEndian", "LittleEndian", "32BitFloat4Component"
+        "BigEndian", "LittleEndian", "32BitFloat4Component",
+        "1BitMonochrome",
+        "DisplayP3", "sRGB", "AdobeRGB1998"
     ]
     
     let formats: [(String, UTType)] = [
@@ -327,11 +340,20 @@ func generateAndSaveImages(basePath: String) -> [URL] {
         ("image.gif", .gif),
         ("image.heic", .heic)
     ]
+    
+    let dimensions: [(Int, Int, String)] = [
+        (300, 300, ""),
+        (1, 1, "-1x1"),
+        (16, 16, "-16x16"),
+        (1024, 1024, "-1024x1024"),
+        (4096, 1, "-4096x1")
+    ]
+    
+    let iccProfiles = getICCProfiles()
 
     var savedURLs = [URL]()
     let fileManager = FileManager.default
 
-    // Ensure base path exists
     do {
         if !fileManager.fileExists(atPath: basePath) {
             try fileManager.createDirectory(atPath: basePath, withIntermediateDirectories: true, attributes: nil)
@@ -343,31 +365,60 @@ func generateAndSaveImages(basePath: String) -> [URL] {
     }
     
     for contextType in contextTypes {
-        guard let image = generateImage(contextType: contextType) else {
-            print("Failed to generate image for context type \(contextType)")
-            continue
-        }
-        
-        for (suffix, format) in formats {
-            if contextType == "Grayscale" && format == .heic {
-                // Skip HEIC format for Grayscale context type due to known issues
-                print("Skipping HEIC format for \(contextType) due to compatibility issues")
+        for (width, height, dimSuffix) in dimensions {
+            guard let image = generateImage(contextType: contextType, width: width, height: height) else {
+                print("Failed to generate image for context type \(contextType) at \(width)x\(height)")
                 continue
             }
-
-            let fileName = "\(contextType)-\(suffix)"
-            let fileURL = URL(fileURLWithPath: basePath).appendingPathComponent(fileName)
-            print("Attempting to save image to: \(fileURL.path)")
-            if saveImage(image, to: fileURL, uti: format) {
-                savedURLs.append(fileURL)
-                print("Successfully saved image: \(fileName) at path: \(fileURL.path)") 
-            } else {
-                print("Failed to save image: \(fileName) at path: \(fileURL.path)")
+            
+            for (suffix, format) in formats {
+                let isGrayscaleType = (contextType == "Grayscale" || contextType == "1BitMonochrome")
+                if isGrayscaleType && format == .heic {
+                    continue
+                }
+                
+                let fileName = "\(contextType)\(dimSuffix)-\(suffix)"
+                let fileURL = URL(fileURLWithPath: basePath).appendingPathComponent(fileName)
+                print("Attempting to save image to: \(fileURL.path)")
+                if saveImage(image, to: fileURL, uti: format) {
+                    savedURLs.append(fileURL)
+                }
+                
+                if !isGrayscaleType {
+                    for (iccName, iccData) in iccProfiles {
+                        let iccFileName = "\(contextType)\(dimSuffix)-icc_\(iccName)-\(suffix)"
+                        let iccFileURL = URL(fileURLWithPath: basePath).appendingPathComponent(iccFileName)
+                        if saveImage(image, to: iccFileURL, uti: format, iccProfileData: iccData) {
+                            savedURLs.append(iccFileURL)
+                        }
+                    }
+                }
             }
         }
     }
     
+    print("Total images saved: \(savedURLs.count)")
     return savedURLs
+}
+
+/// Returns ICC profile data for sRGB, Display P3, and AdobeRGB color spaces.
+func getICCProfiles() -> [(String, Data)] {
+    var profiles: [(String, Data)] = []
+    
+    let namedSpaces: [(String, CFString)] = [
+        ("sRGB", CGColorSpace.sRGB as CFString),
+        ("DisplayP3", CGColorSpace.displayP3 as CFString),
+        ("AdobeRGB", CGColorSpace.adobeRGB1998 as CFString)
+    ]
+    
+    for (name, spaceName) in namedSpaces {
+        if let cs = CGColorSpace(name: spaceName),
+           let data = cs.copyICCData() as Data? {
+            profiles.append((name, data))
+        }
+    }
+    
+    return profiles
 }
 
 // MARK: - CGContext Creation Functions
@@ -499,18 +550,6 @@ func createBitmapContextHDRFloatComponents(width: Int, height: Int) -> CGContext
 }
 
 /**
- @brief Function to create a CGContext with Alpha Only.
- 
- @param width The width of the context.
- @param height The height of the context.
- @return An optional CGContext.
- */
-func createBitmapContextAlphaOnly(width: Int, height: Int) -> CGContext? {
-    print("Alpha-only context is not supported")
-    return nil
-}
-
-/**
  @brief Function to create a CGContext with 1-bit Monochrome.
  
  @param width The width of the context.
@@ -574,7 +613,10 @@ func createBitmapContextLittleEndian(width: Int, height: Int) -> CGContext? {
 }
 
 /**
- @brief Function to create a CGContext with 32-bit Float 4-Component.
+ @brief Function to create a CGContext with 32-bit Float 4-Component (non-premultiplied).
+ 
+ @discussion Unlike HDRFloatComponents which uses premultiplied alpha, this context
+ uses noneSkipLast alpha to exercise different decoder paths.
  
  @param width The width of the context.
  @param height The height of the context.
@@ -582,13 +624,87 @@ func createBitmapContextLittleEndian(width: Int, height: Int) -> CGContext? {
  */
 func createBitmapContext32BitFloat4Component(width: Int, height: Int) -> CGContext? {
     let colorSpace = CGColorSpaceCreateDeviceRGB()
-    let bitmapInfo = CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.floatComponents.rawValue
+    let bitmapInfo = CGImageAlphaInfo.noneSkipLast.rawValue | CGBitmapInfo.floatComponents.rawValue
     return CGContext(
         data: nil,
         width: width,
         height: height,
         bitsPerComponent: 32,
         bytesPerRow: width * 16,
+        space: colorSpace,
+        bitmapInfo: bitmapInfo
+    )
+}
+
+// MARK: - Named Color Space Contexts
+
+/**
+ @brief Function to create a CGContext with Display P3 color space.
+ 
+ @param width The width of the context.
+ @param height The height of the context.
+ @return An optional CGContext.
+ */
+func createBitmapContextDisplayP3(width: Int, height: Int) -> CGContext? {
+    guard let colorSpace = CGColorSpace(name: CGColorSpace.displayP3) else {
+        print("Failed to create Display P3 color space")
+        return nil
+    }
+    let bitmapInfo = CGImageAlphaInfo.premultipliedLast.rawValue
+    return CGContext(
+        data: nil,
+        width: width,
+        height: height,
+        bitsPerComponent: 8,
+        bytesPerRow: width * 4,
+        space: colorSpace,
+        bitmapInfo: bitmapInfo
+    )
+}
+
+/**
+ @brief Function to create a CGContext with sRGB color space.
+ 
+ @param width The width of the context.
+ @param height The height of the context.
+ @return An optional CGContext.
+ */
+func createBitmapContextSRGB(width: Int, height: Int) -> CGContext? {
+    guard let colorSpace = CGColorSpace(name: CGColorSpace.sRGB) else {
+        print("Failed to create sRGB color space")
+        return nil
+    }
+    let bitmapInfo = CGImageAlphaInfo.premultipliedLast.rawValue
+    return CGContext(
+        data: nil,
+        width: width,
+        height: height,
+        bitsPerComponent: 8,
+        bytesPerRow: width * 4,
+        space: colorSpace,
+        bitmapInfo: bitmapInfo
+    )
+}
+
+/**
+ @brief Function to create a CGContext with Adobe RGB 1998 color space.
+ 
+ @param width The width of the context.
+ @param height The height of the context.
+ @return An optional CGContext.
+ */
+func createBitmapContextAdobeRGB(width: Int, height: Int) -> CGContext? {
+    guard let colorSpace = CGColorSpace(name: CGColorSpace.adobeRGB1998) else {
+        print("Failed to create Adobe RGB 1998 color space")
+        return nil
+    }
+    let bitmapInfo = CGImageAlphaInfo.premultipliedLast.rawValue
+    return CGContext(
+        data: nil,
+        width: width,
+        height: height,
+        bitsPerComponent: 8,
+        bytesPerRow: width * 4,
         space: colorSpace,
         bitmapInfo: bitmapInfo
     )
