@@ -100,7 +100,7 @@ curl -s "http://<host>:8080/api/security-json?path=/tmp/mcp-uploads/a1b2c3_extra
 curl -s "http://<host>:8080/api/full?path=/tmp/mcp-uploads/a1b2c3_extracted-profile.icc"
 ```
 
-Docker image: `ghcr.io/xsscx/icc-profile-demo` (run with `api` argument for REST mode).
+Docker image: `ghcr.io/xsscx/icc-profile-mcp` (run with `web` argument for REST mode).
 See `research/.github/prompts/remote-analysis.prompt.md` for the full workflow.
 
 **Use remote API for**: Quick triage of many profiles, spot-checks during fuzzing.

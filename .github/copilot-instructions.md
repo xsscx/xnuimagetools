@@ -191,7 +191,7 @@ This repo works with the `xsscx/research` repo (WSL-2/Linux agent). Key coordina
 - **File ownership**: macOS agent owns `xnuimagetools/`, `fuzz/graphics/*/xig-*`, `fuzz/xnuimage*/`
 - **Seeds flow**: macOS generates → `fuzz/` staging → WSL-2 seeds into `cfl/corpus-*/`
 - **Crash testing**: WSL-2 finds crashes → macOS tests against ColorSync/ImageIO
-- **Remote analysis**: Use MCP Docker API (`ghcr.io/xsscx/icc-profile-demo api`) to
+- **Remote analysis**: Use MCP Docker API (`ghcr.io/xsscx/icc-profile-mcp web`) to
   analyze ICC profiles without git commit overhead. See `cfl-seed-pipeline.instructions.md`.
 - **Coordination docs**: `research/.github/instructions/multi-agent.instructions.md` and
   `research/.github/prompts/cooperative-development.prompt.md`
