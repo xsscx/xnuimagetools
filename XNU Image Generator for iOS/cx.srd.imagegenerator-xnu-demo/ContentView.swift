@@ -25,6 +25,8 @@
  *    1BitMonochrome generation, dimension diversity, 32BitFloat differentiation
  *  - 08/03/2026, h02332: v1.8.1 — Fix 1BitMonochrome grayscale drawing, autoreleasepool
  *    for memory pressure, skip ICC on GIF/BMP, error logging to errors.log
+ *  - 08/03/2026, h02332: v1.9.0 — Collision-free filenames with SHA-256 hash suffix,
+ *    short context names (xig- prefix), CryptoKit integration
  *
  */
 
@@ -40,6 +42,7 @@ image processing, UI interaction, and basic C operations essential for the appli
 */
 import SwiftUI
 import UniformTypeIdentifiers
+import CryptoKit
 
 #if os(iOS)
 import UIKit
@@ -340,33 +343,66 @@ func saveImage(_ image: CGImage, to url: URL, uti: UTType, iccProfileData: Data?
     }
 }
 
+/// Saves an image to a file with a 6-char SHA-256 hash suffix for collision-free filenames.
+/// Final filename: `{baseName}.{ext}.{hash6}` where hash6 is derived from file content.
+func saveImageWithHash(_ image: CGImage, basePath: String, baseName: String, ext: String, uti: UTType, iccProfileData: Data? = nil) -> URL? {
+    let tempURL = URL(fileURLWithPath: basePath).appendingPathComponent("\(baseName).\(ext)")
+    guard saveImage(image, to: tempURL, uti: uti, iccProfileData: iccProfileData) else {
+        return nil
+    }
+    
+    guard let fileData = try? Data(contentsOf: tempURL) else {
+        return tempURL
+    }
+    let hash = SHA256.hash(data: fileData)
+    let hash6 = hash.prefix(3).map { String(format: "%02x", $0) }.joined()
+    
+    let finalName = "\(baseName)-\(hash6).\(ext)"
+    let finalURL = URL(fileURLWithPath: basePath).appendingPathComponent(finalName)
+    
+    if finalURL != tempURL {
+        try? FileManager.default.moveItem(at: tempURL, to: finalURL)
+    }
+    
+    return finalURL
+}
+
 func generateAndSaveImages(basePath: String) -> [URL] {
-    let contextTypes = [
-        "StandardRGB", "PremultipliedFirstAlpha", "NonPremultipliedAlpha",
-        "16BitDepth", "Grayscale", "HDRFloatComponents",
-        "BigEndian", "LittleEndian", "32BitFloat4Component",
-        "1BitMonochrome",
-        "DisplayP3", "sRGB", "AdobeRGB1998"
+    // Context types with short names for filenames
+    let contextTypes: [(String, String)] = [
+        ("StandardRGB", "stdrgb"),
+        ("PremultipliedFirstAlpha", "premul"),
+        ("NonPremultipliedAlpha", "nonpremul"),
+        ("16BitDepth", "16bit"),
+        ("Grayscale", "gray"),
+        ("HDRFloatComponents", "hdr"),
+        ("BigEndian", "bigend"),
+        ("LittleEndian", "litend"),
+        ("32BitFloat4Component", "float4"),
+        ("1BitMonochrome", "1bit"),
+        ("DisplayP3", "p3"),
+        ("sRGB", "srgb"),
+        ("AdobeRGB1998", "adobergb")
     ]
     
     let formats: [(String, UTType)] = [
-        ("image.png", .png),
-        ("image.jpg", .jpeg),
-        ("image.tiff", .tiff),
-        ("image.bmp", .bmp),
-        ("image.gif", .gif),
-        ("image.heic", .heic)
+        ("png", .png),
+        ("jpg", .jpeg),
+        ("tiff", .tiff),
+        ("bmp", .bmp),
+        ("gif", .gif),
+        ("heic", .heic)
     ]
     
     // ICC embedding is reliable for PNG, TIFF, JPEG, and HEIC
     let iccSupportedFormats: Set<UTType> = [.png, .tiff, .jpeg, .heic]
     
-    let dimensions: [(Int, Int, String)] = [
-        (300, 300, ""),
-        (1, 1, "-1x1"),
-        (16, 16, "-16x16"),
-        (1024, 1024, "-1024x1024"),
-        (4096, 1, "-4096x1")
+    let dimensions: [(Int, Int)] = [
+        (300, 300),
+        (1, 1),
+        (16, 16),
+        (1024, 1024),
+        (4096, 1)
     ]
     
     let iccProfiles = getICCProfiles()
@@ -385,12 +421,11 @@ func generateAndSaveImages(basePath: String) -> [URL] {
         return []
     }
     
-    for contextType in contextTypes {
-        for (width, height, dimSuffix) in dimensions {
-            // Use autoreleasepool to release CGImage buffers between iterations
+    for (contextType, shortName) in contextTypes {
+        for (width, height) in dimensions {
             autoreleasepool {
                 guard let image = generateImage(contextType: contextType, width: width, height: height) else {
-                    let msg = "\(contextType)\(dimSuffix): CGContext or makeImage() returned nil"
+                    let msg = "xig-\(shortName)-\(width)x\(height): CGContext or makeImage() returned nil"
                     failedOps.append((contextType, msg))
                     print("⚠️ \(msg)")
                     return
@@ -398,27 +433,26 @@ func generateAndSaveImages(basePath: String) -> [URL] {
                 
                 let isGrayscaleType = (contextType == "Grayscale" || contextType == "1BitMonochrome")
                 
-                for (suffix, format) in formats {
+                for (ext, format) in formats {
                     if isGrayscaleType && format == .heic {
                         continue
                     }
                     
-                    let fileName = "\(contextType)\(dimSuffix)-\(suffix)"
-                    let fileURL = URL(fileURLWithPath: basePath).appendingPathComponent(fileName)
-                    if saveImage(image, to: fileURL, uti: format) {
-                        savedURLs.append(fileURL)
+                    // Save to temp, hash, rename with unique suffix
+                    let baseName = "xig-\(shortName)-\(width)x\(height)"
+                    if let url = saveImageWithHash(image, basePath: basePath, baseName: baseName, ext: ext, uti: format) {
+                        savedURLs.append(url)
                     } else {
-                        failedOps.append((contextType, "\(fileName): save failed"))
+                        failedOps.append((contextType, "\(baseName).\(ext): save failed"))
                     }
                     
                     if !isGrayscaleType && iccSupportedFormats.contains(format) {
                         for (iccName, iccData) in iccProfiles {
-                            let iccFileName = "\(contextType)\(dimSuffix)-icc_\(iccName)-\(suffix)"
-                            let iccFileURL = URL(fileURLWithPath: basePath).appendingPathComponent(iccFileName)
-                            if saveImage(image, to: iccFileURL, uti: format, iccProfileData: iccData) {
-                                savedURLs.append(iccFileURL)
+                            let iccBaseName = "xig-\(shortName)-\(width)x\(height)-icc_\(iccName)"
+                            if let url = saveImageWithHash(image, basePath: basePath, baseName: iccBaseName, ext: ext, uti: format, iccProfileData: iccData) {
+                                savedURLs.append(url)
                             } else {
-                                failedOps.append((contextType, "\(iccFileName): ICC save failed"))
+                                failedOps.append((contextType, "\(iccBaseName).\(ext): ICC save failed"))
                             }
                         }
                     }
