@@ -66,7 +66,7 @@ do_build() {
     -isysroot "$SDKROOT" \
     -iframework "$SDKROOT/System/iOSSupport/System/Library/Frameworks" \
     -fobjc-arc \
-    -g -O0 \
+    -g -O1 \
     -fno-omit-frame-pointer \
     -fsanitize=address,undefined \
     -fprofile-instr-generate -fcoverage-mapping \
@@ -100,10 +100,17 @@ do_run() {
   # Clean stale data
   rm -f "$PROFRAW_DIR"/*.profraw "$FUZZ_DIR"/*
 
+  # Validate FUZZ_ICC_DIR
+  ICC_DIR="${FUZZ_ICC_DIR:-/System/Library/ColorSync/Profiles}"
+  if [ ! -d "$ICC_DIR" ]; then
+    echo "⚠️ FUZZ_ICC_DIR=$ICC_DIR does not exist — ICC injection disabled"
+    ICC_DIR=""
+  fi
+
   # Phase 1: Default mode — all 15 bitmap contexts + ICC variants
   echo "── Phase 1: Default mode (all permutations) ──"
   FUZZ_OUTPUT_DIR="$FUZZ_DIR" \
-  FUZZ_ICC_DIR="/System/Library/ColorSync/Profiles" \
+  FUZZ_ICC_DIR="$ICC_DIR" \
   LLVM_PROFILE_FILE="$PROFRAW_DIR/tools-%m_%p.profraw" \
   ASAN_OPTIONS="detect_leaks=0:halt_on_error=0" \
   UBSAN_OPTIONS="print_stacktrace=1:halt_on_error=0" \
@@ -122,7 +129,7 @@ do_run() {
   done
 
   FUZZ_OUTPUT_DIR="$FUZZ_DIR" \
-  FUZZ_ICC_DIR="/System/Library/ColorSync/Profiles" \
+  FUZZ_ICC_DIR="$ICC_DIR" \
   LLVM_PROFILE_FILE="$PROFRAW_DIR/pipeline-%m_%p.profraw" \
   ASAN_OPTIONS="detect_leaks=0:halt_on_error=0" \
   UBSAN_OPTIONS="print_stacktrace=1:halt_on_error=0" \

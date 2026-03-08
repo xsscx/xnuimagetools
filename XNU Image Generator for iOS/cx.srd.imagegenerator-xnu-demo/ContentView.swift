@@ -23,6 +23,8 @@
  *  - 27/05/2024, h02332: Add Random Image Generator for iOS + Watch
  *  - 08/03/2026, h02332: v1.8.0 — ICC profile embedding, P3/sRGB/AdobeRGB color spaces,
  *    1BitMonochrome generation, dimension diversity, 32BitFloat differentiation
+ *  - 08/03/2026, h02332: v1.8.1 — Fix 1BitMonochrome grayscale drawing, autoreleasepool
+ *    for memory pressure, skip ICC on GIF/BMP, error logging to errors.log
  *
  */
 
@@ -230,13 +232,25 @@ func generateImage(contextType: String, width: Int = 300, height: Int = 300) -> 
         return nil
     }
     
-    // Generate random colors for the gradient
-    let color1 = CGColor(red: CGFloat.random(in: 0...1), green: CGFloat.random(in: 0...1), blue: CGFloat.random(in: 0...1), alpha: 1)
-    let color2 = CGColor(red: CGFloat.random(in: 0...1), green: CGFloat.random(in: 0...1), blue: CGFloat.random(in: 0...1), alpha: 1)
+    // Use grayscale colors for monochrome/grayscale contexts, RGB for everything else
+    let isGrayscaleContext = (contextType == "1BitMonochrome" || contextType == "Grayscale")
+    let color1: CGColor
+    let color2: CGColor
+    let gradientColorSpace: CGColorSpace
+    
+    if isGrayscaleContext {
+        color1 = CGColor(gray: CGFloat.random(in: 0...1), alpha: 1)
+        color2 = CGColor(gray: CGFloat.random(in: 0...1), alpha: 1)
+        gradientColorSpace = CGColorSpaceCreateDeviceGray()
+    } else {
+        color1 = CGColor(red: CGFloat.random(in: 0...1), green: CGFloat.random(in: 0...1), blue: CGFloat.random(in: 0...1), alpha: 1)
+        color2 = CGColor(red: CGFloat.random(in: 0...1), green: CGFloat.random(in: 0...1), blue: CGFloat.random(in: 0...1), alpha: 1)
+        gradientColorSpace = CGColorSpaceCreateDeviceRGB()
+    }
     let colors = [color1, color2]
     let locations: [CGFloat] = [0.0, 1.0]
 
-    guard let gradient = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(), colors: colors as CFArray, locations: locations) else {
+    guard let gradient = CGGradient(colorsSpace: gradientColorSpace, colors: colors as CFArray, locations: locations) else {
         print("Failed to create gradient")
         return nil
     }
@@ -252,13 +266,16 @@ func generateImage(contextType: String, width: Int = 300, height: Int = 300) -> 
     // Add random elements (circles, lines, etc.)
     for _ in 0..<10 {
         let elementType = Int.random(in: 0...2)
+        let fillColor: CGColor = isGrayscaleContext
+            ? CGColor(gray: CGFloat.random(in: 0...1), alpha: 1)
+            : CGColor(red: CGFloat.random(in: 0...1), green: CGFloat.random(in: 0...1), blue: CGFloat.random(in: 0...1), alpha: 1)
         switch elementType {
         case 0:
             // Draw a random circle
             let centerX = CGFloat.random(in: 0...CGFloat(width))
             let centerY = CGFloat.random(in: 0...CGFloat(height))
             let radius = CGFloat.random(in: 10...50)
-            ctx.setFillColor(CGColor(red: CGFloat.random(in: 0...1), green: CGFloat.random(in: 0...1), blue: CGFloat.random(in: 0...1), alpha: 1))
+            ctx.setFillColor(fillColor)
             ctx.fillEllipse(in: CGRect(x: centerX - radius, y: centerY - radius, width: radius * 2, height: radius * 2))
         case 1:
             // Draw a random rectangle
@@ -266,7 +283,7 @@ func generateImage(contextType: String, width: Int = 300, height: Int = 300) -> 
             let rectY = CGFloat.random(in: 0...CGFloat(height))
             let rectWidth = CGFloat.random(in: 20...100)
             let rectHeight = CGFloat.random(in: 20...100)
-            ctx.setFillColor(CGColor(red: CGFloat.random(in: 0...1), green: CGFloat.random(in: 0...1), blue: CGFloat.random(in: 0...1), alpha: 1))
+            ctx.setFillColor(fillColor)
             ctx.fill(CGRect(x: rectX, y: rectY, width: rectWidth, height: rectHeight))
         case 2:
             // Draw a random line
@@ -274,7 +291,7 @@ func generateImage(contextType: String, width: Int = 300, height: Int = 300) -> 
             let lineStartY = CGFloat.random(in: 0...CGFloat(height))
             let lineEndX = CGFloat.random(in: 0...CGFloat(width))
             let lineEndY = CGFloat.random(in: 0...CGFloat(height))
-            ctx.setStrokeColor(CGColor(red: CGFloat.random(in: 0...1), green: CGFloat.random(in: 0...1), blue: CGFloat.random(in: 0...1), alpha: 1))
+            ctx.setStrokeColor(fillColor)
             ctx.setLineWidth(CGFloat.random(in: 1...5))
             ctx.move(to: CGPoint(x: lineStartX, y: lineStartY))
             ctx.addLine(to: CGPoint(x: lineEndX, y: lineEndY))
@@ -341,6 +358,9 @@ func generateAndSaveImages(basePath: String) -> [URL] {
         ("image.heic", .heic)
     ]
     
+    // ICC embedding is reliable for PNG, TIFF, JPEG, and HEIC
+    let iccSupportedFormats: Set<UTType> = [.png, .tiff, .jpeg, .heic]
+    
     let dimensions: [(Int, Int, String)] = [
         (300, 300, ""),
         (1, 1, "-1x1"),
@@ -352,6 +372,7 @@ func generateAndSaveImages(basePath: String) -> [URL] {
     let iccProfiles = getICCProfiles()
 
     var savedURLs = [URL]()
+    var failedOps: [(String, String)] = []
     let fileManager = FileManager.default
 
     do {
@@ -366,30 +387,39 @@ func generateAndSaveImages(basePath: String) -> [URL] {
     
     for contextType in contextTypes {
         for (width, height, dimSuffix) in dimensions {
-            guard let image = generateImage(contextType: contextType, width: width, height: height) else {
-                print("Failed to generate image for context type \(contextType) at \(width)x\(height)")
-                continue
-            }
-            
-            for (suffix, format) in formats {
+            // Use autoreleasepool to release CGImage buffers between iterations
+            autoreleasepool {
+                guard let image = generateImage(contextType: contextType, width: width, height: height) else {
+                    let msg = "\(contextType)\(dimSuffix): CGContext or makeImage() returned nil"
+                    failedOps.append((contextType, msg))
+                    print("⚠️ \(msg)")
+                    return
+                }
+                
                 let isGrayscaleType = (contextType == "Grayscale" || contextType == "1BitMonochrome")
-                if isGrayscaleType && format == .heic {
-                    continue
-                }
                 
-                let fileName = "\(contextType)\(dimSuffix)-\(suffix)"
-                let fileURL = URL(fileURLWithPath: basePath).appendingPathComponent(fileName)
-                print("Attempting to save image to: \(fileURL.path)")
-                if saveImage(image, to: fileURL, uti: format) {
-                    savedURLs.append(fileURL)
-                }
-                
-                if !isGrayscaleType {
-                    for (iccName, iccData) in iccProfiles {
-                        let iccFileName = "\(contextType)\(dimSuffix)-icc_\(iccName)-\(suffix)"
-                        let iccFileURL = URL(fileURLWithPath: basePath).appendingPathComponent(iccFileName)
-                        if saveImage(image, to: iccFileURL, uti: format, iccProfileData: iccData) {
-                            savedURLs.append(iccFileURL)
+                for (suffix, format) in formats {
+                    if isGrayscaleType && format == .heic {
+                        continue
+                    }
+                    
+                    let fileName = "\(contextType)\(dimSuffix)-\(suffix)"
+                    let fileURL = URL(fileURLWithPath: basePath).appendingPathComponent(fileName)
+                    if saveImage(image, to: fileURL, uti: format) {
+                        savedURLs.append(fileURL)
+                    } else {
+                        failedOps.append((contextType, "\(fileName): save failed"))
+                    }
+                    
+                    if !isGrayscaleType && iccSupportedFormats.contains(format) {
+                        for (iccName, iccData) in iccProfiles {
+                            let iccFileName = "\(contextType)\(dimSuffix)-icc_\(iccName)-\(suffix)"
+                            let iccFileURL = URL(fileURLWithPath: basePath).appendingPathComponent(iccFileName)
+                            if saveImage(image, to: iccFileURL, uti: format, iccProfileData: iccData) {
+                                savedURLs.append(iccFileURL)
+                            } else {
+                                failedOps.append((contextType, "\(iccFileName): ICC save failed"))
+                            }
                         }
                     }
                 }
@@ -397,7 +427,14 @@ func generateAndSaveImages(basePath: String) -> [URL] {
         }
     }
     
-    print("Total images saved: \(savedURLs.count)")
+    if !failedOps.isEmpty {
+        let errorLog = failedOps.map { "[\($0.0)] \($0.1)" }.joined(separator: "\n")
+        let errorURL = URL(fileURLWithPath: basePath).appendingPathComponent("errors.log")
+        try? errorLog.write(to: errorURL, atomically: true, encoding: .utf8)
+        print("⚠️ \(failedOps.count) failures logged to errors.log")
+    }
+    
+    print("Total images saved: \(savedURLs.count), failures: \(failedOps.count)")
     return savedURLs
 }
 

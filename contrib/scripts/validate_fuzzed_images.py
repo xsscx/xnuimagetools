@@ -84,7 +84,7 @@ def visualize_encoded_data(image, start_bit, bit_length, bit_position='LSB'):
 	return image
 
 # Create filmstrip comparison
-def create_filmstrip(original_image, highlighted_image, bit_position, image_name):
+def create_filmstrip(original_image, highlighted_image, bit_position, image_name, output_dir=None):
 	width, height = original_image.size
 	filmstrip = Image.new('RGB', (width * 2, height))
 	
@@ -97,7 +97,10 @@ def create_filmstrip(original_image, highlighted_image, bit_position, image_name
 	draw.text((10, 10), "Original", fill=(255, 255, 255))
 	draw.text((width + 10, 10), f"Highlighted ({bit_position})", fill=(255, 255, 255))
 	
-	filmstrip.save(f"filmstrip_{bit_position}_{image_name}")
+	fname = f"filmstrip_{bit_position}_{image_name}"
+	if output_dir:
+		fname = os.path.join(output_dir, fname)
+	filmstrip.save(fname)
 	return filmstrip
 
 # Main function to verify and visualize images
@@ -126,10 +129,8 @@ def verify_and_visualize_images(image_dir, output_dir, bit_position='LSB', outpu
 				highlighted_image.save(output_path)
 				print(f"  FOUND in {filename}: {found_string[:40]}...")
 
-				# Create filmstrip
-				filmstrip = create_filmstrip(original_image, highlighted_image, bit_position, filename)
-				filmstrip_path = os.path.join(output_dir, f"filmstrip_{bit_position}_{filename}")
-				filmstrip.save(filmstrip_path)
+				# Create filmstrip (saved to output_dir via function)
+				filmstrip = create_filmstrip(original_image, highlighted_image, bit_position, filename, output_dir=output_dir)
 
 	print(f"  {bit_position}: scanned={scanned}, skipped={skipped}, injections_found={found}")
 
