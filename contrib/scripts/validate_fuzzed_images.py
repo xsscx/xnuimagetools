@@ -130,7 +130,7 @@ def verify_and_visualize_images(image_dir, output_dir, bit_position='LSB', outpu
 				print(f"  FOUND in {filename}: {found_string[:40]}...")
 
 				# Create filmstrip (saved to output_dir via function)
-				filmstrip = create_filmstrip(original_image, highlighted_image, bit_position, filename, output_dir=output_dir)
+				create_filmstrip(original_image, highlighted_image, bit_position, filename, output_dir=output_dir)
 
 	print(f"  {bit_position}: scanned={scanned}, skipped={skipped}, injections_found={found}")
 
