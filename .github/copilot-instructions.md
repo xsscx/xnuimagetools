@@ -1,30 +1,45 @@
-# Copilot Instructions — XNU Image Fuzzer
+# Copilot Instructions — XNU Image Tools
 
 ## Project Overview
 
-XNU Image Fuzzer is a proof-of-concept iOS/macOS image fuzzing framework that generates
-fuzzed images using 15 CGBitmapContext color space and pixel format combinations (including
-CMYK, HDR Float16, and Indexed Color), plus structure-aware PNG chunk mutations.
-It exercises Apple's CoreGraphics rendering pipeline across every supported bitmap
-configuration to discover crashes, memory safety bugs, and undefined behavior.
+XNU Image Tools is an umbrella workspace for Apple-platform image security research.
+It uses [xnuimagefuzzer](https://github.com/xsscx/xnuimagefuzzer) as a git submodule
+and bundles additional projects for image generation, VideoToolbox fuzzing, and
+cross-platform testing. The core fuzzer generates fuzzed images using 15 CGBitmapContext
+color space and pixel format combinations (including CMYK, HDR Float16, and Indexed Color),
+plus structure-aware PNG chunk mutations. It exercises Apple's CoreGraphics rendering
+pipeline across every supported bitmap configuration to discover crashes, memory safety
+bugs, and undefined behavior.
 
-- **Language**: Objective-C (main fuzzer), Python (validation scripts)
+- **Language**: Objective-C (main fuzzer), Swift (generators), Python (validation scripts)
 - **Platforms**: iOS 14.2+, macOS (Mac Catalyst), iPadOS, visionOS
 - **License**: GPL v3
 - **Author**: David Hoyt (@xsscx / @h02332)
 
+## Clone with Submodules
+
+```bash
+git clone --recurse-submodules https://github.com/xsscx/xnuimagetools.git
+# If already cloned without submodules:
+git submodule update --init --recursive
+```
+
 ## Repository Structure
 
 ```
-XNU Image Fuzzer/
+XNU Image Fuzzer/              # ← git submodule (xsscx/xnuimagefuzzer)
 ├── xnuimagefuzzer.m          # Core fuzzer — 15 bitmap contexts, fuzz permutations
 ├── ViewController.m           # UICollectionView displaying fuzzed images
 ├── AppDelegate.m              # App lifecycle, exception handler
 ├── SceneDelegate.{h,m}        # Multi-window scene management
 ├── CMakeLists.txt             # CMake build (iOS arm64, Debug with ASAN)
-├── Info.plist                 # UIFileSharingEnabled=YES
+├── Info.plist                 # UIFileSharingEnabled=YES, JPEG/PNG/GIF doc types
+├── Assets.xcassets            # App icons and image assets
 ├── Flowers.exr / 2225.jpg     # Sample input images
 └── Base.lproj/                # Storyboards
+XNU Image Generator for iOS/   # iOS image generator project
+XNU Image Generator/            # macOS image generator project
+VideoToolbox/                   # VideoToolbox fuzzing harness
 contrib/scripts/
 ├── validate_fuzzed_images.py  # Steganography / injection detection
 ├── compare_image_directories.py  # MSE, SSIM, PSNR, entropy analysis

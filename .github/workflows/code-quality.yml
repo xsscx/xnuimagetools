@@ -43,6 +43,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           persist-credentials: false
+          submodules: recursive
 
       - name: Check for duplicate #defines
         run: |
@@ -94,6 +95,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           persist-credentials: false
+          submodules: recursive
 
       - name: Install pyflakes
         run: pip install pyflakes
@@ -118,6 +120,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           persist-credentials: false
+          submodules: recursive
 
       - name: Check Swift files for common issues
         run: |
