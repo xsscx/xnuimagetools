@@ -4,6 +4,26 @@ The xnuimagetools output feeds the CFL (Crash-Free LibFuzzer) ICC profile fuzzer
 in the research repo. With ICC variant generation enabled, each run produces images
 with diverse ICC profiles embedded — dramatically improving CFL seed coverage.
 
+## Output Flow
+
+```
+iOS Image Generator (v1.9.0+)  →  fuzz/xnuimagegenerator/{format}/
+xnuimagefuzzer (--input-dir)   →  fuzz/xnuimagefuzzer/{format}/
+                                   ├── icc/ (extracted ICC profiles)
+                                   ├── chained/ (multi-pass mutations)
+                                   └── pipeline/ (5-phase outputs)
+extract-icc-seeds.py           →  cfl/corpus-icc_*_fuzzer/
+```
+
+### Filename Conventions (Collision-Free)
+
+| Source | Pattern | Example |
+|--------|---------|---------|
+| iOS Generator | `xig-{ctx}-{WxH}[-icc_{profile}]-{hash6}.{ext}` | `xig-stdrgb-300x300-a1b2c3.png` |
+| Fuzzer | `xif-{src}-perm{N}[-{variant}]-{hash6}.{ext}` | `xif-stdrgb-perm5-icc_sRGB-d4e5f6.tiff` |
+
+Hash suffixes (6-char SHA-256 of file content) prevent collisions across runs.
+
 ## Maximizing ICC Profile Diversity
 
 Set `FUZZ_ICC_DIR` to generate ICC-rich output:

@@ -63,7 +63,7 @@ XNU Image Fuzzer/              # ← git submodule (xsscx/xnuimagefuzzer)
 ├── Assets.xcassets            # App icons and image assets
 ├── Flowers.exr / 2225.jpg     # Sample input images
 └── Base.lproj/                # Storyboards
-XNU Image Generator for iOS/   # iOS image generator project
+XNU Image Generator for iOS/   # iOS image generator (v1.9.0 — collision-free filenames)
 XNU Image Generator/            # macOS image generator project
 VideoToolbox/                   # VideoToolbox fuzzing harness
 contrib/scripts/
@@ -142,6 +142,16 @@ git push
 ## Common Issues & Solutions
 
 For detailed troubleshooting, see the xnuimagefuzzer repo's troubleshooting instructions.
+
+### Pipeline Phase 2 — Cumulative Mutation Bug (Fixed v1.9.0)
+`performPipelineFuzzing()` Phase 2 reloads from `cleanData` for each permutation.
+Previously it mutated `cleanImage` in-place, causing cumulative mutations where
+each permutation received all prior mutations instead of independent single mutations.
+
+### 1BitMonochrome — Grayscale Drawing (Fixed v1.8.1)
+1BitMonochrome and Grayscale contexts use `CGColor(gray:alpha:)` for colors and
+`CGColorSpaceCreateDeviceGray()` for gradients. Using RGB colors on a grayscale
+context produces 0-output images.
 
 ### Build fails with `-Wenum-conversion`
 Cast `CGImageAlphaInfo` to `CGBitmapInfo`:

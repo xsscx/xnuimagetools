@@ -187,6 +187,20 @@ python3 contrib/scripts/extract-icc-seeds.py \
 # TIFF files   → tiffdump/specsep fuzzers
 ```
 
+### Fuzz Corpus Staging
+
+Outputs are organized in the `fuzz/` corpus repo by tool and format:
+
+| Output Type | Staging Directory | Filename Pattern |
+|-------------|-------------------|------------------|
+| iOS Generator images | `fuzz/xnuimagegenerator/{format}/` | `xig-{ctx}-{WxH}[-icc]-{hash6}.{ext}` |
+| Fuzzed images | `fuzz/xnuimagefuzzer/{format}/` | `xif-{src}-perm{N}[-variant]-{hash6}.{ext}` |
+| Chained outputs | `fuzz/xnuimagefuzzer/chained/` | `xif-chain-{src}-pass{N}-{hash6}.{ext}` |
+| Pipeline outputs | `fuzz/xnuimagefuzzer/pipeline/` | `xif-pipe-{phase}-{src}-{hash6}.{ext}` |
+| Extracted ICC | `fuzz/xnuimagegenerator/icc/` or `fuzz/xnuimagefuzzer/icc/` | `*.icc` |
+
+Hash suffixes (6-char SHA-256) prevent filename collisions across generation runs.
+
 ### Seed Value by Bitmap Context
 
 | Context | ICC Value | TIFF Value | ICC Variants | Notes |
