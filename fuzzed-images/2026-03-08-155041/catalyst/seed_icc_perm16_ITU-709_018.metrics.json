@@ -1,0 +1,11 @@
+{
+  "output_entropy" : 7.9884782491603019,
+  "input_sha256" : "a5bff6632a546d7326956e44e5dd3abe39695f6d91fe1b698f6705f9ed9d2504",
+  "output_sha256" : "10a356e8714f623272855d00397f421054888696a45ddac7e8a464902441c2ca",
+  "input_entropy" : 7.9882644089046293,
+  "output_size" : 27242,
+  "size_delta" : 359,
+  "input_size" : 26883,
+  "output_path" : "\/tmp\/catalyst-output\/seed_icc_perm16_ITU-709_018.png",
+  "timestamp" : "2026-03-08 15:43:48"
+}
