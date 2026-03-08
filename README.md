@@ -1,6 +1,20 @@
 # XNU Image Tools
 
-Multi-platform image generation and fuzzing toolkit for iOS, watchOS, and Mac Catalyst. Generates diverse baseline images across platforms, then fuzzes them with ICC profile embedding across 22 output formats targeting Preview, Safari, iMessage, Mail, and Notes.
+Multi-platform image generation and fuzzing toolkit for iOS, watchOS, and Mac Catalyst. Generates diverse baseline images across platforms, then fuzzes them with ICC profile embedding across 22+ output formats targeting Preview, Safari, iMessage, Mail, and Notes.
+
+The [XNU Image Fuzzer](https://github.com/xsscx/xnuimagefuzzer) is included as a **git submodule** at `XNU Image Fuzzer/`. xnuimagefuzzer is the primary development repository for the fuzzer source code — all code changes should be made there first.
+
+## Clone
+
+```bash
+git clone --recurse-submodules https://github.com/xsscx/xnuimagetools.git
+
+# If already cloned without submodules:
+git submodule update --init --recursive
+
+# Update submodule to latest xnuimagefuzzer:
+git submodule update --remote "XNU Image Fuzzer"
+```
 
 ## Workflow
 
@@ -12,12 +26,12 @@ Multi-platform image generation and fuzzing toolkit for iOS, watchOS, and Mac Ca
 
 ## Components
 
-| Component | Platform | Language | LOC |
-|-----------|----------|----------|-----|
-| XNU Image Fuzzer | macOS (Mac Catalyst) | Objective-C | 2,300+ |
-| XNU Image Generator for iOS | iOS | Swift | — |
-| XNU Image Generator for Watch | watchOS | Swift | — |
-| VideoToolbox Fuzzer | iOS / macOS | Obj-C + C | 1,775 |
+| Component | Platform | Language | LOC | Notes |
+|-----------|----------|----------|-----|-------|
+| XNU Image Fuzzer | macOS (Mac Catalyst) | Objective-C | 5,800+ | git submodule → [xsscx/xnuimagefuzzer](https://github.com/xsscx/xnuimagefuzzer) |
+| XNU Image Generator for iOS | iOS | Swift | — | |
+| XNU Image Generator for Watch | watchOS | Swift | — | |
+| VideoToolbox Fuzzer | iOS / macOS | Obj-C + C | 1,775 | |
 
 ## Quick Start
 

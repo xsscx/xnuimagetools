@@ -2,10 +2,15 @@
 
 ## What This Is
 
-A 5,400+-line Objective-C image fuzzer that exercises Apple's CoreGraphics rendering
+A 5,800+-line Objective-C image fuzzer that exercises Apple's CoreGraphics rendering
 pipeline through 15 distinct CGBitmapContext configurations, ICC profile variant
-generation (4 strategies), structure-aware PNG chunk mutations, and 30+ output format
+generation (4 strategies), structure-aware PNG chunk mutations, and 22+ output format
 encodings. Runs on macOS (Mac Catalyst), iOS, iPadOS, watchOS, and visionOS.
+
+**Repository architecture**: The fuzzer source code lives in
+[xsscx/xnuimagefuzzer](https://github.com/xsscx/xnuimagefuzzer) (primary dev repo)
+and is included in xnuimagetools as a **git submodule** at `XNU Image Fuzzer/`.
+All code changes should go to xnuimagefuzzer first, then update the submodule pointer.
 
 ## Build
 
