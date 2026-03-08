@@ -127,3 +127,20 @@ playground.xcworkspace
 
 # Code Injection
 iOSInjectionProject/
+
+# Validation output (filmstrip/highlighted images)
+filmstrip_*.png
+filmstrip_*.jpg
+highlighted_*.png
+highlighted_*.jpg
+
+# VideoToolbox build artifacts
+VideoToolbox/Fuzzing/runner
+VideoToolbox/Fuzzing/runner_dist
+VideoToolbox/Fuzzing/interpose.dylib
+VideoToolbox/Fuzzing/interpose_dist.dylib
+VideoToolbox/Fuzzing/videotoolbox-interposer.dylib
+VideoToolbox/Fuzzing/videotoolbox-interposer-arm64e.dylib
+VideoToolbox/Fuzzing/videotoolbox-runner
+VideoToolbox/Fuzzing/main.app/
+VideoToolbox/Fuzzing/videotoolbox-runner.app/
