@@ -89,6 +89,26 @@ cat /tmp/extracted-seeds/manifest.json  # Extraction metadata
 
 ### What Gets Extracted Where
 
+| Source | Staging | CFL Target |
+|--------|---------|------------|
+| iOS Generator images | `fuzz/xnuimagegenerator/{format}/` | ICC → profile/dump/toxml fuzzers |
+| Fuzzed images | `fuzz/xnuimagefuzzer/{format}/` | TIFF → tiffdump/specsep fuzzers |
+| Chained/pipeline outputs | `fuzz/xnuimagefuzzer/chained/` or `pipeline/` | Multi-pass mutations |
+| Extracted ICC profiles | `fuzz/xnuimagegenerator/icc/` or `fuzz/xnuimagefuzzer/icc/` | All ICC fuzzers |
+
+### Collision-Free Filenames (v1.9.0+)
+
+Both tools use SHA-256 hash suffixes to prevent collisions across runs:
+- iOS Generator: `xig-{context}-{WxH}[-icc_{profile}]-{hash6}.{ext}`
+- Fuzzer: `xif-{source}-perm{N}[-{variant}]-{hash6}.{ext}`
+
+## Phase 3: Validate Coverage
+
+### Profile Class Coverage Audit
+Before running fuzzers, verify all 7 ICC classes are seeded. Printer profiles were
+entirely missing from all CFL corpora until March 2026 — a major blind spot for
+LUT, gamut mapping, and CMYK code paths.
+
 | Source Format | Extraction Method | Target CFL Fuzzers |
 |--------------|-------------------|-------------------|
 | TIFF with ICC (tag 34675) | IFD tag extraction | profile, dump, deep_dump, toxml |

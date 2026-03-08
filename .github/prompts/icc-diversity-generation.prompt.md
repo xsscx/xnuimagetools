@@ -51,11 +51,35 @@ python3 contrib/scripts/extract-icc-seeds.py \
   --input /tmp/icc-diverse-output \
   --inject-cfl ../research/cfl
 
+# Or stage to fuzz/ corpus first (organized by format)
+cp /tmp/icc-diverse-output/*.tiff ../research/fuzz/xnuimagegenerator/tiff/
+cp /tmp/icc-diverse-output/*.png ../research/fuzz/xnuimagegenerator/png/
+# Extract embedded ICC profiles
+python3 contrib/scripts/extract-icc-seeds.py \
+  --input /tmp/icc-diverse-output \
+  --output ../research/fuzz/xnuimagegenerator/icc/
+
 # Verify injection
 for dir in ../research/cfl/corpus-icc_*_fuzzer/; do
   echo "$(basename $dir): $(ls -1 "$dir" | wc -l) files"
 done
 ```
+
+### iOS Image Generator v1.9.0+ Output
+
+The iOS generator produces images with collision-free filenames:
+```
+xig-{context}-{WxH}[-icc_{profile}]-{hash6}.{ext}
+```
+Stage to `fuzz/xnuimagegenerator/{format}/` then extract ICC profiles to
+`fuzz/xnuimagegenerator/icc/` before injecting into CFL corpora.
+
+Three unique ICC profiles extracted from iOS (March 2026):
+| Profile | TRC Type | Gamut | Fuzzer Value |
+|---------|----------|-------|-------------|
+| sRGB IEC61966-2.1 (3KB) | curv 1024-sample | 100% | Shared TRC offsets, 17 tags |
+| Display P3 (536B) | para type 3 | 128% | Negative XYZ, chad tag, v4.0 |
+| Adobe RGB (560B) | curv γ=2.2 | 131% | Single gamma, wide green |
 
 ## Step 3 — Validate Coverage Improvement
 
