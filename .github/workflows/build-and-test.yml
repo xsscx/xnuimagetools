@@ -138,10 +138,18 @@ jobs:
 
   # ── Job 2: Generate Fuzzed Images ─────────────────────────
   generate-images:
-    name: Generate & Validate Fuzzed Images
+    name: Generate & Validate Fuzzed Images (${{ matrix.device.name }})
     runs-on: macos-latest
     needs: build-ios
     timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        device:
+          - { name: "iPhone 16 Pro", filter: "iPhone 16 Pro", type: "iphone-pro" }
+          - { name: "iPhone SE", filter: "iPhone SE", type: "iphone-se" }
+          - { name: "iPad Pro", filter: "iPad Pro", type: "ipad-pro" }
+          - { name: "iPad mini", filter: "iPad mini", type: "ipad-mini" }
     steps:
       - name: Checkout repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -159,14 +167,16 @@ jobs:
         id: sim
         run: |
           set -euo pipefail
+          DEVICE_FILTER="${{ matrix.device.filter }}"
           SIM_INFO=$(xcrun simctl list devices available -j \
             | python3 -c "
           import json, sys
+          device_filter = '$DEVICE_FILTER'
           data = json.load(sys.stdin)
           for runtime, devices in data['devices'].items():
-              if 'iOS' in runtime:
+              if 'iOS' in runtime or 'iPadOS' in runtime:
                   for d in devices:
-                      if d['isAvailable'] and 'iPhone' in d['name']:
+                      if d['isAvailable'] and device_filter in d['name']:
                           print(d['udid'])
                           print(d['name'])
                           sys.exit(0)
@@ -175,6 +185,7 @@ jobs:
           SIM_UDID=$(echo "$SIM_INFO" | sed -n '1p')
           SIM_NAME=$(echo "$SIM_INFO" | tail -1)
           echo "sim_udid=$SIM_UDID" >> "$GITHUB_OUTPUT"
+          echo "sim_name=$SIM_NAME" >> "$GITHUB_OUTPUT"
           echo "✅ Found simulator: $SIM_NAME ($SIM_UDID)"
 
       - name: Build for simulator
@@ -343,10 +354,38 @@ jobs:
           echo "| Valid | $VALID |" >> "$GITHUB_STEP_SUMMARY"
           echo "| Invalid | $INVALID |" >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Analyze image quality
+        if: always()
+        run: |
+          set -euo pipefail
+          FUZZ_DIR="/tmp/fuzzed-output"
+          FILE_COUNT=$(find "$FUZZ_DIR" -type f 2>/dev/null | wc -l | tr -d ' ')
+          if [ "$FILE_COUNT" -eq 0 ]; then
+            echo "⚠️  No images to analyze"
+            exit 0
+          fi
+
+          # Install dependencies for validation script
+          pip3 install --quiet Pillow imagehash 2>/dev/null || true
+
+          # Run validation script if available
+          if [ -f contrib/scripts/validate_fuzzed_images.py ]; then
+            python3 contrib/scripts/validate_fuzzed_images.py \
+              --input "$FUZZ_DIR" \
+              --output "/tmp/validation-report" \
+              2>&1 | tail -30 || true
+            echo "## Image Quality (${{ matrix.device.name }})" >> "$GITHUB_STEP_SUMMARY"
+            if [ -f /tmp/validation-report/report.txt ]; then
+              cat /tmp/validation-report/report.txt >> "$GITHUB_STEP_SUMMARY" || true
+            fi
+          else
+            echo "⚠️  validate_fuzzed_images.py not found, skipping"
+          fi
+
       - name: Upload fuzzed images artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: fuzzed-images
+          name: fuzzed-images-${{ matrix.device.type }}
           path: /tmp/fuzzed-output/
           retention-days: 14
           if-no-files-found: warn
@@ -778,11 +817,12 @@ jobs:
           persist-credentials: true
           submodules: recursive
 
-      - name: Download fuzzed images artifact
+      - name: Download fuzzed images (all devices)
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
-          name: fuzzed-images
+          pattern: fuzzed-images-*
           path: /tmp/fuzzed-download
+          merge-multiple: true
 
       - name: Download watch images artifact
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
@@ -878,11 +918,12 @@ jobs:
           persist-credentials: false
           submodules: recursive
 
-      - name: Download fuzzed images
+      - name: Download fuzzed images (all devices)
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
-          name: fuzzed-images
+          pattern: fuzzed-images-*
           path: /tmp/seed-input/sim
+          merge-multiple: true
         continue-on-error: true
 
       - name: Download Mac Catalyst images
