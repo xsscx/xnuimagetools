@@ -1,0 +1,11 @@
+{
+  "output_entropy" : 7.9609217947913411,
+  "input_sha256" : "dd952320e785936d9e1fd66e7314b9b7290ccffd16c5a676ba305c7813263b2d",
+  "output_sha256" : "7186cc4ac05f41ca4ba5b68d4e328efebfa131fd11cfc77b40995035ec9e462c",
+  "input_entropy" : 7.9625483885032109,
+  "output_size" : 6867,
+  "size_delta" : 12,
+  "input_size" : 6855,
+  "output_path" : "\/tmp\/catalyst-output\/seed_icc_perm15_Generic CMYK Profile_017.png",
+  "timestamp" : "2026-03-08 19:41:22"
+}
