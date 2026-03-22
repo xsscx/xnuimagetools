@@ -27,6 +27,10 @@ uses: actions/checkout@v4
 | cache | `5a3ec84eff668545956fd18022155c47e93e2684` | v4.2.3 |
 | download-artifact | `d3f86a106a0bac45b974a628896c90dbdf5c8093` | v4.3.0 |
 
+As of 2026-03-22, the pinned `actions/checkout` SHA still works but emits the
+GitHub Actions Node 20 deprecation warning. When updating pinned actions, prefer
+refreshing to a Node 24-compatible release instead of carrying this warning.
+
 ### Permissions
 ```yaml
 permissions:
@@ -53,6 +57,18 @@ defaults:
     git config --global credential.helper ""
     unset GITHUB_TOKEN || true
 ```
+
+### Repo-Specific Helper Contracts
+- `build-and-test.yml` expects
+  `contrib/scripts/validate_fuzzed_images.py` to accept both the legacy
+  positional form and `--input/--output/--report`.
+- That script must emit `/tmp/validation-report/report.txt` when called from CI.
+- The validator is intentionally non-recursive; if CI ever analyzes merged
+  `fuzzed-images/<timestamp>/` outputs, it must run separate passes for
+  `watch/`, `ios-gen/`, and `catalyst/`.
+- Linux-only validation is limited to YAML parsing and helper-script execution
+  against checked-in artifacts; full workflow verification still requires GitHub
+  macOS runners.
 
 ### Input Sanitization
 NEVER use user-controllable inputs directly in `run:` blocks:

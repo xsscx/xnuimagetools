@@ -114,6 +114,11 @@ actions/cache: 5a3ec84eff668545956fd18022155c47e93e2684  # v4.2.3
 actions/download-artifact: d3f86a106a0bac45b974a628896c90dbdf5c8093  # v4.3.0
 ```
 
+> **2026-03 note:** the current `actions/checkout` pin still works, but GitHub
+> Actions now emits the Node 20 deprecation warning for it. When touching action
+> dependencies, refresh the SHA to a Node 24-compatible release instead of
+> carrying this warning forward.
+
 ### CI Pipeline: build-and-test.yml (7 Jobs + 4-device matrix)
 
 ```
@@ -133,6 +138,18 @@ build-ios (Job 1)
 - Runs binary directly (`$APP_PATH/Contents/MacOS/XNU Image Fuzzer`) — no simulator
 - Sets `FUZZ_ICC_DIR=/System/Library/ColorSync/Profiles` for system ICC profiles
 - Enables all 4 ICC variants: real, mutated, stripped, mismatched
+
+### CI Quality Validation Contracts
+- `build-and-test.yml` calls:
+  `python3 contrib/scripts/validate_fuzzed_images.py --input "$FUZZ_DIR" --output /tmp/validation-report --report /tmp/validation-report/report.txt`
+- Keep both the flag-based CLI above and the legacy positional form working when
+  refactoring `contrib/scripts/validate_fuzzed_images.py`.
+- The validator scans **one directory only** (non-recursive) and currently
+  supports `.png`, `.jpg`, `.jpeg`, `.gif`, `.tiff`, `.tif`, and `.bmp`.
+- `instrumented.yml` uses a separate `sips`-based per-file table. Do not assume
+  it measures the same signals as `build-and-test.yml`.
+- Linux can lint YAML and execute helper scripts against checked-in artifacts,
+  but actual workflow execution still requires GitHub macOS runners.
 
 ## Coding Conventions
 

@@ -226,18 +226,26 @@ Hash suffixes (6-char SHA-256) prevent filename collisions across generation run
 ## Testing
 
 ```bash
-# Validate output integrity (Python — requires pillow, numpy)
-python3 contrib/scripts/validate_fuzzed_images.py fuzzed-images/
+# Validate output integrity (Python — requires Pillow)
+LATEST_RUN=$(ls -1dt fuzzed-images/*/ | sed -n '1p')
+python3 contrib/scripts/validate_fuzzed_images.py \
+  --input "$LATEST_RUN" \
+  --output /tmp/validation-report \
+  --report /tmp/validation-report/report.txt
+
+# Re-run per subdirectory for merged committed runs
+python3 contrib/scripts/validate_fuzzed_images.py \
+  --input "$LATEST_RUN/catalyst" \
+  --output /tmp/validation-report-catalyst
 
 # Magic byte verification
 python3 contrib/scripts/read-magic-numbers.py fuzzed-images/
 
-# Cross-device comparison (compare runs from different hardware)
-python3 contrib/scripts/compare_image_directories.py \
-  fuzzed-images/2026-03-02-iPhone/ fuzzed-images/2026-03-02-iPad/
+# Cross-device comparison helper
+# compare_image_directories.py still hardcodes /mnt paths in __main__;
+# patch/refactor it before using it in automation.
 
 # Feed into macOS system tools for crash detection
-LATEST_RUN=$(ls -1dt fuzzed-images/*/ | sed -n '1p')
 ./fuzz-apps.sh "$LATEST_RUN" --timeout 15
 ```
 
@@ -248,3 +256,9 @@ LATEST_RUN=$(ls -1dt fuzzed-images/*/ | sed -n '1p')
 - **LLVM profraw**: Use `dlsym()` to resolve `__llvm_profile_write_file`, not weak extern
 - **VideoToolbox ASAN**: 10–50× slower than non-ASAN; use short inputs and increase timeouts
 - **CGColorSpaceCreateDeviceCMYK**: Falls back to RGB on some devices — always test both paths
+- **Validator scope**: `validate_fuzzed_images.py` is non-recursive; analyze
+  `watch/`, `ios-gen/`, and `catalyst/` separately inside merged runs
+- **Bit-plane hits**: `\x00\x00\x00` detections are noisy heuristic signals, not
+  proof of a bug by themselves
+- **Linux Pillow vs Apple decoders**: some float TIFF outputs fail to decode on
+  Linux/Pillow but still remain useful Apple-side fuzz cases

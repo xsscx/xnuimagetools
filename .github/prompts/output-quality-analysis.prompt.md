@@ -38,16 +38,24 @@ done
 ### Steganography / Injection Detection
 ```bash
 pip install Pillow
-python3 contrib/scripts/validate_fuzzed_images.py
+python3 contrib/scripts/validate_fuzzed_images.py \
+  --input /path/to/images \
+  --output /tmp/validation-report \
+  --report /tmp/validation-report/report.txt
 ```
-Checks LSB/MSB of pixel data for injected attack strings:
+Checks LSB/MSB of pixel data for injected attack strings and writes a
+plain-text `report.txt` for CI summaries. It currently scans:
+- `.png`, `.jpg`, `.jpeg`, `.gif`, `.tiff`, `.tif`, `.bmp`
+- **one directory only** (non-recursive)
+
+Signals currently include:
 - Buffer overflow patterns
 - XSS payloads (`<script>`)
 - SQL injection (`' OR ''='`)
 - Format string vulnerabilities (`%d %s`)
 - XXE injection
 - Path traversal (`../`)
-- Null byte injection
+- Null byte injection (`\x00\x00\x00`, noisy / low-signal)
 
 ### Magic Number Analysis
 ```bash
@@ -59,14 +67,24 @@ Validates 40+ file signatures, checks MIME types, generates HTML report.
 ### Cross-Device Comparison (heavy dependencies)
 ```bash
 pip install opencv-python scikit-image imagehash pillow-heif Pillow
-python3 contrib/scripts/compare_image_directories.py
 ```
-Computes: MSE, SSIM, PSNR, perceptual hash distance, entropy analysis.
+`compare_image_directories.py` is still a helper, not a stable CLI: its current
+`__main__` hardcodes `/mnt/...` paths. Refactor/patch it before relying on it in
+automation. It computes MSE, SSIM, PSNR, perceptual hash distance, and entropy.
 
 ## CI Quality Validation Step
 
-The instrumented.yml workflow includes a built-in quality validation step
-that runs after fuzzing. It uses `sips` (macOS built-in) to validate:
+`build-and-test.yml` runs:
+```bash
+python3 contrib/scripts/validate_fuzzed_images.py \
+  --input "$FUZZ_DIR" \
+  --output /tmp/validation-report \
+  --report /tmp/validation-report/report.txt
+```
+and appends `report.txt` to the GitHub Actions Step Summary.
+
+`instrumented.yml` includes a separate built-in quality validation step that
+runs after fuzzing. It uses `sips` (macOS built-in) to validate:
 
 1. **File format** — recognized image format (PNG, JPEG, TIFF, etc.)
 2. **Dimensions** — valid pixel width and height
@@ -80,6 +98,8 @@ Results appear in the GitHub Actions Step Summary as a per-file table.
 - Current source defines **17 bitmap contexts**, including Display P3 and BT.2020
 - CI/native sanity runs should usually produce **80+ files**
 - Checked-in timestamped runs under `fuzzed-images/` are currently closer to **~180 top-level files**
+- Recent merged committed runs can exceed **500 total files** once `catalyst/`,
+  `watch/`, and `ios-gen/` outputs are included
 - All files should have non-zero size
 - All files should be recognized by `sips`
 - Common formats: PNG, JPEG, GIF, TIFF, plus additional format/ICC variants depending on run mode
@@ -97,6 +117,8 @@ Results appear in the GitHub Actions Step Summary as a per-file table.
 | Empty file (0 bytes) | ⚠️ Warning | Image creation failed silently |
 | Unrecognized format | ⚠️ Warning | Possible corruption or wrong extension |
 | Valid format, wrong dimensions | ℹ️ Info | May be intentional fuzzing variation |
+| `\x00\x00\x00` bit-plane hit | ℹ️ Info | Low-signal heuristic; correlate with decode failures or crashes before escalating |
+| Pillow decode failure on Linux float TIFF | ℹ️ Info | Re-check with `sips` / Apple stack before calling it a renderer bug |
 | ASAN finding during generation | 🔴 Critical | Memory safety bug in renderer |
 | UBSAN finding during generation | 🟡 Medium | Undefined behavior in math |
-| Injection string in LSB | ℹ️ Info | Expected for steganography fuzz |
+| Injection string in LSB/MSB | ℹ️ Info | Heuristic signal only; use with parser crashes, sanitizer output, and format validation |

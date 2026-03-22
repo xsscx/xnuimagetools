@@ -115,9 +115,19 @@ UBSAN_OPTIONS="print_stacktrace=1:halt_on_error=0" \
 ### Validate Output
 
 ```bash
-python3 contrib/scripts/validate_fuzzed_images.py /tmp/fuzzed-output
+python3 contrib/scripts/validate_fuzzed_images.py \
+  --input /tmp/fuzzed-output \
+  --output /tmp/fuzzed-output/compare \
+  --report /tmp/fuzzed-output/compare/report.txt
 python3 contrib/scripts/read-magic-numbers.py /tmp/fuzzed-output
 ```
+
+- `validate_fuzzed_images.py` keeps both the legacy positional CLI and the
+  workflow-facing `--input/--output/--report` form.
+- The validator is **non-recursive**. Run it separately for `watch/`, `ios-gen/`,
+  and `catalyst/` when analyzing a checked-in `fuzzed-images/<timestamp>/` run.
+- `\x00\x00\x00` detections are common low-signal heuristic hits. Prioritize
+  empty files, decode failures, sanitizer findings, and parser crashes.
 
 ### Feed A Checked-In Run Into macOS Parsers
 
@@ -146,6 +156,9 @@ python3 contrib/scripts/extract-icc-seeds.py \
 | `release.yml` | Tagged/manual release artifacts | tags `v*`, manual |
 
 There is currently **no** `codeql-analysis.yml` workflow under `.github/workflows/`.
+On Linux, only helper-script and YAML validation is local; end-to-end
+`build-and-test.yml` and `instrumented.yml` verification still requires GitHub
+macOS runners.
 
 ## Submodule Workflow
 
@@ -169,6 +182,8 @@ git push
   default runs.
 - Checked-in runs under `fuzzed-images/` currently contain roughly **180** top-level
   files per timestamped directory.
+- Recent committed runs can exceed **500 total files** once `catalyst/`, `watch/`,
+  and `ios-gen/` subdirectories are included.
 - `--pipeline` mode writes additional `pipeline-*` subdirectories under the chosen
   `FUZZ_OUTPUT_DIR`.
 
