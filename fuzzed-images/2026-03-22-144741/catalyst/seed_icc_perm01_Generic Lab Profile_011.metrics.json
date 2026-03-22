@@ -1,0 +1,11 @@
+{
+  "output_entropy" : 7.6277233574783656,
+  "input_sha256" : "706c57ba6f1d0d3444ffecb64b71ca8d97dab2af978377e72114f87c7881439d",
+  "output_sha256" : "30f5080631dd7bd5794c6ea552f76b5c82dc980b3832092ff468db4fc648679b",
+  "input_entropy" : 7.6534788606988435,
+  "output_size" : 1069,
+  "size_delta" : 12,
+  "input_size" : 1057,
+  "output_path" : "\/tmp\/catalyst-output\/seed_icc_perm01_Generic Lab Profile_011.png",
+  "timestamp" : "2026-03-22 14:41:10"
+}
