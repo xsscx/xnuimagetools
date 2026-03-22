@@ -12,7 +12,7 @@ TIFF files across hardware-diverse image outputs.
 ## Prerequisites
 
 - xnuimagetools output in `fuzzed-images/` (from macOS/iOS/watchOS runs)
-- CFL fuzzers built at `../research/cfl/` (or wherever the research repo lives)
+- CFL fuzzers built at `../cfl/` in this workspace (or another explicit sibling path)
 - Python 3.8+
 
 ## Phase 1: Generate ICC-Rich Images
@@ -23,13 +23,16 @@ Setting `FUZZ_ICC_DIR` unlocks all 4 strategies:
 
 ```bash
 # Full ICC diversity — generates all 4 variant types per TIFF/PNG save
-FUZZ_ICC_DIR=../research/test-profiles \
+BINARY=/tmp/native-build/xnuimagetools
+TEST_PROFILES=../test-profiles
+
+FUZZ_ICC_DIR="$TEST_PROFILES" \
 FUZZ_OUTPUT_DIR=/tmp/icc-rich-output \
-  ./XNU\ Image\ Fuzzer
+  "$BINARY"
 
 # Without FUZZ_ICC_DIR — still generates stripped + mismatched variants
 # (real ICC and mutated ICC require FUZZ_ICC_DIR)
-FUZZ_OUTPUT_DIR=/tmp/basic-output ./XNU\ Image\ Fuzzer
+FUZZ_OUTPUT_DIR=/tmp/basic-output "$BINARY"
 ```
 
 ### ICC Variant Output Per Save
@@ -50,8 +53,8 @@ Additionally, `encodeImageMultiFormat()` produces:
 
 ### ICC Profile Sources (Priority Order)
 
-1. `../research/test-profiles/` — curated ICC profiles for testing (highest diversity)
-2. `../research/extended-test-profiles/` — additional profiles including edge cases
+1. `../test-profiles/` — curated ICC profiles for testing (highest diversity)
+2. `../extended-test-profiles/` — additional profiles including edge cases
 3. `/System/Library/ColorSync/Profiles/` — macOS system profiles (sRGB, Display P3, etc.)
 4. `/Library/ColorSync/Profiles/` — user-installed profiles
 
@@ -71,7 +74,7 @@ Additionally, `encodeImageMultiFormat()` produces:
 # Extract ICC profiles + TIFF files from ALL fuzzed-images runs
 python3 contrib/scripts/extract-icc-seeds.py \
   --input fuzzed-images/ \
-  --inject-cfl ../research/cfl
+  --inject-cfl ../cfl
 
 # Extract from a specific device run (e.g., iPhone vs iPad comparison)
 python3 contrib/scripts/extract-icc-seeds.py \
@@ -126,16 +129,16 @@ on the same images will not create duplicates.
 After injecting seeds, run a quick smoke test on the target fuzzers:
 
 ```bash
-cd ../research
+CFL_DIR=../cfl
 
 # Verify profile fuzzer gained edges
 ASAN_OPTIONS=detect_leaks=0 LLVM_PROFILE_FILE=/dev/null \
-  cfl/bin/icc_profile_fuzzer -max_total_time=30 cfl/corpus-icc_profile_fuzzer/ \
+  "$CFL_DIR/bin/icc_profile_fuzzer" -max_total_time=30 "$CFL_DIR/corpus-icc_profile_fuzzer/" \
   2>&1 | grep "INITED\|DONE"
 
 # Verify tiffdump fuzzer gained edges
 ASAN_OPTIONS=detect_leaks=0 LLVM_PROFILE_FILE=/dev/null \
-  cfl/bin/icc_tiffdump_fuzzer -max_total_time=30 cfl/corpus-icc_tiffdump_fuzzer/ \
+  "$CFL_DIR/bin/icc_tiffdump_fuzzer" -max_total_time=30 "$CFL_DIR/corpus-icc_tiffdump_fuzzer/" \
   2>&1 | grep "INITED\|DONE"
 ```
 
@@ -147,10 +150,12 @@ Run the fuzzed images through macOS system parsers to find crashes:
 
 ```bash
 # Test all fuzzed images against sips, qlmanage, mdimport, tiffutil
-./fuzz-apps.sh fuzzed-images/latest/ --timeout 15
+LATEST_RUN=$(ls -1dt fuzzed-images/*/ | sed -n '1p')
+./fuzz-apps.sh "$LATEST_RUN" --timeout 15
 
-# Test CFL crash artifacts against macOS parsers
-./fuzz-apps.sh ../research/crash-* --timeout 15 --report /tmp/cfl-crash-report
+# Stage CFL crash artifacts in a directory, then test them
+CRASH_DIR=/tmp/cfl-crashes
+./fuzz-apps.sh "$CRASH_DIR" --timeout 15 --report /tmp/cfl-crash-report
 ```
 
 ## Cross-Device Seed Diversity
@@ -169,7 +174,7 @@ Run xnuimagetools on each device and extract seeds separately to maximize divers
 ```bash
 # Per-device extraction
 for run in fuzzed-images/2026-03-*; do
-  python3 contrib/scripts/extract-icc-seeds.py --input "$run" --inject-cfl ../research/cfl
+  python3 contrib/scripts/extract-icc-seeds.py --input "$run" --inject-cfl ../cfl
 done
 ```
 
@@ -187,7 +192,7 @@ may have dropped xnuimagetools-derived seeds. Re-run the extraction pipeline to
 re-inject them:
 ```bash
 python3 contrib/scripts/extract-icc-seeds.py \
-  --input fuzzed-images/ --inject-cfl ../research/cfl
+  --input fuzzed-images/ --inject-cfl ../cfl
 ```
 
 ### Profraw Note

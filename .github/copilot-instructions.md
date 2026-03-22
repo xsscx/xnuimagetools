@@ -1,20 +1,37 @@
 # Copilot Instructions — XNU Image Tools
 
+## Scope For This Checkout
+
+Treat `xnuimagetools/` as the working root. Validate commands and paths locally
+before assuming anything about sibling repos or generated artifacts.
+
+### Local-First Rules
+
+- Work in this repo unless a task explicitly requires the adjacent research checkout.
+- `XNU Image Fuzzer/` is a git submodule. Fuzzer source edits happen inside that
+  directory; repo-local docs, workflows, generators, scripts, and VideoToolbox code
+  live here.
+- Prefer repo-local paths: `contrib/scripts/...`, `.github/scripts/...`,
+  `fuzz-apps.sh`, `fuzzed-images/<timestamp>/`, and `fuzzed-video/<timestamp>/`.
+- In this workspace, optional sibling resources live at `../cfl`, `../fuzz`,
+  `../test-profiles`, `../extended-test-profiles`, and `../.github/...`.
+  Do not hardcode `../research/...` paths.
+
 ## Project Overview
 
-XNU Image Tools is an umbrella workspace for Apple-platform image security research.
-It uses [xnuimagefuzzer](https://github.com/xsscx/xnuimagefuzzer) as a git submodule
-and bundles additional projects for image generation, VideoToolbox fuzzing, and
-cross-platform testing. The core fuzzer generates fuzzed images using 15 CGBitmapContext
-color space and pixel format combinations (including CMYK, HDR Float16, and Indexed Color),
-plus structure-aware PNG chunk mutations.
+XNU Image Tools is a multi-project Apple-platform image generation and fuzzing
+workspace.
 
-- **Language**: Objective-C (main fuzzer), Swift (generators), Python (validation scripts)
-- **Platforms**: iOS 14.2+, macOS (Mac Catalyst), iPadOS, visionOS
+- **Objective-C**: `XNU Image Fuzzer/` submodule and `VideoToolbox/Fuzzing/`
+- **Swift**: `XNU Image Generator for iOS/`, `XNU Image Generator for Watch/`
+- **Python**: validation and extraction tooling under `contrib/scripts/`
 - **License**: GPL v3
 - **Author**: David Hoyt (@xsscx / @h02332)
 
-## Clone with Submodules
+The current `xnuimagefuzzer.m` source exposes **17** bitmap-context entry points,
+including newer Display P3 and BT.2020 wide-gamut paths.
+
+## Clone With Submodules
 
 ```bash
 git clone --recurse-submodules https://github.com/xsscx/xnuimagetools.git
@@ -24,18 +41,17 @@ git submodule update --init --recursive
 
 ## Documentation Map
 
-Detailed instructions are split into specialized files. Copilot loads them
-automatically based on which files you're editing.
+Detailed instructions are split into specialized files.
 
 ### Path-Specific Instructions
 
 | Document | Path | Content |
 |----------|------|---------|
-| **xnuimagefuzzer** | `.github/instructions/xnuimagefuzzer.instructions.md` | Bitmap contexts, ICC handling, pixel formats, testing |
+| **xnuimagefuzzer** | `.github/instructions/xnuimagefuzzer.instructions.md` | Bitmap contexts, ICC handling, pipeline/chained modes, testing |
 | **Build & CI** | `.github/instructions/build-and-ci.instructions.md` | Build variants, CI workflows, security hardening, coding conventions |
-| **CFL Seed Pipeline** | `.github/instructions/cfl-seed-pipeline.instructions.md` | ICC extraction, corpus injection, coverage optimization |
+| **CFL Seed Pipeline** | `.github/instructions/cfl-seed-pipeline.instructions.md` | ICC extraction, corpus injection, coverage workflow |
 | **VideoToolbox** | `.github/instructions/videotoolbox.instructions.md` | Video fuzzer architecture, build, run, known gotchas |
-| **Fuzz Apps** | `.github/instructions/fuzz-apps.instructions.md` | macOS system tool fuzzing (sips, qlmanage, mdimport) |
+| **Fuzz Apps** | `.github/instructions/fuzz-apps.instructions.md` | macOS system tool fuzzing (`sips`, `qlmanage`, `mdimport`, `tiffutil`) |
 
 ### Prompt Templates
 
@@ -43,7 +59,7 @@ automatically based on which files you're editing.
 |--------|------|---------|
 | **CI Workflow Maintenance** | `.github/prompts/ci-workflow-maintenance.prompt.md` | GitHub Actions standards and security |
 | **Code Review** | `.github/prompts/code-review.prompt.md` | Multi-project review checklist |
-| **Fuzzer Coverage** | `.github/prompts/fuzzer-coverage-optimization.prompt.md` | 6-step coverage improvement methodology |
+| **Fuzzer Coverage** | `.github/prompts/fuzzer-coverage-optimization.prompt.md` | Coverage improvement methodology |
 | **CFL Seed Pipeline** | `.github/prompts/cfl-seed-pipeline.prompt.md` | Extract and inject ICC seeds workflow |
 | **macOS Parser Fuzzing** | `.github/prompts/macos-parser-fuzzing.prompt.md` | System parser testing guide |
 | **Output Quality** | `.github/prompts/output-quality-analysis.prompt.md` | Image quality validation |
@@ -52,65 +68,93 @@ automatically based on which files you're editing.
 
 ## Repository Structure
 
-```
-XNU Image Fuzzer/              # ← git submodule (xsscx/xnuimagefuzzer)
-├── xnuimagefuzzer.m          # Core fuzzer — 15 bitmap contexts, fuzz permutations
-├── ViewController.m           # UICollectionView displaying fuzzed images
-├── AppDelegate.m              # App lifecycle, exception handler
-├── SceneDelegate.{h,m}        # Multi-window scene management
-├── CMakeLists.txt             # CMake build (iOS arm64, Debug with ASAN)
-├── Info.plist                 # UIFileSharingEnabled=YES, JPEG/PNG/GIF doc types
-├── Assets.xcassets            # App icons and image assets
-├── Flowers.exr / 2225.jpg     # Sample input images
-└── Base.lproj/                # Storyboards
-XNU Image Generator for iOS/   # iOS image generator (v1.9.0 — collision-free filenames)
-XNU Image Generator/            # macOS image generator project
-VideoToolbox/                   # VideoToolbox fuzzing harness
-contrib/scripts/
-├── validate_fuzzed_images.py  # Steganography / injection detection
-├── compare_image_directories.py  # MSE, SSIM, PSNR, entropy analysis
-├── read-magic-numbers.py      # 40+ magic byte signatures
-└── generate_filmstrip.py      # Side-by-side comparison strips
+```text
+XNU Image Fuzzer/               # git submodule with the Obj-C fuzzer source
+├── XNU Image Fuzzer/           # app sources, assets, CMakeLists.txt
+├── contrib/scripts/            # submodule-local scripts
+└── codeql-queries/             # custom CodeQL query pack (no workflow here)
+XNU Image Generator for iOS/    # iOS image generator project
+XNU Image Generator for Watch/  # watchOS image generator project
+VideoToolbox/
+└── Fuzzing/                    # VideoToolbox runner, interposer, build files
+contrib/scripts/                # repo-local validation and extraction scripts
 .github/
-├── workflows/                 # 7 CI/CD workflows
-├── instructions/              # 5 path-specific instruction files
-├── prompts/                   # 8 prompt templates
-├── scripts/sanitize-sed.sh    # Input sanitization for CI
-└── copilot-instructions.md    # This file (table of contents)
+├── workflows/                  # 6 tracked workflows
+├── instructions/               # path-specific instruction files
+├── prompts/                    # prompt templates
+├── scripts/build-native.sh     # native clang build + run + coverage
+└── copilot-instructions.md     # this file
+fuzz-apps.sh                    # macOS parser harness
+fuzzed-images/                  # checked-in image runs (timestamped dirs)
+fuzzed-video/                   # checked-in VideoToolbox runs
+XNU Image Tools.xcodeproj       # top-level Xcode project
 ```
 
 ## Quick Reference
 
-### Build (one-liner)
+### Build
+
 ```bash
-.github/scripts/build-native.sh           # ASAN+UBSAN+coverage — recommended
+.github/scripts/build-native.sh           # build + run + coverage
+.github/scripts/build-native.sh --build-only
 ```
 
-### Run
+### Run The Native Binary
+
 ```bash
-FUZZ_OUTPUT_DIR=/tmp/fuzzed-output timeout 120 /tmp/xnuimagetools
+BINARY=/tmp/native-build/xnuimagetools
+
+FUZZ_OUTPUT_DIR=/tmp/fuzzed-output \
+FUZZ_ICC_DIR=../test-profiles \
+LLVM_PROFILE_FILE=/tmp/profraw/tools-%m_%p.profraw \
+ASAN_OPTIONS="detect_leaks=0:halt_on_error=0" \
+UBSAN_OPTIONS="print_stacktrace=1:halt_on_error=0" \
+  "$BINARY"
 ```
 
-### Validate output
+### Validate Output
+
 ```bash
 python3 contrib/scripts/validate_fuzzed_images.py /tmp/fuzzed-output
+python3 contrib/scripts/read-magic-numbers.py /tmp/fuzzed-output
 ```
 
-### Extract ICC seeds for CFL
+### Feed A Checked-In Run Into macOS Parsers
+
 ```bash
-python3 contrib/scripts/extract-icc-seeds.py --input fuzzed-images/ --inject-cfl ../cfl
+LATEST_RUN=$(ls -1dt fuzzed-images/*/ | sed -n '1p')
+./fuzz-apps.sh "$LATEST_RUN" --timeout 15
 ```
 
-See `.github/instructions/build-and-ci.instructions.md` for all build variants
-and CI pipeline details.
+### Extract ICC Seeds For CFL
+
+```bash
+python3 contrib/scripts/extract-icc-seeds.py \
+  --input fuzzed-images/ \
+  --inject-cfl ../cfl
+```
+
+## Build / CI Snapshot
+
+| Workflow | Purpose | Current Trigger |
+|----------|---------|-----------------|
+| `code-quality.yml` | Lightweight Obj-C/C/Swift/Python checks | push, pull request, manual |
+| `build-and-test.yml` | Build, generate images, commit corpus, extract seeds | push, pull request, weekly Monday 06:00 UTC, manual |
+| `cached-build.yml` | DerivedData-cached Xcode build and analysis | push, pull request, manual |
+| `instrumented.yml` | Mac Catalyst sanitizers plus native clang coverage | push, pull request, manual |
+| `videotoolbox.yml` | VideoToolbox build, coverage, static analysis, fuzz run | push, pull request on `VideoToolbox/**`, manual |
+| `release.yml` | Tagged/manual release artifacts | tags `v*`, manual |
+
+There is currently **no** `codeql-analysis.yml` workflow under `.github/workflows/`.
 
 ## Submodule Workflow
 
-The fuzzer source lives in [xsscx/xnuimagefuzzer](https://github.com/xsscx/xnuimagefuzzer).
-Code changes go there first, then the submodule pointer is updated here:
+Only update the submodule pointer when files under `XNU Image Fuzzer/` changed.
+If you are editing repo-local docs, workflows, generators, or VideoToolbox files,
+stay in this repo.
 
 ```bash
-# After changes are pushed to xnuimagefuzzer:
+# After changes are pushed to the xnuimagefuzzer submodule:
 cd "XNU Image Fuzzer"
 git pull origin main
 cd ..
@@ -119,80 +163,22 @@ git commit -m "Update xnuimagefuzzer submodule"
 git push
 ```
 
-## Platform Compatibility
+## Output Expectations
 
-| Platform | Status | Notes |
-|----------|--------|-------|
-| macOS 14+ arm64 | ✅ | Mac Catalyst, native execution |
-| macOS 15+ x86_64 | ✅ | Rosetta 2 |
-| iOS 17+ | ✅ | Primary target |
-| iPadOS 17+ | ✅ | Full support |
-| visionOS 1.x | ✅ | Supported |
-| watchOS | ❌ | Not applicable |
+- The native build script uses **80+ files** as its current success threshold for
+  default runs.
+- Checked-in runs under `fuzzed-images/` currently contain roughly **180** top-level
+  files per timestamped directory.
+- `--pipeline` mode writes additional `pipeline-*` subdirectories under the chosen
+  `FUZZ_OUTPUT_DIR`.
 
-## Quality Validation Scripts
+## Cross-Repo Coordination
 
-| Script | Purpose |
-|--------|---------|
-| `validate_fuzzed_images.py` | Steganography — LSB/MSB injection detection (XSS, SQLi, XXE, path traversal) |
-| `read-magic-numbers.py` | 40+ file magic signatures, MIME type checking, HTML report |
-| `compare_image_directories.py` | MSE, SSIM, PSNR, perceptual hash, entropy (requires opencv-python, scikit-image) |
-| `generate_filmstrip.py` | Side-by-side comparison strips |
+If the adjacent research checkout is present, shared coordination docs are:
 
-## Common Issues & Solutions
+- `../.github/instructions/multi-agent.instructions.md`
+- `../.github/prompts/cooperative-development.prompt.md`
+- `../.github/prompts/remote-analysis.prompt.md`
 
-For detailed troubleshooting, see the xnuimagefuzzer repo's troubleshooting instructions.
-
-### Pipeline Phase 2 — Cumulative Mutation Bug (Fixed v1.9.0)
-`performPipelineFuzzing()` Phase 2 reloads from `cleanData` for each permutation.
-Previously it mutated `cleanImage` in-place, causing cumulative mutations where
-each permutation received all prior mutations instead of independent single mutations.
-
-### 1BitMonochrome — Grayscale Drawing (Fixed v1.8.1)
-1BitMonochrome and Grayscale contexts use `CGColor(gray:alpha:)` for colors and
-`CGColorSpaceCreateDeviceGray()` for gradients. Using RGB colors on a grayscale
-context produces 0-output images.
-
-### Build fails with `-Wenum-conversion`
-Cast `CGImageAlphaInfo` to `CGBitmapInfo`:
-```objc
-CGBitmapInfo bitmapInfo = (CGBitmapInfo)kCGImageAlphaPremultipliedLast;
-```
-
-### Mac Catalyst app exits immediately
-Must use `open "$APP_BUNDLE"` — bare Mach-O binary doesn't initialize UIKit.
-
-### SIGPIPE crash in CI
-Never pipe Apple CLI tools through `| head`. Use `| sed -n '1,Np'` instead.
-
-### Coverage report empty
-Use `dlsym(RTLD_DEFAULT, "__llvm_profile_write_file")` — NOT `__attribute__((weak))`.
-Verify `LLVM_PROFILE_FILE` reaches the process via `open --env`.
-
-## VideoToolbox Fuzzer
-
-See `.github/instructions/videotoolbox.instructions.md` for full details.
-
-The VideoToolbox fuzzer exercises Apple's hardware video decoding pipeline by
-extracting frames from video files, applying byte-level mutations, and encoding
-fuzzed frames through VTCompressionSession.
-
-```bash
-cd VideoToolbox/Fuzzing && make          # build
-ASAN_OPTIONS="detect_leaks=0:halt_on_error=0" \
-  build/videotoolbox-runner -t 60 -o /tmp/fuzzed-frames big.mov
-```
-
-
-## Multi-Agent Collaboration
-
-This repo works with the `xsscx/research` repo (WSL-2/Linux agent). Key coordination:
-
-- **File ownership**: macOS agent owns `xnuimagetools/`, `fuzz/graphics/*/xig-*`, `fuzz/xnuimage*/`
-- **Seeds flow**: macOS generates → `fuzz/` staging → WSL-2 seeds into `cfl/corpus-*/`
-- **Crash testing**: WSL-2 finds crashes → macOS tests against ColorSync/ImageIO
-- **Remote analysis**: Use MCP Docker API (`ghcr.io/xsscx/icc-profile-mcp web`) to
-  analyze ICC profiles without git commit overhead. See `cfl-seed-pipeline.instructions.md`.
-- **Coordination docs**: `research/.github/instructions/multi-agent.instructions.md` and
-  `research/.github/prompts/cooperative-development.prompt.md`
-- **Always fetch/pull** at session start: `git fetch --all && git pull`
+When a sibling repo is not present, keep work fully repo-local and avoid assuming
+those paths exist.

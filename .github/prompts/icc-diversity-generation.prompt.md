@@ -8,13 +8,13 @@ description: Generate ICC-diverse image seeds from xnuimagetools for CFL fuzzer 
 ## Goal
 
 Generate images with maximum ICC profile diversity to improve CFL fuzzer coverage,
-especially for `icc_profile_fuzzer`, `icc_toxml_fuzzer`, `icc_tiff_fuzzer`, and
+especially for `icc_profile_fuzzer`, `icc_toxml_fuzzer`, `icc_tiffdump_fuzzer`, and
 `icc_deep_dump_fuzzer`.
 
 ## Prerequisites
 
 - xnuimagetools built (Mac Catalyst or native clang)
-- ICC profile collection (e.g., `research/test-profiles/`)
+- ICC profile collection (e.g., `../test-profiles/`)
 - CFL fuzzers built (`cd cfl && ./build.sh`)
 
 ## Step 1 — Generate ICC-Rich Output
@@ -22,11 +22,12 @@ especially for `icc_profile_fuzzer`, `icc_toxml_fuzzer`, `icc_tiff_fuzzer`, and
 ```bash
 # Set FUZZ_ICC_DIR to enable real ICC + mutated ICC variants
 # Set FUZZ_OUTPUT_DIR for output collection
-FUZZ_ICC_DIR=../research/test-profiles \
+BINARY=/tmp/native-build/xnuimagetools
+TEST_PROFILES=../test-profiles
+
+FUZZ_ICC_DIR="$TEST_PROFILES" \
 FUZZ_OUTPUT_DIR=/tmp/icc-diverse-output \
-  open --env FUZZ_ICC_DIR=../research/test-profiles \
-       --env FUZZ_OUTPUT_DIR=/tmp/icc-diverse-output \
-       "$APP_BUNDLE"
+  "$BINARY"
 ```
 
 ### Expected Output Per TIFF/PNG Save
@@ -49,18 +50,18 @@ For each bitmap context TIFF/PNG output, `saveFuzzedImageWithICCVariants()` gene
 # Extract ICC profiles and TIFF files from the output
 python3 contrib/scripts/extract-icc-seeds.py \
   --input /tmp/icc-diverse-output \
-  --inject-cfl ../research/cfl
+  --inject-cfl ../cfl
 
 # Or stage to fuzz/ corpus first (organized by format)
-cp /tmp/icc-diverse-output/*.tiff ../research/fuzz/xnuimagegenerator/tiff/
-cp /tmp/icc-diverse-output/*.png ../research/fuzz/xnuimagegenerator/png/
+cp /tmp/icc-diverse-output/*.tiff ../fuzz/xnuimagegenerator/tiff/
+cp /tmp/icc-diverse-output/*.png ../fuzz/xnuimagegenerator/png/
 # Extract embedded ICC profiles
 python3 contrib/scripts/extract-icc-seeds.py \
   --input /tmp/icc-diverse-output \
-  --output ../research/fuzz/xnuimagegenerator/icc/
+  --output ../fuzz/xnuimagegenerator/icc/
 
 # Verify injection
-for dir in ../research/cfl/corpus-icc_*_fuzzer/; do
+for dir in ../cfl/corpus-icc_*_fuzzer/; do
   echo "$(basename $dir): $(ls -1 "$dir" | wc -l) files"
 done
 ```
@@ -85,18 +86,18 @@ Three unique ICC profiles extracted from iOS (March 2026):
 
 ```bash
 # Run short fuzz sessions to check coverage
-cd ../research/cfl
-for fuzzer in icc_profile_fuzzer icc_toxml_fuzzer icc_tiff_fuzzer; do
+CFL_DIR=../cfl
+RESEARCH_ROOT=..
+for fuzzer in icc_profile_fuzzer icc_toxml_fuzzer icc_tiffdump_fuzzer; do
   LLVM_PROFILE_FILE=/tmp/profraw/${fuzzer}_%m_%p.profraw \
   ASAN_OPTIONS=detect_leaks=0 \
-    bin/${fuzzer} -max_total_time=60 -timeout=30 -rss_limit_mb=4096 \
-    corpus-${fuzzer}/ 2>&1 | tail -3
+    "$CFL_DIR/bin/${fuzzer}" -max_total_time=60 -timeout=30 -rss_limit_mb=4096 \
+    "$CFL_DIR/corpus-${fuzzer}/" 2>&1 | tail -3
 done
 
 # Generate coverage report
-cd ../research
-.github/scripts/merge-profdata.sh
-.github/scripts/generate-coverage-report.sh
+"$RESEARCH_ROOT/.github/scripts/merge-profdata.sh"
+"$RESEARCH_ROOT/.github/scripts/generate-coverage-report.sh"
 ```
 
 ## Step 4 — Maximize Profile Diversity

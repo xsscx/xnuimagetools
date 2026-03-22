@@ -12,16 +12,18 @@ crashes, hangs, and security-relevant behavior.
 
 ```bash
 # Fuzz all images in the latest output directory
-./fuzz-apps.sh fuzzed-images/$(ls -1t fuzzed-images/ | head -1) --timeout 15
+LATEST_RUN=$(ls -1dt fuzzed-images/*/ | sed -n '1p')
+./fuzz-apps.sh "$LATEST_RUN" --timeout 15
 
 # Fuzz with extended timeout for large/complex images
-./fuzz-apps.sh fuzzed-images/latest/ --timeout 30
+./fuzz-apps.sh "$LATEST_RUN" --timeout 30
 
 # Fuzz only specific tools
-FUZZ_APPS_TOOLS=sips-verify,sips-getprop ./fuzz-apps.sh fuzzed-images/
+FUZZ_APPS_TOOLS=sips-verify,sips-getprop ./fuzz-apps.sh "$LATEST_RUN"
 
 # Fuzz CFL crash artifacts against macOS parsers
-./fuzz-apps.sh ../research/crash-* --timeout 15
+CRASH_DIR=/tmp/cfl-crashes
+./fuzz-apps.sh "$CRASH_DIR" --timeout 15
 ```
 
 ## What to Look For
@@ -42,7 +44,8 @@ FUZZ_APPS_TOOLS=sips-verify,sips-getprop ./fuzz-apps.sh fuzzed-images/
 
 ### 1. Run Initial Scan
 ```bash
-./fuzz-apps.sh fuzzed-images/latest/ --timeout 15 --report /tmp/scan-1
+LATEST_RUN=$(ls -1dt fuzzed-images/*/ | sed -n '1p')
+./fuzz-apps.sh "$LATEST_RUN" --timeout 15 --report /tmp/scan-1
 ```
 
 ### 2. Review Results
@@ -65,16 +68,17 @@ for f in /tmp/scan-1/crashes/*; do
   file "$f"
   ls -la "$f"
   # Re-test to confirm reproducibility
-  timeout 15 sips --debug --verify "$f" 2>&1 || echo "EXIT: $?"
+  perl -e 'alarm shift; exec @ARGV' 15 sips --debug --verify "$f" 2>&1 || echo "EXIT: $?"
 done
 ```
 
 ### 4. Cross-Reference with CFL Findings
 ```bash
 # Check if any crash files trigger issues in the CFL fuzzer suite
+CFL_DIR=../cfl
 for f in /tmp/scan-1/crashes/*.tiff; do
-  ASAN_OPTIONS=detect_leaks=0 timeout 30 \
-    ../research/cfl/bin/icc_tiffdump_fuzzer "$f" 2>&1 | tail -5
+  ASAN_OPTIONS=detect_leaks=0 perl -e 'alarm shift; exec @ARGV' 30 \
+    "$CFL_DIR/bin/icc_tiffdump_fuzzer" "$f" 2>&1 | tail -5
 done
 ```
 
@@ -83,22 +87,25 @@ done
 ### From xnuimagetools → fuzz-apps
 ```bash
 # Generate images → test against macOS parsers
-FUZZ_OUTPUT_DIR=/tmp/fresh-fuzz ./XNU\ Image\ Fuzzer
+BINARY=/tmp/native-build/xnuimagetools
+FUZZ_OUTPUT_DIR=/tmp/fresh-fuzz "$BINARY"
 ./fuzz-apps.sh /tmp/fresh-fuzz --timeout 15
 ```
 
 ### From CFL fuzzers → fuzz-apps
 ```bash
 # Test CFL crash artifacts against macOS parsers
-./fuzz-apps.sh ../research/crash-* --timeout 15
-./fuzz-apps.sh ../research/oom-* --timeout 15
+CRASH_DIR=/tmp/cfl-crashes
+OOM_DIR=/tmp/cfl-ooms
+./fuzz-apps.sh "$CRASH_DIR" --timeout 15
+./fuzz-apps.sh "$OOM_DIR" --timeout 15
 ```
 
 ### From fuzz-apps → CFL fuzzers
 ```bash
 # Crash-triggering images become CFL seeds
-cp /tmp/scan-1/crashes/*.icc ../research/cfl/corpus-icc_profile_fuzzer/
-cp /tmp/scan-1/crashes/*.tiff ../research/cfl/corpus-icc_tiffdump_fuzzer/
+cp /tmp/scan-1/crashes/*.icc ../cfl/corpus-icc_profile_fuzzer/
+cp /tmp/scan-1/crashes/*.tiff ../cfl/corpus-icc_tiffdump_fuzzer/
 ```
 
 ## Device-Specific Testing

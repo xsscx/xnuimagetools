@@ -82,7 +82,7 @@ concurrency:
 - name: Build
   run: |
     xcodebuild build \
-      -project "XNU Image Fuzzer.xcodeproj" \
+      -project "XNU Image Fuzzer/XNU Image Fuzzer.xcodeproj" \
       -scheme "XNU Image Fuzzer" \
       -destination 'platform=macOS,variant=Mac Catalyst' \
       -configuration Debug \

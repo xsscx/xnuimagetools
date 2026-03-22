@@ -36,8 +36,8 @@ git submodule update --remote "XNU Image Fuzzer"
 ## Quick Start
 
 ```bash
-# Open workspace in Xcode, update Team ID, select scheme, Run
-open "XNU Image Tools.xcworkspace"
+# Open the tracked Xcode project, update Team ID, select scheme, Run
+open "XNU Image Tools.xcodeproj"
 
 # Mac Catalyst CLI build (unsigned)
 xcodebuild build \

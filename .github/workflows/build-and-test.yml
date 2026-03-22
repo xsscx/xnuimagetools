@@ -366,17 +366,20 @@ jobs:
           fi
 
           # Install dependencies for validation script
-          pip3 install --quiet Pillow imagehash 2>/dev/null || true
+          pip3 install --quiet Pillow 2>/dev/null || true
 
           # Run validation script if available
           if [ -f contrib/scripts/validate_fuzzed_images.py ]; then
             python3 contrib/scripts/validate_fuzzed_images.py \
               --input "$FUZZ_DIR" \
               --output "/tmp/validation-report" \
+              --report "/tmp/validation-report/report.txt" \
               2>&1 | tail -30 || true
             echo "## Image Quality (${{ matrix.device.name }})" >> "$GITHUB_STEP_SUMMARY"
             if [ -f /tmp/validation-report/report.txt ]; then
               cat /tmp/validation-report/report.txt >> "$GITHUB_STEP_SUMMARY" || true
+            else
+              echo "Validation report was not generated." >> "$GITHUB_STEP_SUMMARY"
             fi
           else
             echo "⚠️  validate_fuzzed_images.py not found, skipping"

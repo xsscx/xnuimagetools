@@ -16,7 +16,7 @@
 #
 # Output:
 #   /tmp/native-build/xnuimagetools              # instrumented binary
-#   /tmp/fuzzed-output/                          # 88 fuzzed images
+#   /tmp/fuzzed-output/                          # 80+ fuzzed files in default mode
 #   /tmp/profraw/                                # coverage profraw
 #   /tmp/coverage-report/                        # llvm-cov reports
 #
@@ -107,7 +107,7 @@ do_run() {
     ICC_DIR=""
   fi
 
-  # Phase 1: Default mode — all 15 bitmap contexts + ICC variants
+  # Phase 1: Default mode — all 17 bitmap contexts + ICC variants
   echo "── Phase 1: Default mode (all permutations) ──"
   FUZZ_OUTPUT_DIR="$FUZZ_DIR" \
   FUZZ_ICC_DIR="$ICC_DIR" \

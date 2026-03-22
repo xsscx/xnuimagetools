@@ -43,13 +43,13 @@ cd VideoToolbox/Fuzzing && make    # builds interposer + runner + runner_dist
 
 | Function | File | Purpose |
 |----------|------|---------|
-| `fuzz()` | runner.m L257 | Main fuzzing loop — extracts and mutates frames |
-| `save_fuzzed_frame()` | runner.m L384 | CVPixelBuffer → PNG via ImageIO |
-| `flip_bits()` | interposer.c L203 | `arc4random_uniform()` bit mutations |
-| `inject_random_data()` | interposer.c L229 | Random byte injection into buffers |
-| `process_with_videotoolbox()` | interposer.c L424 | VTCompressionSession encoding |
-| `compression_fuzz()` | interposer.c L371 | Guard-page-protected compression |
-| `free_with_guard()` | interposer.c | Frees guard-page allocations (uses original alloc size) |
+| `fuzz()` | `videotoolbox-runner.m` | Main fuzzing loop — extracts and mutates frames |
+| `save_fuzzed_frame()` | `videotoolbox-runner.m` | CVPixelBuffer → PNG via ImageIO |
+| `flip_bits()` | `videotoolbox-interposer.c` | `arc4random_uniform()` bit mutations |
+| `inject_random_data()` | `videotoolbox-interposer.c` | Random byte injection into buffers |
+| `process_with_videotoolbox()` | `videotoolbox-interposer.c` | VTCompressionSession encoding |
+| `compression_fuzz()` | `videotoolbox-interposer.c` | Guard-page-protected compression |
+| `free_with_guard()` | `videotoolbox-interposer.c` | Frees guard-page allocations (uses original alloc size) |
 
 ## Critical Patterns — Must Follow
 

@@ -22,17 +22,20 @@ Finder (QuickLook), and Spotlight.
 
 ```bash
 # Basic: fuzz all images in a directory
-./fuzz-apps.sh fuzzed-images/2026-03-03/ --timeout 15
+LATEST_RUN=$(ls -1dt fuzzed-images/*/ | sed -n '1p')
+./fuzz-apps.sh "$LATEST_RUN" --timeout 15
 
 # Extended timeout for complex/large images
-./fuzz-apps.sh pipeline-combo/ --timeout 30
+./fuzz-apps.sh /tmp/fuzzed-output/pipeline-combo --timeout 30
 
 # Specific tools only
-FUZZ_APPS_TOOLS=sips-verify,qlmanage-t ./fuzz-apps.sh fuzzed-images/
+FUZZ_APPS_TOOLS=sips-verify,qlmanage-t ./fuzz-apps.sh "$LATEST_RUN"
 
 # Custom report directory
-./fuzz-apps.sh fuzzed-images/ --report /tmp/my-report
+./fuzz-apps.sh "$LATEST_RUN" --report /tmp/my-report
 ```
+
+`fuzz-apps.sh` expects a **directory** as its first argument, not a file glob.
 
 ## Environment Variables
 
@@ -65,11 +68,13 @@ $REPORT_DIR/
 
 Feed CFL fuzzer crash artifacts through fuzz-apps.sh to test macOS attack surface:
 ```bash
-# Test CFL crash files against macOS parsers
-./fuzz-apps.sh ../research/crash-* --timeout 15
+# Stage crash files in a directory, then point fuzz-apps.sh at that directory
+CRASH_DIR=/tmp/cfl-crashes
+./fuzz-apps.sh "$CRASH_DIR" --timeout 15
 
 # Test xnuimagetools output
-./fuzz-apps.sh fuzzed-images/latest/
+LATEST_RUN=$(ls -1dt fuzzed-images/*/ | sed -n '1p')
+./fuzz-apps.sh "$LATEST_RUN"
 ```
 
 ## Adding New Tools

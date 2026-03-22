@@ -29,11 +29,12 @@ and opportunities to improve fuzzing coverage.
 **Files**: `XNU Image Fuzzer/XNU Image Fuzzer/xnuimagefuzzer.m`
 
 #### Checklist
-- [ ] All 12 bitmap context functions have NULL checks
+- [ ] All 17 bitmap context functions have NULL checks
 - [ ] Memory released on all error paths
 - [ ] `CGBitmapInfo` uses explicit casts from `CGImageAlphaInfo`
 - [ ] No duplicate `#define` macros
 - [ ] Buffer sizes correct for each pixel format depth
+- [ ] DisplayP3 / BT2020 paths follow the same cleanup and ICC-save rules as legacy contexts
 
 ### 3. iOS Image Generator (Swift)
 **Files**: `XNU Image Generator for iOS/.../ContentView.swift`
@@ -65,6 +66,8 @@ The videotoolbox-runner MUST link ALL of these:
 -framework CoreVideo
 -framework CoreImage
 -framework CoreGraphics  ← CRITICAL: needed for save_fuzzed_frame()
+-framework ImageIO
+-framework UniformTypeIdentifiers
 -lz
 ```
 

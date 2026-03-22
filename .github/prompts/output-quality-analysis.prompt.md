@@ -23,7 +23,7 @@ done
 ### Validate file sizes
 ```bash
 find /path/to/images -type f -size 0 -print  # Find empty files
-find /path/to/images -type f -printf '%s %p\n' | sort -n | sed -n '1,10p'  # Smallest files
+find /path/to/images -type f -exec stat -f '%z %N' {} \; | sort -n | sed -n '1,10p'  # Smallest files
 ```
 
 ### Magic byte verification
@@ -77,10 +77,12 @@ Results appear in the GitHub Actions Step Summary as a per-file table.
 ## Expected Quality Metrics
 
 ### XNU Image Fuzzer Output
-- **72+ images** across 12 bitmap contexts × 6 formats
+- Current source defines **17 bitmap contexts**, including Display P3 and BT.2020
+- CI/native sanity runs should usually produce **80+ files**
+- Checked-in timestamped runs under `fuzzed-images/` are currently closer to **~180 top-level files**
 - All files should have non-zero size
 - All files should be recognized by `sips`
-- Formats: PNG, JPEG, GIF, BMP, TIFF, HEIF
+- Common formats: PNG, JPEG, GIF, TIFF, plus additional format/ICC variants depending on run mode
 
 ### VideoToolbox Fuzzer Output
 - **PNG frames** extracted from fuzzed video decoding

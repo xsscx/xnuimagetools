@@ -91,12 +91,13 @@ kw_XYZ_cs="XYZ "
 
 ### From xnuimagetools Pipeline
 ```bash
-# Generate ICC-rich images across all 15 bitmap contexts
-FUZZ_ICC_DIR=test-profiles FUZZ_OUTPUT_DIR=/tmp/icc-rich ./XNU\ Image\ Fuzzer
+# Generate ICC-rich images across all 17 bitmap contexts
+BINARY=/tmp/native-build/xnuimagetools
+FUZZ_ICC_DIR=../test-profiles FUZZ_OUTPUT_DIR=/tmp/icc-rich "$BINARY"
 
 # Extract and inject into CFL corpora
-python3 xnuimagetools/contrib/scripts/extract-icc-seeds.py \
-  --input /tmp/icc-rich --inject-cfl cfl
+python3 contrib/scripts/extract-icc-seeds.py \
+  --input /tmp/icc-rich --inject-cfl ../cfl
 ```
 
 ### From Test Profiles
@@ -219,14 +220,14 @@ parsing paths that need valid-structure but unusual-content profiles.
 
 ```bash
 # Generate with all ICC variants (4 per TIFF/PNG save)
-FUZZ_ICC_DIR=../research/test-profiles \
+BINARY=/tmp/native-build/xnuimagetools
+FUZZ_ICC_DIR=../test-profiles \
 FUZZ_OUTPUT_DIR=/tmp/icc-diverse \
-  open --env FUZZ_ICC_DIR=../research/test-profiles \
-       --env FUZZ_OUTPUT_DIR=/tmp/icc-diverse "$APP_BUNDLE"
+  "$BINARY"
 
 # Extract and inject into CFL corpus
 python3 contrib/scripts/extract-icc-seeds.py \
-  --input /tmp/icc-diverse --inject-cfl ../research/cfl
+  --input /tmp/icc-diverse --inject-cfl ../cfl
 ```
 
 ### ICC Variant Types and Their Coverage Impact

@@ -46,6 +46,7 @@ xcodebuild build \
 .github/scripts/build-native.sh --run-only    # run existing binary
 
 # Or build manually:
+mkdir -p /tmp/native-build
 clang -arch arm64 -target arm64-apple-ios17.2-macabi \
   -isysroot $(xcrun --show-sdk-path) \
   -iframework $(xcrun --show-sdk-path)/System/iOSSupport/System/Library/Frameworks \
@@ -55,18 +56,26 @@ clang -arch arm64 -target arm64-apple-ios17.2-macabi \
   -framework Foundation -framework UIKit -framework CoreGraphics \
   -framework ImageIO -framework UniformTypeIdentifiers \
   -I"XNU Image Fuzzer/XNU Image Fuzzer" \
-  "XNU Image Fuzzer/XNU Image Fuzzer"/*.m -o /tmp/xnuimagetools
+  "XNU Image Fuzzer/XNU Image Fuzzer"/*.m -o /tmp/native-build/xnuimagetools
 ```
 
 ### CMake (alternative)
 ```bash
-mkdir xcode_build && cd xcode_build
-cmake -G Xcode ../XNU\ Image\ Fuzzer/CMakeLists.txt
-cmake --build . --config Debug
+cmake -S "XNU Image Fuzzer/XNU Image Fuzzer" -B /tmp/xnuimagetools-cmake -G Xcode
+cmake --build /tmp/xnuimagetools-cmake --config Debug
 ```
 
 ### Running the built binary
 ```bash
+# Native build script output:
+BINARY=/tmp/native-build/xnuimagetools
+FUZZ_OUTPUT_DIR=/tmp/fuzzed-output \
+ASAN_OPTIONS="detect_leaks=0:halt_on_error=0" \
+UBSAN_OPTIONS="print_stacktrace=1:halt_on_error=0" \
+LLVM_PROFILE_FILE="/tmp/profraw/tools-%m_%p.profraw" \
+  "$BINARY"
+
+# Or locate the xcodebuild app binary under DerivedData:
 BINARY=$(find /tmp/DerivedData -name "XNU Image Fuzzer" -type f -perm +111 \
   ! -path "*/Contents/Resources/*" | sed -n '1p')
 
@@ -81,13 +90,12 @@ LLVM_PROFILE_FILE="/tmp/profraw/fuzzer-%m_%p.profraw" \
 
 | Workflow | Purpose | Trigger |
 |----------|---------|---------|
-| `code-quality.yml` | ObjC syntax, Python lint, CMake check | push/PR |
-| `build-and-test.yml` | Build, generate images, commit output | push/PR, cron 12h |
-| `cached-build.yml` | Fast build with DerivedData cache | push/PR |
-| `instrumented.yml` | ASAN+UBSAN testing + native build + coverage (macOS 14/15 matrix) | push/PR, dispatch |
-| `videotoolbox.yml` | VideoToolbox fuzzer build, coverage, static analysis, fuzz | push/PR on VideoToolbox/** |
-| `release.yml` | Tag-triggered release with artifacts | tag v* |
-| `codeql-analysis.yml` | GitHub CodeQL security scanning | push/PR |
+| `code-quality.yml` | ObjC/C syntax checks, Python lint, Swift syntax | push/PR, manual |
+| `build-and-test.yml` | Build, generate images, commit output, extract seeds | push/PR, weekly Monday 06:00 UTC, manual |
+| `cached-build.yml` | Fast build with DerivedData cache | push/PR, manual |
+| `instrumented.yml` | ASAN+UBSAN testing + native build + coverage (macOS 14/15 matrix) | push/PR, manual |
+| `videotoolbox.yml` | VideoToolbox fuzzer build, coverage, static analysis, fuzz | push/PR on `VideoToolbox/**`, manual |
+| `release.yml` | Tag-triggered release with artifacts | tag `v*`, manual |
 
 ### CI Security Hardening
 - All action SHAs pinned (no `@v4` tags)
@@ -106,18 +114,18 @@ actions/cache: 5a3ec84eff668545956fd18022155c47e93e2684  # v4.2.3
 actions/download-artifact: d3f86a106a0bac45b974a628896c90dbdf5c8093  # v4.3.0
 ```
 
-### CI Pipeline: build-and-test.yml (8 Jobs)
+### CI Pipeline: build-and-test.yml (7 Jobs + 4-device matrix)
 
 ```
 build-ios (Job 1)
   ├→ generate-images (Job 2)          — iOS Simulator fuzzed images (4-device matrix)
   ├→ generate-catalyst-images (Job 3) — Mac Catalyst + FUZZ_ICC_DIR (all 4 ICC variants)
-  ├→ generate-ios-gen-images (Job 5)  — iOS Generator images
-  └→ build-watch (Job 6)             — watchOS images
+  ├→ generate-ios-gen-images (Job 4)  — iOS Generator images
+  └→ build-watch (Job 5)              — watchOS images
        │
        ▼
-  commit-images (Job 7)  — collects all sources into fuzzed-images/<timestamp>/
-  extract-seeds (Job 8)  — runs extract-icc-seeds.py → uploads cfl-seeds artifact (30-day)
+  commit-images (Job 6)  — collects all sources into fuzzed-images/<timestamp>/
+  extract-seeds (Job 7)  — runs extract-icc-seeds.py → uploads cfl-seeds artifact (30-day)
 ```
 
 **Mac Catalyst job** (`generate-catalyst-images`):
@@ -154,7 +162,8 @@ build-ios (Job 1)
 
 ## Git Identity
 
-Use bot identity for all commits — never personal info:
+Use bot identity only for CI jobs that auto-commit generated artifacts.
+Do not overwrite a developer's normal local identity for manual work:
 ```bash
 git config user.name 'github-actions[bot]'
 git config user.email '41898282+github-actions[bot]@users.noreply.github.com'

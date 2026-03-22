@@ -4,6 +4,10 @@ The xnuimagetools output feeds the CFL (Crash-Free LibFuzzer) ICC profile fuzzer
 in the research repo. With ICC variant generation enabled, each run produces images
 with diverse ICC profiles embedded — dramatically improving CFL seed coverage.
 
+When working from the `xnuimagetools/` root in this workspace, sibling resources are
+available at `../cfl`, `../test-profiles`, `../extended-test-profiles`, and
+`../.github/...`.
+
 ## Output Flow
 
 ```
@@ -28,7 +32,8 @@ Hash suffixes (6-char SHA-256 of file content) prevent collisions across runs.
 
 Set `FUZZ_ICC_DIR` to generate ICC-rich output:
 ```bash
-FUZZ_ICC_DIR=../test-profiles FUZZ_OUTPUT_DIR=/tmp/icc-rich-output ./XNU\ Image\ Fuzzer
+BINARY=/tmp/native-build/xnuimagetools
+FUZZ_ICC_DIR=../test-profiles FUZZ_OUTPUT_DIR=/tmp/icc-rich-output "$BINARY"
 ```
 
 **Without `FUZZ_ICC_DIR`**: ICC variants still generate stripped (no-ICC) and mismatched
@@ -101,7 +106,7 @@ curl -s "http://<host>:8080/api/full?path=/tmp/mcp-uploads/a1b2c3_extracted-prof
 ```
 
 Docker image: `ghcr.io/xsscx/icc-profile-mcp` (run with `web` argument for REST mode).
-See `research/.github/prompts/remote-analysis.prompt.md` for the full workflow.
+See `../.github/prompts/remote-analysis.prompt.md` for the full workflow.
 
 **Use remote API for**: Quick triage of many profiles, spot-checks during fuzzing.
 **Use git commit for**: Crash PoCs, batch reports, anything worth preserving long-term.

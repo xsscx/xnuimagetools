@@ -3,9 +3,9 @@
 ## What This Is
 
 A 5,800+-line Objective-C image fuzzer that exercises Apple's CoreGraphics rendering
-pipeline through 15 distinct CGBitmapContext configurations, ICC profile variant
+pipeline through 17 distinct CGBitmapContext configurations, ICC profile variant
 generation (4 strategies), structure-aware PNG chunk mutations, and 22+ output format
-encodings. Runs on macOS (Mac Catalyst), iOS, iPadOS, watchOS, and visionOS.
+encodings. Current wide-gamut paths include Display P3 and BT.2020.
 
 **Repository architecture**: The fuzzer source code lives in
 [xsscx/xnuimagefuzzer](https://github.com/xsscx/xnuimagefuzzer) (primary dev repo)
@@ -29,12 +29,13 @@ xcodebuild -project "XNU Image Fuzzer/XNU Image Fuzzer.xcodeproj" \
 
 ### CMake (iOS arm64)
 ```bash
-cd "XNU Image Fuzzer" && cmake -B build -G Ninja \
+cmake -S "XNU Image Fuzzer/XNU Image Fuzzer" -B /tmp/xnuimagefuzzer-cmake -G Ninja \
   -DCMAKE_SYSTEM_NAME=iOS \
-  -DCMAKE_OSX_ARCHITECTURES=arm64 && cmake --build build
+  -DCMAKE_OSX_ARCHITECTURES=arm64
+cmake --build /tmp/xnuimagefuzzer-cmake
 ```
 
-## Architecture — 15 Bitmap Context Types
+## Architecture — 17 Bitmap Context Types
 
 | # | Function | Pixel Format | Color Space |
 |---|----------|-------------|-------------|
@@ -53,6 +54,8 @@ cd "XNU Image Fuzzer" && cmake -B build -G Ninja \
 | 13 | createBitmapContextCMYK | CMYK (RGB fallback) | DeviceCMYK |
 | 14 | createBitmapContextHDRFloat16 | IEEE 754 half-precision | ExtendedLinearSRGB |
 | 15 | createBitmapContextIndexedColor | 5 palette variants | Indexed/DeviceRGB |
+| 16 | createBitmapContextDisplayP3 | Wide-gamut RGB | DisplayP3 |
+| 17 | createBitmapContextBT2020 | Wide-gamut RGB / HDR display path | ITU-R BT.2020 |
 
 ## Output Formats
 
@@ -65,7 +68,10 @@ Each bitmap context generates images in multiple formats plus ICC variants:
 - **HEIF/HEIC** — when hardware encoder available
 - **WebP, JP2, DNG, TGA, ASTC, KTX, PDF, ICNS, EXR** — via `encodeImageMultiFormat()`
 
-Total output per run: 15 contexts × 17 seed specs × 6+ formats + ICC variants = **2,000+ images**
+Output count varies by run mode. Current CI/native sanity checks use **80+ files** as a
+minimum success threshold for default runs, checked-in timestamped runs under
+`fuzzed-images/` are currently closer to **~180 top-level files**, and `--pipeline`
+mode adds multiple `pipeline-*` subdirectories on top of that.
 
 ## ICC Profile Handling
 
@@ -126,7 +132,8 @@ because ImageIO auto-embeds non-standard color spaces.
 
 To maximize ICC profile diversity for CFL fuzzer seeds:
 ```bash
-FUZZ_ICC_DIR=../research/test-profiles FUZZ_OUTPUT_DIR=/tmp/icc-rich ./XNU\ Image\ Fuzzer
+BINARY=/tmp/native-build/xnuimagetools
+FUZZ_ICC_DIR=../test-profiles FUZZ_OUTPUT_DIR=/tmp/icc-rich "$BINARY"
 ```
 
 ## Post-Encoding Corruption (PNG)
@@ -180,7 +187,7 @@ output to the CFL LibFuzzer corpus in the parent research repo:
 ```bash
 # Extract ICC profiles + TIFF files from fuzzed-images
 python3 contrib/scripts/extract-icc-seeds.py \
-  --input fuzzed-images/ --inject-cfl ../research/cfl
+  --input fuzzed-images/ --inject-cfl ../cfl
 
 # Targets:
 # ICC profiles → profile/dump/deep_dump/toxml fuzzers
@@ -230,7 +237,8 @@ python3 contrib/scripts/compare_image_directories.py \
   fuzzed-images/2026-03-02-iPhone/ fuzzed-images/2026-03-02-iPad/
 
 # Feed into macOS system tools for crash detection
-./fuzz-apps.sh fuzzed-images/latest/ --timeout 15
+LATEST_RUN=$(ls -1dt fuzzed-images/*/ | sed -n '1p')
+./fuzz-apps.sh "$LATEST_RUN" --timeout 15
 ```
 
 ## Common Pitfalls
