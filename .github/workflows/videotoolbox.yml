@@ -202,10 +202,21 @@ jobs:
         run: |
           set -euo pipefail
           make clean_runner clean_runner_dist clean_main_app clean_interpose clean_interpose_dist
-          make test_runner DEVELOPER_ID="-"
+          make -Bn test_runner DEVELOPER_ID="-" > /tmp/test_runner.plan
           make clean_runner clean_runner_dist clean_main_app clean_interpose clean_interpose_dist
-          make test_runner_dist DEVELOPER_ID="-"
-          echo "OK: Makefile test targets passed from a clean state"
+          make -Bn test_runner_dist DEVELOPER_ID="-" > /tmp/test_runner_dist.plan
+
+          grep -F 'cp Info.plist main.app/' /tmp/test_runner.plan
+          grep -F 'mv main main.app/' /tmp/test_runner.plan
+          grep -F './runner main.app/main' /tmp/test_runner.plan
+          grep -F 'cp Info.plist main.app/' /tmp/test_runner_dist.plan
+          grep -F 'mv main main.app/' /tmp/test_runner_dist.plan
+          grep -F './runner_dist main.app/main' /tmp/test_runner_dist.plan
+
+          awk '/cp Info.plist main.app\// {build=NR} /\.\/runner main\.app\/main/ {run=NR} END {exit !(build && run && build < run)}' /tmp/test_runner.plan
+          awk '/cp Info.plist main.app\// {build=NR} /\.\/runner_dist main\.app\/main/ {run=NR} END {exit !(build && run && build < run)}' /tmp/test_runner_dist.plan
+
+          echo "OK: Makefile targets build main.app before each test target"
 
       - name: Package artifacts
         working-directory: VideoToolbox/Fuzzing
