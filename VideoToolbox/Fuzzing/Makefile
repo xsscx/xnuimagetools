@@ -96,11 +96,11 @@ runner_dist_debug: runner_dist.c
 # Testing targets
 test: test_runner test_runner_dist test_main_app
 
-test_runner: runner
+test_runner: runner main.app
 	@$(call log_info, "Testing runner...")
 	./runner main.app/main
 
-test_runner_dist: runner_dist
+test_runner_dist: runner_dist main.app
 	@$(call log_info, "Testing runner_dist...")
 	./runner_dist main.app/main
 

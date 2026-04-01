@@ -91,7 +91,7 @@ jobs:
             -o build/runner runner.c
           codesign -s "-" --force build/runner
           file build/runner
-          echo "✅ runner built"
+          echo "OK: runner built"
 
       - name: Build runner_dist (macOS)
         working-directory: VideoToolbox/Fuzzing
@@ -102,7 +102,7 @@ jobs:
             -o build/runner_dist runner_dist.c
           codesign -s "-" --force build/runner_dist
           file build/runner_dist
-          echo "✅ runner_dist built"
+          echo "OK: runner_dist built"
 
       - name: Build videotoolbox-interposer.dylib (macOS)
         working-directory: VideoToolbox/Fuzzing
@@ -121,7 +121,7 @@ jobs:
             videotoolbox-interposer.c
           codesign -s "-" --force build/videotoolbox-interposer.dylib
           file build/videotoolbox-interposer.dylib
-          echo "✅ videotoolbox-interposer.dylib built"
+          echo "OK: videotoolbox-interposer.dylib built"
 
       - name: Build videotoolbox-runner (macOS)
         working-directory: VideoToolbox/Fuzzing
@@ -145,7 +145,7 @@ jobs:
             -lz
           codesign -s "-" --force build/videotoolbox-runner
           file build/videotoolbox-runner
-          echo "✅ videotoolbox-runner built"
+          echo "OK: videotoolbox-runner built"
 
       - name: Verify all artifacts
         id: verify
@@ -163,11 +163,11 @@ jobs:
             if [ -f "$bin" ]; then
               TYPE=$(file -b "$bin" | cut -c1-60)
               SIZE=$(stat -f%z "$bin" 2>/dev/null || stat -c%s "$bin")
-              echo "✅ $(basename $bin): $TYPE ($SIZE bytes)"
+              echo "OK: $(basename $bin): $TYPE ($SIZE bytes)"
               echo "| $(basename $bin) | $TYPE | $SIZE bytes |" >> "$GITHUB_STEP_SUMMARY"
               PASS=$((PASS + 1))
             else
-              echo "❌ Missing: $bin"
+              echo "ERROR: Missing: $bin"
               FAIL=$((FAIL + 1))
             fi
           done
@@ -180,22 +180,32 @@ jobs:
             exit 1
           fi
 
-      - name: Smoke test — runner help
+      - name: Smoke test - runner help
         working-directory: VideoToolbox/Fuzzing
         run: |
           set -euo pipefail
           # Verify runner loads and executes (will print usage/error since no args)
           build/runner 2>&1 || EXIT=$?
           echo "runner exit code: ${EXIT:-0}"
-          echo "✅ runner loads and executes"
+          echo "OK: runner loads and executes"
 
-      - name: Smoke test — videotoolbox-runner help
+      - name: Smoke test - videotoolbox-runner help
         working-directory: VideoToolbox/Fuzzing
         run: |
           set -euo pipefail
           # Run with -h to verify it loads frameworks and prints usage
           build/videotoolbox-runner -h 2>&1
-          echo "✅ videotoolbox-runner loads and executes"
+          echo "OK: videotoolbox-runner loads and executes"
+
+      - name: Validate Makefile test targets
+        working-directory: VideoToolbox/Fuzzing
+        run: |
+          set -euo pipefail
+          make clean_runner clean_runner_dist clean_main_app clean_interpose clean_interpose_dist
+          make test_runner DEVELOPER_ID="-"
+          make clean_runner clean_runner_dist clean_main_app clean_interpose clean_interpose_dist
+          make test_runner_dist DEVELOPER_ID="-"
+          echo "OK: Makefile test targets passed from a clean state"
 
       - name: Package artifacts
         working-directory: VideoToolbox/Fuzzing
@@ -237,7 +247,7 @@ jobs:
           echo "| Arch | $(uname -m) |" >> "$GITHUB_STEP_SUMMARY"
           echo "| clang | $(clang --version 2>&1 | sed -n '1p') |" >> "$GITHUB_STEP_SUMMARY"
 
-  # ── Job: Instrumented Build + Coverage ─────────────────────
+  # Job: Instrumented Build + Coverage
   # Builds videotoolbox-runner + interposer with
   # -fprofile-instr-generate -fcoverage-mapping, runs a short
   # fuzz, and uploads llvm-cov HTML + LCOV reports.
@@ -287,7 +297,7 @@ jobs:
             -o build-cov/videotoolbox-interposer.dylib \
             videotoolbox-interposer.c
           codesign -s "-" --force build-cov/videotoolbox-interposer.dylib
-          echo "✅ interposer built with coverage"
+          echo "OK: interposer built with coverage"
 
       - name: Build runner with coverage
         working-directory: VideoToolbox/Fuzzing
@@ -311,18 +321,18 @@ jobs:
             -framework UniformTypeIdentifiers \
             -lz
           codesign -s "-" --force build-cov/videotoolbox-runner
-          echo "✅ runner built with coverage"
+          echo "OK: runner built with coverage"
 
       - name: Validate test video
         working-directory: VideoToolbox/Fuzzing
         run: |
           set -euo pipefail
           if [ ! -f big.mov ] || [ ! -s big.mov ]; then
-            echo "❌ big.mov is missing or empty"
+            echo "ERROR: big.mov is missing or empty"
             exit 1
           fi
           SIZE=$(stat -f%z big.mov 2>/dev/null || stat -c%s big.mov)
-          echo "✅ big.mov present ($SIZE bytes)"
+          echo "OK: big.mov present ($SIZE bytes)"
           file big.mov
 
       - name: Run fuzzer with coverage collection
@@ -344,8 +354,8 @@ jobs:
           PROFRAW_COUNT=$(find /tmp/vt-profraw -name "*.profraw" 2>/dev/null | wc -l | tr -d ' ')
           echo "Fuzzed frames: $FILE_COUNT"
           echo "Profraw files: $PROFRAW_COUNT"
-          [ "$PROFRAW_COUNT" -gt 0 ] || { echo "❌ No profraw — coverage failed"; exit 1; }
-          echo "✅ Coverage data collected"
+          [ "$PROFRAW_COUNT" -gt 0 ] || { echo "ERROR: No profraw - coverage failed"; exit 1; }
+          echo "OK: Coverage data collected"
 
       - name: Generate coverage report
         working-directory: VideoToolbox/Fuzzing
@@ -420,7 +430,7 @@ jobs:
 
           WARNINGS=0
           for src in runner.c runner_dist.c main.c interpose.c videotoolbox-interposer.c; do
-            echo "🔍 Analyzing $src..."
+            echo "Analyzing $src..."
             xcrun clang --analyze \
               -isysroot "$(xcrun --sdk macosx --show-sdk-path)" \
               -Xanalyzer -analyzer-output=text \
@@ -430,14 +440,14 @@ jobs:
             W=$(grep -c "warning:" "/tmp/analyzer-$src.log" 2>/dev/null || echo "0")
             WARNINGS=$((WARNINGS + W))
             if [ "$W" -gt 0 ]; then
-              echo "| $src | ⚠️ $W warnings |" >> "$GITHUB_STEP_SUMMARY"
+              echo "| $src | WARN $W warnings |" >> "$GITHUB_STEP_SUMMARY"
             else
-              echo "| $src | ✅ clean |" >> "$GITHUB_STEP_SUMMARY"
+              echo "| $src | OK clean |" >> "$GITHUB_STEP_SUMMARY"
             fi
           done
 
           # Analyze ObjC source separately (needs Foundation)
-          echo "🔍 Analyzing videotoolbox-runner.m..."
+          echo "Analyzing videotoolbox-runner.m..."
           xcrun clang --analyze \
             -isysroot "$(xcrun --sdk macosx --show-sdk-path)" \
             -Xanalyzer -analyzer-output=text \
@@ -455,14 +465,14 @@ jobs:
           W=$(grep -c "warning:" "/tmp/analyzer-runner.m.log" 2>/dev/null || echo "0")
           WARNINGS=$((WARNINGS + W))
           if [ "$W" -gt 0 ]; then
-            echo "| videotoolbox-runner.m | ⚠️ $W warnings |" >> "$GITHUB_STEP_SUMMARY"
+            echo "| videotoolbox-runner.m | WARN $W warnings |" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "| videotoolbox-runner.m | ✅ clean |" >> "$GITHUB_STEP_SUMMARY"
+            echo "| videotoolbox-runner.m | OK clean |" >> "$GITHUB_STEP_SUMMARY"
           fi
 
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "**Total warnings: $WARNINGS**" >> "$GITHUB_STEP_SUMMARY"
-          echo "📊 Static analysis: $WARNINGS total warnings"
+          echo "Static analysis: $WARNINGS total warnings"
 
   fuzz-and-commit:
     name: Fuzz and Commit Results
@@ -500,18 +510,18 @@ jobs:
           codesign -s "-" --force build/videotoolbox-runner
           codesign -s "-" --force build/videotoolbox-interposer.dylib
           file build/videotoolbox-runner
-          echo "✅ Artifacts extracted from build-macos job"
+          echo "OK: Artifacts extracted from build-macos job"
 
       - name: Validate test video
         working-directory: VideoToolbox/Fuzzing
         run: |
           set -euo pipefail
           if [ ! -f big.mov ] || [ ! -s big.mov ]; then
-            echo "❌ big.mov is missing or empty"
+            echo "ERROR: big.mov is missing or empty"
             exit 1
           fi
           SIZE=$(stat -f%z big.mov 2>/dev/null || stat -c%s big.mov)
-          echo "✅ big.mov present ($SIZE bytes)"
+          echo "OK: big.mov present ($SIZE bytes)"
           file big.mov
 
       - name: Run VideoToolbox fuzzer
@@ -522,7 +532,7 @@ jobs:
           set -euo pipefail
           mkdir -p /tmp/fuzzed-video
 
-          echo "🔨 Fuzzing for ${FUZZ_DURATION}s..."
+          echo "Fuzzing for ${FUZZ_DURATION}s..."
           # macOS has no GNU timeout; use perl one-liner as portable alternative
           perl -e 'alarm shift; exec @ARGV' "$((FUZZ_DURATION + 30))" \
             build/videotoolbox-runner \
@@ -544,9 +554,9 @@ jobs:
           echo "" >> "$GITHUB_STEP_SUMMARY"
 
           if [ "$FILE_COUNT" -eq 0 ]; then
-            echo "⚠️  No fuzzed frames generated"
+            echo "WARN: No fuzzed frames generated"
           else
-            echo "✅ Generated $FILE_COUNT fuzzed frames"
+            echo "OK: Generated $FILE_COUNT fuzzed frames"
             ls -lh /tmp/fuzzed-video/ | sed -n '1,20p'
           fi
 
@@ -569,7 +579,7 @@ jobs:
 
           FILE_COUNT=$(find /tmp/fuzzed-video -name "*.png" -type f 2>/dev/null | wc -l | tr -d ' ')
           if [ "$FILE_COUNT" -eq 0 ]; then
-            echo "⚠️  No fuzzed frames to commit"
+            echo "WARN: No fuzzed frames to commit"
             exit 0
           fi
 
@@ -580,7 +590,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add "fuzzed-video/"
-          git commit -m "fuzzed-video: ${TIMESTAMP} — ${FILE_COUNT} frames
+          git commit -m "fuzzed-video: ${TIMESTAMP} - ${FILE_COUNT} frames
 
           Generated by xnuimagetools-videotoolbox workflow
           Duration: ${{ inputs.fuzz_duration || '60' }}s
@@ -589,4 +599,4 @@ jobs:
           Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>"
           git pull --rebase origin main
           git push
-          echo "✅ Committed $FILE_COUNT fuzzed video frames to $DEST_DIR"
+          echo "OK: Committed $FILE_COUNT fuzzed video frames to $DEST_DIR"
