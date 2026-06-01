@@ -27,10 +27,6 @@ defaults:
     shell: bash --noprofile --norc {0}
 
 on:
-  push:
-    branches: [main, master]
-  pull_request:
-    branches: [main, master]
   workflow_dispatch:
 
 jobs:
