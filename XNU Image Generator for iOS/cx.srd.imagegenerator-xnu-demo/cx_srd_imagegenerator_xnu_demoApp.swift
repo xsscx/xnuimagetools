@@ -2,8 +2,8 @@
  *  @file cx-srd-imagegenerator-xnu-demoApp.swift
  *  @brief XNU Image Generator for iOS
  *  @author @h02332 | David Hoyt | @xsscx
- *  @date 27 MAY 2024
- *  @version 1.7.5
+ *  @date 28 SEP 2026
+ *  @version 2.0.0
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
  *
  *  @section CHANGES
  *  - 21/05/2024, h02332: Initial commit.
- *  - 27/05/2024, h02332: Add Random Image Generator for iOS + Watch
+ *  - 28/09/2026, h02332: Generate deterministic ICC and no-ICC QA images.
  *
  */
 

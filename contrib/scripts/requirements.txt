@@ -1,7 +1,0 @@
-numpy
-opencv-python
-Pillow
-scikit-image
-imagehash
-pillow-heif
-

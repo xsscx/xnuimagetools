@@ -1,3 +1,0 @@
-[submodule "XNU Image Fuzzer"]
-	path = XNU Image Fuzzer
-	url = https://github.com/xsscx/xnuimagefuzzer.git

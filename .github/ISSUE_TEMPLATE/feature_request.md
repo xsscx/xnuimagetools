@@ -1,20 +1,17 @@
 ---
-name: Feature request
-about: Suggest an idea for this project
+name: QA coverage request
+about: Propose a deterministic render, format, profile, or validator addition
 title: ''
-labels: ''
+labels: enhancement
 assignees: ''
-
 ---
 
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+## QA gap
 
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
+Describe the missing deterministic case and why it improves image or color
+quality assurance.
 
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
+## Validation contract
 
-**Additional context**
-Add any other context or screenshots about the feature request here.
+Explain how the new output can be checked directly and fail closed. For ICC
+work, identify the container payload and expected profile identity.

@@ -1,8 +1,8 @@
 /**
  *  @file cx-srd-watch-ultra2-001App.swift
  *  @brief XNU Image Generator for watchOS
- *  @date 21 MAY 2024
- *  @version 1.7.5
+ *  @date 28 SEP 2026
+ *  @version 2.0.0
  *
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
  *
  *  @section CHANGES
  *  - 21/05/2024, h02332: Initial commit.
- *  - 27/05/2024, h02332: Add Random Image Generator for iOS + Watch
+ *  - 28/09/2026, h02332: Generate deterministic unprofiled watchOS images.
  *
  */
 

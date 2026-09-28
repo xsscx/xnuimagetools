@@ -1,103 +1,78 @@
 # XNU Image Tools
 
-Multi-platform image generation and fuzzing toolkit for iOS, watchOS, and Mac Catalyst. Generates diverse baseline images across platforms, then fuzzes them with ICC profile embedding across 22+ output formats targeting Preview, Safari, iMessage, Mail, and Notes.
+XNU Image Tools generates deterministic, standards-compliant image corpora for
+Apple image and color-management quality assurance. The active repository does
+not mutate files, corrupt containers, alter ICC bytes, or run fuzzing campaigns.
 
-The [XNU Image Fuzzer](https://github.com/xsscx/xnuimagefuzzer) is included as a **git submodule** at `XNU Image Fuzzer/`. xnuimagefuzzer is the primary development repository for the fuzzer source code — all code changes should be made there first.
+The iOS application is also the Mac Catalyst command runner. It creates a
+manifested corpus in one of three explicit modes:
 
-## Clone
+- `none`: PNG, JPEG, TIFF, BMP, and GIF with no embedded ICC profile.
+- `with`: valid ICC-bearing files only.
+- `both`: both sets; this is the default.
 
-```bash
-git clone --recurse-submodules https://github.com/xsscx/xnuimagetools.git
+## Generate and validate locally
 
-# If already cloned without submodules:
-git submodule update --init --recursive
+macOS with Xcode is required. No third-party Python packages are needed.
 
-# Update submodule to latest xnuimagefuzzer:
-git submodule update --remote "XNU Image Fuzzer"
+```sh
+.github/scripts/generate-clean-images.sh generated-images both
 ```
 
-## Workflow
+The script builds the Release Mac Catalyst app, runs it, waits for
+`manifest.json`, and invokes the fail-closed validator. Use `none` or `with` as
+the second argument to generate only one side of the QA matrix.
 
-1. Generate baseline images with xnuimagetools (iOS, watchOS, Mac Catalyst)
-2. Fuzz with [xnuimagefuzzer](https://github.com/xsscx/xnuimagefuzzer) (`--pipeline`, `--chain`, `--input-dir`)
-3. Embed ICC profiles (clean + [mutated](https://github.com/xsscx/research/tree/main/colorbleed_tools))
-4. Feed to target apps: Preview, Safari, iMessage, Mail, Notes
-5. Collect crashes from `~/Library/Logs/DiagnosticReports/`
+The application honors these environment variables when run directly:
 
-## Components
+- `XNU_IMAGE_OUTPUT_DIR`: output directory.
+- `XNU_IMAGE_ICC_MODE`: `none`, `with`, or `both`.
 
-| Component | Platform | Language | LOC | Notes |
-|-----------|----------|----------|-----|-------|
-| XNU Image Fuzzer | macOS (Mac Catalyst) | Objective-C | 5,800+ | git submodule → [xsscx/xnuimagefuzzer](https://github.com/xsscx/xnuimagefuzzer) |
-| XNU Image Generator for iOS | iOS | Swift | — | |
-| XNU Image Generator for Watch | watchOS | Swift | — | |
-| VideoToolbox Fuzzer | iOS / macOS | Obj-C + C | 1,775 | |
+Output is deterministic and separated into `no-icc/` and `with-icc/`. Generated
+corpora are artifacts and are intentionally ignored by Git.
 
-## Quick Start
+## ICC compatibility contract
 
-```bash
-# Open the tracked Xcode project, update Team ID, select scheme, Run
-open "XNU Image Tools.xcodeproj"
+ImageIO does not preserve every named RGB ICC blob in every container. The
+generator emits only combinations verified to retain the exact source profile:
 
-# Mac Catalyst CLI build (unsigned)
+| Profile | PNG | JPEG | TIFF |
+| --- | --- | --- | --- |
+| Display P3 | yes | yes | yes |
+| Adobe RGB (1998) | no | yes | yes |
+| sRGB | no | no | yes |
+
+For excluded combinations, ImageIO may replace the blob with a container-native
+color marker or a canonicalized profile. Such files are not labeled as ICC test
+cases here. The validator extracts PNG `iCCP`, JPEG APP2, and TIFF tag 34675
+payloads directly and compares their SHA-256 hashes with the source profile.
+BMP V5 and GIF ICC extensions are also inspected to prove the no-profile set is
+actually unprofiled.
+
+## Projects
+
+- `XNU Image Generator for iOS`: canonical iOS/iPadOS and Mac Catalyst generator.
+- `XNU Image Generator for Watch`: deterministic, unprofiled watchOS generator.
+- `XNU Image Tools.xcworkspace`: opens both maintained projects.
+- `contrib/scripts/validate_generated_images.py`: dependency-free validator.
+
+## Tests
+
+```sh
+python3 -m unittest contrib/scripts/test_validate_generated_images.py
 xcodebuild build \
-  -project "XNU Image Fuzzer/XNU Image Fuzzer.xcodeproj" \
-  -scheme "XNU Image Fuzzer" \
-  -destination 'platform=macOS,variant=Mac Catalyst' \
-  -configuration Debug \
-  CODE_SIGN_IDENTITY="-" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
-
-# VideoToolbox fuzzer
-cd VideoToolbox/Fuzzing && make
-build/videotoolbox-runner -t 60 -o /tmp/fuzzed-frames big.mov
+  -project 'XNU Image Generator for iOS/XNU Image Generator for iOS.xcodeproj' \
+  -scheme 'XNU Image Generator for iOS' \
+  -destination 'generic/platform=iOS Simulator' \
+  CODE_SIGNING_ALLOWED=NO
+xcodebuild build \
+  -project 'XNU Image Generator for Watch/XNU Image Generator.xcodeproj' \
+  -scheme 'XNU Image Generator Watch App' \
+  -destination 'generic/platform=watchOS Simulator' \
+  CODE_SIGNING_ALLOWED=NO
 ```
 
-## VideoToolbox Fuzzer
+CI uploads generated corpora for manual QA. It never commits generated images
+back to the repository.
 
-Three-component video frame mutation fuzzer targeting Apple's hardware decoding pipeline:
-
-| Component | File | Purpose |
-|-----------|------|---------|
-| Runner | `videotoolbox-runner.m` | AVFoundation frame extraction, mutations, PNG output |
-| Interposer | `videotoolbox-interposer.c` | DYLD `IOConnectCallMethod` replacement for IOKit fuzzing |
-| Launcher | `runner.c` | iOS AMFI bypass for process attachment |
-
-Built with ASAN+UBSAN+coverage via Makefile (not Xcode). Uses `big.mov` (20MB) as default input.
-
-## CI/CD Workflows
-
-| Workflow | Jobs | Purpose |
-|----------|------|---------|
-| `build-and-test.yml` | 8 | Build, generate images, extract ICC seeds |
-| `cached-build.yml` | — | Fast build with DerivedData cache |
-| `code-quality.yml` | — | ObjC syntax, Python lint, CMake check |
-| `instrumented.yml` | 3 × (macOS 14, 15) | ASAN+UBSAN: Mac Catalyst + macOS native + coverage |
-| `videotoolbox.yml` | 4 | Build, coverage, static-analysis, fuzz-and-commit |
-| `release.yml` | — | Tag-triggered release with artifacts |
-
-All actions SHA-pinned. `persist-credentials: false`. `BASH_ENV=/dev/null`.
-
-## Platform Support
-
-| Platform | Status |
-|----------|--------|
-| macOS 14+ (arm64, x86_64) | ✅ |
-| iOS / iPadOS 18+ | ✅ |
-| watchOS 11+ | ✅ |
-| visionOS 2.x | ✅ |
-
-## Sample Output
-
-### iOS / Mac / Vision Pro
-<img src="https://xss.cx/2024/05/26/img/xnuimagetools_ios-filmstrip.jpg" alt="XNU Image Tools iOS Example Output" style="height:286px; width:818px;"/>
-
-### watchOS
-<img src="https://xss.cx/2024/05/26/img/xnuimagetools_watchos-filmstrip.jpg" alt="XNU Image Tools watchOS Output" style="height:286px; width:818px;"/>
-
-## Documentation
-
-- [Copilot Instructions](.github/copilot-instructions.md) — build commands, architecture, debug env vars
-- [VideoToolbox Fuzzer](VideoToolbox/Readme.md) — VideoToolbox interposer docs
-- [VideoToolbox Instructions](.github/instructions/videotoolbox.instructions.md) — path-specific build/code patterns
-- [XNU Image Fuzzer](https://github.com/xsscx/xnuimagefuzzer) — primary fuzzer repo
-- [Security Research](https://github.com/xsscx/research) — ICC profile analysis, CFL fuzzers, MCP server
+See `docs/DEVICE_QA.md` for the iPhone and iPad handoff procedure.
